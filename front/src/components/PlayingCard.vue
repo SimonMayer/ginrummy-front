@@ -114,11 +114,7 @@ export default {
   font-size: 20px;
 }
 
-.hearts {
-  color: red;
-}
-
-.diamonds {
+.hearts, .diamonds {
   color: red;
 }
 
@@ -127,11 +123,6 @@ export default {
 }
 
 /* Specific placement of each suit icon, for each rank */
-/* rank A */
-.card-content.rank-A .suit-symbol:nth-child(1) {
-  grid-column: 2;
-  grid-row: 7 / span 4;
-}
 
 /* rank 2 */
 .card-content.rank-2 .suit-symbol:nth-child(1) {
@@ -412,19 +403,10 @@ export default {
   grid-row: 13 / span 4;
 }
 
-/* rank J */
-.card-content.rank-J .suit-symbol:nth-child(1) {
-  grid-column: 2;
-  grid-row: 7 / span 4;
-}
-
-/* rank Q */
-.card-content.rank-Q .suit-symbol:nth-child(1) {
-  grid-column: 2;
-  grid-row: 7 / span 4;
-}
-
-/* rank K */
+/* non-numeric cards */
+.card-content.rank-A .suit-symbol:nth-child(1),
+.card-content.rank-J .suit-symbol:nth-child(1),
+.card-content.rank-Q .suit-symbol:nth-child(1),
 .card-content.rank-K .suit-symbol:nth-child(1) {
   grid-column: 2;
   grid-row: 7 / span 4;
