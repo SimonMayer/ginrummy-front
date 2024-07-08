@@ -10,10 +10,11 @@
         :signedInUserId="signedInUserId"
         :currentTurnUserId="currentTurnUserId"
         :loading="loading"
-        :canStartMatch="canStartMatch"
         @stock-pile-click="handleStockPileClick"
-        :stockPileDisabled="stockPileDisabled"
         @start-match="startMatch"
+        :minPlayers="minPlayers"
+        :maxPlayers="maxPlayers"
+        :currentTurnActions="currentTurnActions"
     />
   </div>
 </template>
@@ -144,17 +145,11 @@ export default {
     },
   },
   computed: {
-    canStartMatch() {
-      return this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
-    },
     isCurrentUserTurn() {
       return this.currentTurnUserId === this.signedInUserId;
     },
     hasDrawAction() {
       return this.currentTurnActions.some(action => action.action_type === 'draw');
-    },
-    stockPileDisabled() {
-      return !this.isCurrentUserTurn || this.loading || this.hasDrawAction;
     }
   }
 };

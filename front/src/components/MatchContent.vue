@@ -7,8 +7,8 @@
         :signedInUserId="signedInUserId"
         :currentTurnUserId="currentTurnUserId"
         :loading="loading"
-        :stockPileDisabled="stockPileDisabled"
         @stock-pile-click="handleStockPileClick"
+        :currentTurnActions="currentTurnActions"
     />
     <button v-if="canStartMatch" @click="$emit('start-match')">Start Match</button>
   </div>
@@ -47,13 +47,22 @@ export default {
       type: Boolean,
       required: true
     },
-    canStartMatch: {
-      type: Boolean,
+    minPlayers: {
+      type: Number,
       required: true
     },
-    stockPileDisabled: {
-      type: Boolean,
+    maxPlayers: {
+      type: Number,
       required: true
+    },
+    currentTurnActions: {
+      type: Array,
+      required: true
+    }
+  },
+  computed: {
+    canStartMatch() {
+      return this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
     }
   },
   methods: {

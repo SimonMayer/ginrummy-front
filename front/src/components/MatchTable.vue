@@ -49,10 +49,10 @@ export default {
       type: Boolean,
       required: true,
     },
-    stockPileDisabled: {
-      type: Boolean,
+    currentTurnActions: {
+      type: Array,
       required: true,
-    },
+    }
   },
   computed: {
     processedPlayers() {
@@ -68,6 +68,12 @@ export default {
     },
     isCurrentUserTurn() {
       return this.currentTurnUserId === this.signedInUserId;
+    },
+    hasDrawAction() {
+      return this.currentTurnActions.some(action => action.action_type === 'draw');
+    },
+    stockPileDisabled() {
+      return !this.isCurrentUserTurn || this.loading || this.hasDrawAction;
     }
   },
   methods: {
