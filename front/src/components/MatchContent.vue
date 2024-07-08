@@ -7,8 +7,12 @@
         :signedInUserId="signedInUserId"
         :currentTurnUserId="currentTurnUserId"
         :loading="loading"
-        @stock-pile-click="handleStockPileClick"
         :currentTurnActions="currentTurnActions"
+        @loading="updateLoading"
+        @error="handleError"
+        @update-my-hand="updateMyHand"
+        @update-stock-pile-size="updateStockPileSize"
+        @update-current-turn-actions="updateCurrentTurnActions"
     />
     <button v-if="canStartMatch" @click="$emit('start-match')">Start Match</button>
   </div>
@@ -66,8 +70,20 @@ export default {
     }
   },
   methods: {
-    handleStockPileClick() {
-      this.$emit('stock-pile-click');
+    updateLoading(loading) {
+      this.$emit('update-loading', loading);
+    },
+    handleError(title, error) {
+      this.$emit('error', title, error);
+    },
+    updateMyHand(card) {
+      this.$emit('update-my-hand', card);
+    },
+    updateStockPileSize(size) {
+      this.$emit('update-stock-pile-size', size);
+    },
+    updateCurrentTurnActions(action) {
+      this.$emit('update-current-turn-actions', action);
     }
   }
 };

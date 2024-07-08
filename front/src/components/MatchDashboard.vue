@@ -10,11 +10,15 @@
         :signedInUserId="signedInUserId"
         :currentTurnUserId="currentTurnUserId"
         :loading="loading"
-        @stock-pile-click="handleStockPileClick"
-        @start-match="startMatch"
         :minPlayers="minPlayers"
         :maxPlayers="maxPlayers"
         :currentTurnActions="currentTurnActions"
+        @start-match="startMatch"
+        @update-loading="updateLoading"
+        @error="handleError"
+        @update-my-hand="updateMyHand"
+        @update-stock-pile-size="updateStockPileSize"
+        @update-current-turn-actions="updateCurrentTurnActions"
     />
   </div>
 </template>
@@ -22,7 +26,6 @@
 <script>
 import matchesService from '../services/matchesService';
 import roundsService from "../services/roundsService";
-import turnsService from "../services/turnsService";
 import { setErrorMessage, clearErrorMessage } from '../utils/errorHandler';
 import ErrorBox from './ErrorBox.vue';
 import LoadingIndicator from './LoadingIndicator.vue';
@@ -116,19 +119,6 @@ export default {
         this.currentTurnActions = data.actions || [];
       }
     },
-    async handleStockPileClick() {
-      if (this.isCurrentUserTurn && !this.loading && !this.hasDrawAction) {
-        await this.handleApiCall(
-            async () => {
-              const data = await turnsService.drawFromStockPile(this.turnId);
-              this.myHand.push(data);
-              this.match.stock_pile_size -= 1;
-              this.currentTurnActions.push({type: 'draw'});
-            },
-            'Failed to draw from stock pile!'
-        );
-      }
-    },
     async startMatch() {
       if (!this.loading) {
         await this.handleApiCall(
@@ -140,18 +130,25 @@ export default {
         );
       }
     },
+    updateLoading(loading) {
+      this.loading = loading;
+    },
+    handleError(title, error) {
+      setErrorMessage(this, title, error);
+    },
+    updateMyHand(card) {
+      this.myHand.push(card);
+    },
+    updateStockPileSize(size) {
+      this.match.stock_pile_size = size;
+    },
+    updateCurrentTurnActions(action) {
+      this.currentTurnActions.push(action);
+    },
     clearErrorBox() {
       clearErrorMessage(this);
     },
   },
-  computed: {
-    isCurrentUserTurn() {
-      return this.currentTurnUserId === this.signedInUserId;
-    },
-    hasDrawAction() {
-      return this.currentTurnActions.some(action => action.action_type === 'draw');
-    }
-  }
 };
 </script>
 

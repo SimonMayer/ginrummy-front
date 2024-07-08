@@ -17,6 +17,7 @@
 <script>
 import StockPile from './StockPile.vue';
 import MatchPlayerList from './MatchPlayerList.vue';
+import turnsService from "../services/turnsService";
 
 export default {
   name: 'MatchTable',
@@ -77,8 +78,20 @@ export default {
     }
   },
   methods: {
-    handleStockPileClick() {
-      this.$emit('stock-pile-click');
+    async handleStockPileClick() {
+      if (this.isCurrentUserTurn && !this.loading && !this.hasDrawAction) {
+        this.$emit('loading', true);
+        try {
+          const data = await turnsService.drawFromStockPile(this.match.current_round_id);
+          this.$emit('update-my-hand', data);
+          this.$emit('update-stock-pile-size', this.match.stock_pile_size - 1);
+          this.$emit('update-current-turn-actions', {type: 'draw'});
+        } catch (error) {
+          this.$emit('error', 'Failed to draw from stock pile!', error);
+        } finally {
+          this.$emit('loading', false);
+        }
+      }
     },
   },
 };
