@@ -1,7 +1,7 @@
 <template>
   <div class="match-table">
     <StockPile
-        v-if="match.stock_pile_size !== undefined"
+        v-if="match && match.stock_pile_size !== undefined"
         :size="match.stock_pile_size"
         @click="handleStockPileClick"
         :disabled="stockPileDisabled"
@@ -18,6 +18,8 @@
 import StockPile from './StockPile.vue';
 import MatchPlayerList from './MatchPlayerList.vue';
 import turnsService from "../services/turnsService";
+import matchesService from '../services/matchesService';
+import roundsService from "@/services/roundsService";
 
 export default {
   name: 'MatchTable',
@@ -26,8 +28,8 @@ export default {
     MatchPlayerList,
   },
   props: {
-    match: {
-      type: Object,
+    matchId: {
+      type: Number,
       required: true,
     },
     players: {
@@ -55,6 +57,15 @@ export default {
       required: true,
     }
   },
+  data() {
+    return {
+      match: null,
+    };
+  },
+  async created() {
+    await this.loadMatchDetails();
+    await this.loadHandsForPlayers();
+  },
   computed: {
     processedPlayers() {
       return this.players.map(player => {
@@ -78,6 +89,23 @@ export default {
     }
   },
   methods: {
+    async loadMatchDetails() {
+      try {
+        this.match = await matchesService.getMatchDetails(this.matchId);
+      } catch (error) {
+        this.$emit('error', 'Failed to fetch match details!', error);
+      }
+    },
+    async loadHandsForPlayers() {
+      if (this.match.current_round_id) {
+        const data = await roundsService.getHandsForPlayers(this.match.current_round_id);
+        const hands = data.hands;
+        this.players.forEach(player => {
+          player.handSize = hands[player.user_id]?.size || 0;
+        });
+        this.match.stock_pile_size = data.stock_pile_size || 0;
+      }
+    },
     async handleStockPileClick() {
       if (this.isCurrentUserTurn && !this.loading && !this.hasDrawAction) {
         this.$emit('loading', true);

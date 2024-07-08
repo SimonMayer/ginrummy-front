@@ -5,6 +5,7 @@
     <LoadingIndicator :visible="loading" />
     <MatchContent
         :match="match"
+        :matchId="matchId"
         :players="players"
         :myHand="myHand"
         :signedInUserId="signedInUserId"
@@ -40,7 +41,7 @@ export default {
   },
   data() {
     return {
-      matchId: this.$route.params.id,
+      matchId: parseInt(this.$route.params.id, 10),
       match: {
         create_time: '',
         created_by: null,
@@ -91,6 +92,7 @@ export default {
     },
     async loadMatchDetails() {
       this.match = await matchesService.getMatchDetails(this.matchId);
+      this.match.match_id = this.matchId; // Ensure match_id is set
     },
     async loadPlayers() {
       this.players = await matchesService.getPlayers(this.matchId);

@@ -1,7 +1,7 @@
 <template>
   <div>
     <MatchTable
-        :match="match"
+        :matchId="matchId"
         :players="players"
         :myHand="myHand"
         :signedInUserId="signedInUserId"
@@ -29,6 +29,10 @@ export default {
   props: {
     match: {
       type: Object,
+      required: true
+    },
+    matchId: {
+      type: Number,
       required: true
     },
     players: {
