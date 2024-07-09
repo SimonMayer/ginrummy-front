@@ -90,7 +90,6 @@ export default {
       if (this.match.current_round_id) {
         const data = await roundsService.getCurrentTurn(this.match.current_round_id);
         this.currentTurnUserId = data.user_id;
-        this.turnId = data.turn_id;
         this.currentTurnActions = data.actions || [];
       }
     },
