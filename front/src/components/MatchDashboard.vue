@@ -6,7 +6,6 @@
     <MatchContent
         :match="match"
         :matchId="matchId"
-        :players="players"
         :signedInUserId="signedInUserId"
         :loading="loading"
         :minPlayers="minPlayers"
@@ -42,7 +41,6 @@ export default {
         match_id: null,
         start_time: null,
       },
-      players: [],
       loading: true,
       errorTitle: '',
       errorMessage: '',
@@ -53,8 +51,7 @@ export default {
   },
   async created() {
     await this.loadData([
-      { method: this.loadMatchDetails, errorTitle: 'Failed to fetch match details!' },
-      { method: this.loadPlayers, errorTitle: 'Failed to fetch players!' }
+      { method: this.loadMatchDetails, errorTitle: 'Failed to fetch match details!' }
     ]);
   },
   methods: {
@@ -77,9 +74,6 @@ export default {
     async loadMatchDetails() {
       this.match = await matchesService.getMatchDetails(this.matchId);
       this.match.match_id = this.matchId; // Ensure match_id is set
-    },
-    async loadPlayers() {
-      this.players = await matchesService.getPlayers(this.matchId);
     },
     async startMatch() {
       if (!this.loading) {

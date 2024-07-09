@@ -14,6 +14,7 @@
 
 <script>
 import MatchTable from './MatchTable.vue';
+import matchesService from '../services/matchesService';
 
 export default {
   name: 'MatchContent',
@@ -27,10 +28,6 @@ export default {
     },
     matchId: {
       type: Number,
-      required: true
-    },
-    players: {
-      type: Array,
       required: true
     },
     signedInUserId: {
@@ -55,12 +52,30 @@ export default {
       return this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
     }
   },
+  data() {
+    return {
+      players: []
+    };
+  },
+  async created() {
+    await this.loadPlayers();
+  },
   methods: {
     updateLoading(loading) {
       this.$emit('update-loading', loading);
     },
     handleError(title, error) {
       this.$emit('error', title, error);
+    },
+    async loadPlayers() {
+      this.updateLoading(true);
+      try {
+        this.players = await matchesService.getPlayers(this.matchId);
+      } catch (error) {
+        this.handleError('Failed to fetch players!', error);
+      } finally {
+        this.updateLoading(false);
+      }
     }
   }
 };
