@@ -68,7 +68,6 @@ export default {
     await this.loadData([
       { method: this.loadMatchDetails, errorTitle: 'Failed to fetch match details!' },
       { method: this.loadPlayers, errorTitle: 'Failed to fetch players!' },
-      { method: this.loadHandsForPlayers, errorTitle: 'Failed to fetch hands!' },
       { method: this.loadMyHand, errorTitle: 'Failed to fetch your hand!' },
       { method: this.loadCurrentTurn, errorTitle: 'Failed to fetch current turn!' },
     ]);
@@ -96,16 +95,6 @@ export default {
     },
     async loadPlayers() {
       this.players = await matchesService.getPlayers(this.matchId);
-    },
-    async loadHandsForPlayers() {
-      if (this.match.current_round_id) {
-        const data = await roundsService.getHandsForPlayers(this.match.current_round_id);
-        const hands = data.hands;
-        this.players.forEach(player => {
-          player.handSize = hands[player.user_id]?.size || 0;
-        });
-        this.match.stock_pile_size = data.stock_pile_size || 0;
-      }
     },
     async loadMyHand() {
       if (this.match.current_round_id) {
