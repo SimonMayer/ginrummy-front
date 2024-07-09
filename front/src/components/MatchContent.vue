@@ -4,13 +4,10 @@
         :matchId="matchId"
         :players="players"
         :signedInUserId="signedInUserId"
-        :currentTurnUserId="currentTurnUserId"
         :loading="loading"
-        :currentTurnActions="currentTurnActions"
         @loading="updateLoading"
         @error="handleError"
         @update-stock-pile-size="updateStockPileSize"
-        @update-current-turn-actions="updateCurrentTurnActions"
     />
     <button v-if="canStartMatch" @click="$emit('start-match')">Start Match</button>
   </div>
@@ -41,10 +38,6 @@ export default {
       type: Number,
       required: true
     },
-    currentTurnUserId: {
-      type: [Number, null],
-      required: true
-    },
     loading: {
       type: Boolean,
       required: true
@@ -55,10 +48,6 @@ export default {
     },
     maxPlayers: {
       type: Number,
-      required: true
-    },
-    currentTurnActions: {
-      type: Array,
       required: true
     }
   },
@@ -76,9 +65,6 @@ export default {
     },
     updateStockPileSize(size) {
       this.$emit('update-stock-pile-size', size);
-    },
-    updateCurrentTurnActions(action) {
-      this.$emit('update-current-turn-actions', action);
     }
   }
 };

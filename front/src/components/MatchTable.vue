@@ -40,27 +40,22 @@ export default {
       type: Number,
       required: true,
     },
-    currentTurnUserId: {
-      type: [Number, null],
-      required: true,
-    },
     loading: {
       type: Boolean,
-      required: true,
-    },
-    currentTurnActions: {
-      type: Array,
       required: true,
     }
   },
   data() {
     return {
       match: null,
-      myHand: []
+      myHand: [],
+      currentTurnUserId: null,
+      currentTurnActions: []
     };
   },
   async created() {
     await this.loadMatchDetails();
+    await this.loadCurrentTurn();
     await this.loadMyHand();
     await this.loadHandsForPlayers();
   },
@@ -94,6 +89,14 @@ export default {
         this.$emit('error', 'Failed to fetch match details!', error);
       }
     },
+    async loadCurrentTurn() {
+      if (this.match.current_round_id) {
+        const data = await roundsService.getCurrentTurn(this.match.current_round_id);
+        this.currentTurnUserId = data.user_id;
+        this.turnId = data.turn_id;
+        this.currentTurnActions = data.actions || [];
+      }
+    },
     async loadMyHand() {
       if (this.match.current_round_id) {
         try {
@@ -121,7 +124,7 @@ export default {
           const data = await turnsService.drawFromStockPile(this.match.current_round_id);
           this.$emit('update-my-hand', data);
           this.$emit('update-stock-pile-size', this.match.stock_pile_size - 1);
-          this.$emit('update-current-turn-actions', {type: 'draw'});
+          this.currentTurnActions.push({type: 'draw'});
         } catch (error) {
           this.$emit('error', 'Failed to draw from stock pile!', error);
         } finally {

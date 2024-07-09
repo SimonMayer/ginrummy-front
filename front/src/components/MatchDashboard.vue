@@ -8,23 +8,19 @@
         :matchId="matchId"
         :players="players"
         :signedInUserId="signedInUserId"
-        :currentTurnUserId="currentTurnUserId"
         :loading="loading"
         :minPlayers="minPlayers"
         :maxPlayers="maxPlayers"
-        :currentTurnActions="currentTurnActions"
         @start-match="startMatch"
         @update-loading="updateLoading"
         @error="handleError"
         @update-stock-pile-size="updateStockPileSize"
-        @update-current-turn-actions="updateCurrentTurnActions"
     />
   </div>
 </template>
 
 <script>
 import matchesService from '../services/matchesService';
-import roundsService from "../services/roundsService";
 import { setErrorMessage, clearErrorMessage } from '../utils/errorHandler';
 import ErrorBox from './ErrorBox.vue';
 import LoadingIndicator from './LoadingIndicator.vue';
@@ -50,9 +46,6 @@ export default {
         stock_pile_size: 0,
       },
       players: [],
-      currentTurnUserId: null,
-      turnId: null,
-      currentTurnActions: [],
       loading: true,
       errorTitle: '',
       errorMessage: '',
@@ -64,8 +57,7 @@ export default {
   async created() {
     await this.loadData([
       { method: this.loadMatchDetails, errorTitle: 'Failed to fetch match details!' },
-      { method: this.loadPlayers, errorTitle: 'Failed to fetch players!' },
-      { method: this.loadCurrentTurn, errorTitle: 'Failed to fetch current turn!' },
+      { method: this.loadPlayers, errorTitle: 'Failed to fetch players!' }
     ]);
   },
   methods: {
@@ -92,14 +84,6 @@ export default {
     async loadPlayers() {
       this.players = await matchesService.getPlayers(this.matchId);
     },
-    async loadCurrentTurn() {
-      if (this.match.current_round_id) {
-        const data = await roundsService.getCurrentTurn(this.match.current_round_id);
-        this.currentTurnUserId = data.user_id;
-        this.turnId = data.turn_id;
-        this.currentTurnActions = data.actions || [];
-      }
-    },
     async startMatch() {
       if (!this.loading) {
         await this.handleApiCall(
@@ -119,9 +103,6 @@ export default {
     },
     updateStockPileSize(size) {
       this.match.stock_pile_size = size;
-    },
-    updateCurrentTurnActions(action) {
-      this.currentTurnActions.push(action);
     },
     clearErrorBox() {
       clearErrorMessage(this);
