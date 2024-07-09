@@ -118,7 +118,7 @@ export default {
       if (this.isCurrentUserTurn && !this.loading && !this.hasDrawAction) {
         this.$emit('loading', true);
         try {
-          const card = await turnsService.drawFromStockPile(this.turnId);
+          const card = await turnsService.drawFromStockPile(this.matchId);
           this.myHand.push(card)
           this.match.stock_pile_size = this.match.stock_pile_size - 1;
           this.currentTurnActions.push({action_type: 'draw'});
