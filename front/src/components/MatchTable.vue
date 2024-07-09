@@ -54,10 +54,7 @@ export default {
     };
   },
   async created() {
-    await this.loadMatchDetails();
-    await this.loadCurrentTurn();
-    await this.loadMyHand();
-    await this.loadHandsForPlayers();
+    await this.loadAllData();
   },
   computed: {
     processedPlayers() {
@@ -132,6 +129,12 @@ export default {
         }
       }
     },
+    async loadAllData() {
+      await this.loadMatchDetails();
+      await this.loadCurrentTurn();
+      await this.loadMyHand();
+      await this.loadHandsForPlayers();
+    }
   },
 };
 </script>

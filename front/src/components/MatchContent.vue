@@ -1,6 +1,7 @@
 <template>
   <div>
     <MatchTable
+        ref="matchTable"
         :matchId="matchId"
         :players="players"
         :signedInUserId="signedInUserId"
@@ -8,7 +9,7 @@
         @loading="updateLoading"
         @error="handleError"
     />
-    <button v-if="canStartMatch" @click="$emit('start-match')">Start Match</button>
+    <button v-if="canStartMatch" @click="startMatch">Start Match</button>
   </div>
 </template>
 
@@ -69,6 +70,20 @@ export default {
         this.handleError('Failed to fetch players!', error);
       } finally {
         this.updateLoading(false);
+      }
+    },
+    async startMatch() {
+      if (!this.loading) {
+        this.updateLoading(true);
+        try {
+          await matchesService.startMatch(this.matchId);
+          await this.$refs.matchTable.loadAllData();
+          this.$emit('match-started');
+        } catch (error) {
+          this.handleError('Failed to start match!', error);
+        } finally {
+          this.updateLoading(false);
+        }
       }
     }
   }

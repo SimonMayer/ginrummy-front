@@ -8,9 +8,9 @@
         :matchId="matchId"
         :signedInUserId="signedInUserId"
         :loading="loading"
-        @start-match="startMatch"
         @update-loading="updateLoading"
         @error="handleError"
+        @match-started="loadMatchDetails"
     />
   </div>
 </template>
@@ -70,17 +70,6 @@ export default {
     async loadMatchDetails() {
       this.match = await matchesService.getMatchDetails(this.matchId);
       this.match.match_id = this.matchId; // Ensure match_id is set
-    },
-    async startMatch() {
-      if (!this.loading) {
-        await this.handleApiCall(
-            async () => {
-              await matchesService.startMatch(this.matchId);
-              await this.loadMatchDetails();
-            },
-            'Failed to start match!'
-        );
-      }
     },
     updateLoading(loading) {
       this.loading = loading;
