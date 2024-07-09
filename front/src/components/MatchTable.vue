@@ -36,10 +36,6 @@ export default {
       type: Array,
       required: true,
     },
-    myHand: {
-      type: Array,
-      required: true,
-    },
     signedInUserId: {
       type: Number,
       required: true,
@@ -60,10 +56,12 @@ export default {
   data() {
     return {
       match: null,
+      myHand: []
     };
   },
   async created() {
     await this.loadMatchDetails();
+    await this.loadMyHand();
     await this.loadHandsForPlayers();
   },
   computed: {
@@ -94,6 +92,16 @@ export default {
         this.match = await matchesService.getMatchDetails(this.matchId);
       } catch (error) {
         this.$emit('error', 'Failed to fetch match details!', error);
+      }
+    },
+    async loadMyHand() {
+      if (this.match.current_round_id) {
+        try {
+          const data = await roundsService.getMyHand(this.match.current_round_id);
+          this.myHand = data.cards;
+        } catch (error) {
+          this.$emit('error', 'Failed to fetch your hand!', error);
+        }
       }
     },
     async loadHandsForPlayers() {

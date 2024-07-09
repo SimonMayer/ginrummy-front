@@ -7,7 +7,6 @@
         :match="match"
         :matchId="matchId"
         :players="players"
-        :myHand="myHand"
         :signedInUserId="signedInUserId"
         :currentTurnUserId="currentTurnUserId"
         :loading="loading"
@@ -17,7 +16,6 @@
         @start-match="startMatch"
         @update-loading="updateLoading"
         @error="handleError"
-        @update-my-hand="updateMyHand"
         @update-stock-pile-size="updateStockPileSize"
         @update-current-turn-actions="updateCurrentTurnActions"
     />
@@ -52,7 +50,6 @@ export default {
         stock_pile_size: 0,
       },
       players: [],
-      myHand: [],
       currentTurnUserId: null,
       turnId: null,
       currentTurnActions: [],
@@ -68,7 +65,6 @@ export default {
     await this.loadData([
       { method: this.loadMatchDetails, errorTitle: 'Failed to fetch match details!' },
       { method: this.loadPlayers, errorTitle: 'Failed to fetch players!' },
-      { method: this.loadMyHand, errorTitle: 'Failed to fetch your hand!' },
       { method: this.loadCurrentTurn, errorTitle: 'Failed to fetch current turn!' },
     ]);
   },
@@ -96,12 +92,6 @@ export default {
     async loadPlayers() {
       this.players = await matchesService.getPlayers(this.matchId);
     },
-    async loadMyHand() {
-      if (this.match.current_round_id) {
-        const data = await roundsService.getMyHand(this.match.current_round_id);
-        this.myHand = data.cards;
-      }
-    },
     async loadCurrentTurn() {
       if (this.match.current_round_id) {
         const data = await roundsService.getCurrentTurn(this.match.current_round_id);
@@ -126,9 +116,6 @@ export default {
     },
     handleError(title, error) {
       setErrorMessage(this, title, error);
-    },
-    updateMyHand(card) {
-      this.myHand.push(card);
     },
     updateStockPileSize(size) {
       this.match.stock_pile_size = size;

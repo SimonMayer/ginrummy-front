@@ -3,14 +3,12 @@
     <MatchTable
         :matchId="matchId"
         :players="players"
-        :myHand="myHand"
         :signedInUserId="signedInUserId"
         :currentTurnUserId="currentTurnUserId"
         :loading="loading"
         :currentTurnActions="currentTurnActions"
         @loading="updateLoading"
         @error="handleError"
-        @update-my-hand="updateMyHand"
         @update-stock-pile-size="updateStockPileSize"
         @update-current-turn-actions="updateCurrentTurnActions"
     />
@@ -36,10 +34,6 @@ export default {
       required: true
     },
     players: {
-      type: Array,
-      required: true
-    },
-    myHand: {
       type: Array,
       required: true
     },
@@ -79,9 +73,6 @@ export default {
     },
     handleError(title, error) {
       this.$emit('error', title, error);
-    },
-    updateMyHand(card) {
-      this.$emit('update-my-hand', card);
     },
     updateStockPileSize(size) {
       this.$emit('update-stock-pile-size', size);
