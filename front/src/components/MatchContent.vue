@@ -7,7 +7,6 @@
         :loading="loading"
         @loading="updateLoading"
         @error="handleError"
-        @update-stock-pile-size="updateStockPileSize"
     />
     <button v-if="canStartMatch" @click="$emit('start-match')">Start Match</button>
   </div>
@@ -62,9 +61,6 @@ export default {
     },
     handleError(title, error) {
       this.$emit('error', title, error);
-    },
-    updateStockPileSize(size) {
-      this.$emit('update-stock-pile-size', size);
     }
   }
 };

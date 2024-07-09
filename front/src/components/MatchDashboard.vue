@@ -14,7 +14,6 @@
         @start-match="startMatch"
         @update-loading="updateLoading"
         @error="handleError"
-        @update-stock-pile-size="updateStockPileSize"
     />
   </div>
 </template>
@@ -39,11 +38,9 @@ export default {
       match: {
         create_time: '',
         created_by: null,
-        current_round_id: null,
         end_time: null,
         match_id: null,
         start_time: null,
-        stock_pile_size: 0,
       },
       players: [],
       loading: true,
@@ -100,9 +97,6 @@ export default {
     },
     handleError(title, error) {
       setErrorMessage(this, title, error);
-    },
-    updateStockPileSize(size) {
-      this.match.stock_pile_size = size;
     },
     clearErrorBox() {
       clearErrorMessage(this);

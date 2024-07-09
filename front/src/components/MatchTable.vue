@@ -121,10 +121,10 @@ export default {
       if (this.isCurrentUserTurn && !this.loading && !this.hasDrawAction) {
         this.$emit('loading', true);
         try {
-          const data = await turnsService.drawFromStockPile(this.match.current_round_id);
-          this.$emit('update-my-hand', data);
-          this.$emit('update-stock-pile-size', this.match.stock_pile_size - 1);
-          this.currentTurnActions.push({type: 'draw'});
+          const card = await turnsService.drawFromStockPile(this.turnId);
+          this.myHand.push(card)
+          this.match.stock_pile_size = this.match.stock_pile_size - 1;
+          this.currentTurnActions.push({action_type: 'draw'});
         } catch (error) {
           this.$emit('error', 'Failed to draw from stock pile!', error);
         } finally {
