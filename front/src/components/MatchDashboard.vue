@@ -8,8 +8,6 @@
         :matchId="matchId"
         :signedInUserId="signedInUserId"
         :loading="loading"
-        :minPlayers="minPlayers"
-        :maxPlayers="maxPlayers"
         @start-match="startMatch"
         @update-loading="updateLoading"
         @error="handleError"
@@ -45,8 +43,6 @@ export default {
       errorTitle: '',
       errorMessage: '',
       signedInUserId: parseInt(localStorage.getItem('user_id'), 10),
-      minPlayers: 2,
-      maxPlayers: 4,
     };
   },
   async created() {

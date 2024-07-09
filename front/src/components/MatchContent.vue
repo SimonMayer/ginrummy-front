@@ -37,14 +37,6 @@ export default {
     loading: {
       type: Boolean,
       required: true
-    },
-    minPlayers: {
-      type: Number,
-      required: true
-    },
-    maxPlayers: {
-      type: Number,
-      required: true
     }
   },
   computed: {
@@ -54,6 +46,8 @@ export default {
   },
   data() {
     return {
+      minPlayers: 2,
+      maxPlayers: 4,
       players: []
     };
   },
