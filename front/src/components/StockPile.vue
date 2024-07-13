@@ -2,7 +2,10 @@
   <div class="stock-pile-container">
     <div class="stock-pile" :class="{ disabled: disabled, empty: isEmpty }" @click="handleClick">
       <HiddenCard v-for="n in size" :key="n" class="stock-card-item" />
-      <div v-if="isEmpty" class="empty-placeholder"><div class="icon">↻</div>Rebuild from discards</div>
+      <div v-if="isEmpty" class="empty-placeholder">
+        <div class="icon">↻</div>
+        <div>Rebuild from discards</div>
+      </div>
     </div>
   </div>
 </template>
@@ -99,12 +102,16 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   width: var(--card-width);
   height: var(--card-height);
   background-color: rgba(var(--secondary-color-rgb), 0.8);
-  border: 2px dashed var(--disabled-color);
+  border: calc(var(--card-border-width) * 5) dashed var(--disabled-color);
   border-radius: var(--card-border-radius);
   font-size: calc(var(--card-base-size) * 18);
   color: var(--disabled-color);
+}
+.empty-placeholder div {
+  margin: var(--base-margin);
 }
 </style>

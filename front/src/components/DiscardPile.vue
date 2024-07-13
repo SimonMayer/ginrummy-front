@@ -8,6 +8,9 @@
         :clickable="isTopCard(index)"
         @card-clicked="handleClick(index)"
     />
+    <div v-if="isEmpty" class="empty-placeholder">
+      <div>Discarded cards will appear here</div>
+    </div>
   </div>
 </template>
 
@@ -32,6 +35,11 @@ export default {
         ));
       },
     },
+  },
+  computed: {
+    isEmpty() {
+      return this.visibleCards.length === 0;
+    }
   },
   methods: {
     isTopCard(index) {
@@ -84,4 +92,20 @@ export default {
   transform: rotate(-0.3deg);
 }
 
+.empty-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--card-width);
+  height: var(--card-height);
+  background-color: rgba(var(--secondary-color-rgb), 0.8);
+  border: calc(var(--card-border-width) * 5) dashed var(--disabled-color);
+  border-radius: var(--card-border-radius);
+  font-size: calc(var(--card-base-size) * 18);
+  color: var(--disabled-color);
+}
+
+.empty-placeholder div {
+  margin: var(--base-margin);
+}
 </style>
