@@ -1,5 +1,5 @@
 <template>
-  <div class="match-details">
+  <div class="match-dashboard">
     <ErrorBox v-if="errorTitle" :title="errorTitle" :message="errorMessage" @close="clearErrorBox" />
     <h1>Match ID: {{ matchId }}</h1>
     <LoadingIndicator :visible="loading" />
@@ -85,9 +85,10 @@ export default {
 </script>
 
 <style scoped>
-.match-details {
+.match-dashboard {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 </style>

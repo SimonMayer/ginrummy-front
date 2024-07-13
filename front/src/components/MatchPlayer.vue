@@ -63,6 +63,8 @@ export default {
 </script>
 
 <style scoped>
+@import '../assets/cardVariables.css';
+
 .player-item {
   background-color: rgba(var(--secondary-color-rgb), 0.2);
   color: var(--text-color);
@@ -98,6 +100,6 @@ export default {
 }
 
 .card-item:not(:first-child) {
-  margin-left: -80px;
+  margin-left: calc(var(--card-width) * -0.8);
 }
 </style>

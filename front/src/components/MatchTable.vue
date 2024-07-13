@@ -1,16 +1,18 @@
 <template>
   <div class="match-table">
-    <StockPile
-        v-if="match && match.stock_pile_size !== undefined"
-        :size="match.stock_pile_size"
-        @click="handleStockPileClick"
-        :disabled="stockPileDisabled"
-    />
-    <DiscardPile
-        v-if="match && match.discard_pile"
-        :visibleCards="match.discard_pile"
-        @top-card-clicked="handleDiscardPileClick"
-    />
+    <div class="pile-container">
+      <StockPile
+          v-if="match && match.stock_pile_size !== undefined"
+          :size="match.stock_pile_size"
+          @click="handleStockPileClick"
+          :disabled="stockPileDisabled"
+      />
+      <DiscardPile
+          v-if="match && match.discard_pile"
+          :visibleCards="match.discard_pile"
+          @top-card-clicked="handleDiscardPileClick"
+      />
+    </div>
     <button @click="handleDiscardClick" :disabled="isDiscardButtonDisabled()">
       Discard
     </button>
@@ -251,8 +253,15 @@ export default {
 .match-table {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   padding: var(--base-padding);
+  gap: var(--base-margin);
+}
+
+.pile-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: var(--base-margin);
 }
 </style>

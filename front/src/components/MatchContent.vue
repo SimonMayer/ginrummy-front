@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="match-content">
     <MatchTable
         ref="matchTable"
         :matchId="matchId"
@@ -89,3 +89,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.match-content {
+  width: 100%;
+}
+</style>
