@@ -16,19 +16,25 @@
     <button @click="handleDiscardClick" :disabled="isDiscardButtonDisabled()">
       Discard
     </button>
-    <MatchPlayerList
-        ref="playerList"
-        :players="processedPlayers"
-        :signedInUserId="signedInUserId"
-        :currentTurnUserId="currentTurnUserId"
-    />
+    <ul class="players-list">
+      <MatchPlayer
+          v-for="player in processedPlayers"
+          :key="player.user_id"
+          :ref="'player-' + player.user_id"
+          :username="player.username"
+          :hand="player.hand"
+          :hiddenCardCount="player.hiddenCardCount"
+          :highlightPlayer="player.highlightPlayer"
+          :selectable="player.selectable"
+      />
+    </ul>
   </div>
 </template>
 
 <script>
 import StockPile from './StockPile.vue';
 import DiscardPile from './DiscardPile.vue';
-import MatchPlayerList from './MatchPlayerList.vue';
+import MatchPlayer from './MatchPlayer.vue';
 import turnsService from '../services/turnsService';
 import matchesService from '../services/matchesService';
 import roundsService from '@/services/roundsService';
@@ -39,7 +45,7 @@ export default {
   components: {
     StockPile,
     DiscardPile,
-    MatchPlayerList,
+    MatchPlayer,
   },
   props: {
     matchId: {
@@ -101,12 +107,9 @@ export default {
       return this.getSelectedCardCount() === 1;
     },
     isDiscardButtonDisabled() {
-      const playerList = this.$refs.playerList;
-      if (playerList) {
-        const signedInPlayer = playerList.$refs['player-' + this.signedInUserId];
-        if (signedInPlayer) {
-          signedInPlayer[0].hand; // causes a refresh — otherwise button seems to remain enabled
-        }
+      const signedInPlayer = this.$refs['player-' + this.signedInUserId];
+      if (signedInPlayer) {
+        signedInPlayer[0].hand; // causes a refresh — otherwise button seems to remain enabled
       }
 
       return !this.isCurrentUserTurn || this.loading || !this.hasDrawAction || !this.hasOneSelectedCard();
@@ -117,12 +120,7 @@ export default {
       }
     },
     getSelectedCards() {
-      const playerList = this.$refs.playerList;
-      if (!playerList) {
-        return [];
-      }
-
-      const signedInPlayer = playerList.$refs['player-' + this.signedInUserId];
+      const signedInPlayer = this.$refs['player-' + this.signedInUserId];
       if (!signedInPlayer) {
         return [];
       }
@@ -263,5 +261,14 @@ export default {
   flex-direction: row;
   align-items: center;
   gap: var(--base-margin);
+}
+
+.players-list {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 </style>
