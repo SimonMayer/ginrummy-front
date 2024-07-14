@@ -16,11 +16,11 @@
 </template>
 
 <script>
-import matchesService from '../services/matchesService';
-import { setErrorMessage, clearErrorMessage } from '../utils/errorHandler';
-import ErrorBox from './ErrorBox.vue';
-import LoadingIndicator from './LoadingIndicator.vue';
-import MatchContent from './MatchContent.vue';
+import matchesService from '@/services/matchesService';
+import { setErrorMessage, clearErrorMessage } from '@/utils/errorHandler';
+import ErrorBox from '@/components/ErrorBox.vue';
+import LoadingIndicator from '@/components/LoadingIndicator.vue';
+import MatchContent from '@/components/MatchContent.vue';
 
 export default {
   name: 'MatchDashboard',

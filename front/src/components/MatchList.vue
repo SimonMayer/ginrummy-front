@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import apiClient from '../api/axios';
-import { formatDateTime } from '../utils/dateFormatter';
+import apiClient from '@/api/axios';
+import { formatDateTime } from '@/utils/dateFormatter';
 
 export default {
   name: 'MatchList',

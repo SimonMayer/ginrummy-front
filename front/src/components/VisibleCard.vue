@@ -14,10 +14,10 @@
 </template>
 
 <script>
-import CardCorner from './CardCorner.vue';
-import CardPattern from './CardPattern.vue';
-import {getSuitEmoji, getDisplayRank, getSuitRepeat} from '../utils/cardUtils';
-import cardsService from "../services/cardsService";
+import CardCorner from '@/components/CardCorner.vue';
+import CardPattern from '@/components/CardPattern.vue';
+import {getSuitEmoji, getDisplayRank, getSuitRepeat} from '@/utils/cardUtils';
+import cardsService from '@/services/cardsService';
 
 export default {
   name: 'VisibleCard',
@@ -105,8 +105,8 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/cardVariables.css';
-@import '../assets/cardStyles.css';
+@import '@/assets/cardVariables.css';
+@import '@/assets/cardStyles.css';
 
 .card-content {
   position: relative;

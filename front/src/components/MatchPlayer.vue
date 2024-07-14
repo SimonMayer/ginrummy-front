@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import HiddenCard from './HiddenCard.vue';
-import VisibleCard from './VisibleCard.vue';
+import HiddenCard from '@/components/HiddenCard.vue';
+import VisibleCard from '@/components/VisibleCard.vue';
 
 export default {
   name: 'MatchPlayer',
@@ -63,7 +63,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/cardVariables.css';
+@import '@/assets/cardVariables.css';
 
 .player-item {
   background-color: rgba(var(--secondary-color-rgb), 0.2);

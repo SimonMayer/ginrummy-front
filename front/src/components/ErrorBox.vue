@@ -31,8 +31,8 @@ export default {
   margin: 10px 0 40px;
   min-width: 400px;
   padding: 2px;
-
 }
+
 .error-box {
   border: 1px solid var(--error-accent-color);
   color: var(--text-color);
@@ -52,6 +52,7 @@ export default {
   min-height: 20px;
   padding: 10px;
 }
+
 .close-button {
   border-radius: 5px;
   position: absolute;
@@ -86,9 +87,11 @@ export default {
 .close-button::after {
   transform: translate(-50%, -50%) rotate(-45deg);
 }
+
 .close-button:hover {
   background-color: var(--error-accent-color);
 }
+
 .close-button:active {
   background-color: var(--button-active-color);
 }

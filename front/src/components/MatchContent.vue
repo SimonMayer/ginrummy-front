@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import MatchTable from './MatchTable.vue';
-import matchesService from '../services/matchesService';
+import MatchTable from '@/components/MatchTable.vue';
+import matchesService from '@/services/matchesService';
 
 export default {
   name: 'MatchContent',

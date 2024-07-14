@@ -6,10 +6,10 @@
           :key="player.user_id"
           :ref="'player-' + player.user_id"
           :username="player.username"
-          :hand=[]
+          :hand="[]"
           :hiddenCardCount="player.hiddenCardCount"
           :highlightPlayer="player.highlightPlayer"
-          :selectable=false
+          :selectable="false"
       />
     </ul>
     <div class="pile-container">
@@ -44,13 +44,13 @@
 </template>
 
 <script>
-import StockPile from './StockPile.vue';
-import DiscardPile from './DiscardPile.vue';
-import MatchPlayer from './MatchPlayer.vue';
-import turnsService from '../services/turnsService';
-import matchesService from '../services/matchesService';
+import StockPile from '@/components/StockPile.vue';
+import DiscardPile from '@/components/DiscardPile.vue';
+import MatchPlayer from '@/components/MatchPlayer.vue';
+import turnsService from '@/services/turnsService';
+import matchesService from '@/services/matchesService';
 import roundsService from '@/services/roundsService';
-import SSEService from '../services/sseService';
+import SSEService from '@/services/sseService';
 
 export default {
   name: 'MatchTable',

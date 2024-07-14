@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import VisibleCard from './VisibleCard.vue';
+import VisibleCard from '@/components/VisibleCard.vue';
 
 export default {
   name: 'DiscardPile',
@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/cardVariables.css';
+@import '@/assets/cardVariables.css';
 
 .discard-pile {
   display: flex;
@@ -69,7 +69,7 @@ export default {
 }
 
 .card:not(:first-child) {
-  margin-left: calc(var(--card-width) * -0.85);;
+  margin-left: calc(var(--card-width) * -0.85);
 }
 
 .card:first-child {

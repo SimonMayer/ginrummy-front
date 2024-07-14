@@ -8,9 +8,10 @@
 <script>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import NavigationMenu from './components/NavigationMenu.vue';
+import NavigationMenu from '@/components/NavigationMenu.vue';
 
 export default {
+  name: 'App',
   components: {
     NavigationMenu
   },
@@ -47,8 +48,8 @@ export default {
 </script>
 
 <style>
-@import 'assets/globalVariables.css';
-@import 'assets/globalStyles.css';
+@import '@/assets/globalVariables.css';
+@import '@/assets/globalStyles.css';
 </style>
 
 <style scoped>

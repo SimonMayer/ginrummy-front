@@ -4,37 +4,37 @@
 
 <script>
 export default {
-  name: 'HiddenCard'
+  name: 'HiddenCard',
 };
 </script>
 
 <style scoped>
-@import '../assets/cardVariables.css';
-@import '../assets/cardStyles.css';
+@import '@/assets/cardVariables.css';
+@import '@/assets/cardStyles.css';
 
 .hidden-card {
   background-color: var(--card-back-1st-color);
   background-image: linear-gradient(
-      var(--card-back-1st-color) 1px,
-      transparent 5px,
+      var(--card-back-1st-color) calc(var(--card-height) / 150),
+      transparent calc(var(--card-height) / 30),
       transparent 100%
   ),
   linear-gradient(
       to left,
-      var(--card-back-1st-color) 1px,
-      transparent 5px,
+      var(--card-back-1st-color) calc(var(--card-width) / 100),
+      transparent calc(var(--card-width) / 20),
       transparent 100%
   ),
   linear-gradient(
       to top,
-      var(--card-back-1st-color) 1px,
-      transparent 5px,
+      var(--card-back-1st-color) calc(var(--card-height) / 150),
+      transparent calc(var(--card-height) / 30),
       transparent 100%
   ),
   linear-gradient(
       to right,
-      var(--card-back-1st-color) 1px,
-      transparent 5px,
+      var(--card-back-1st-color) calc(var(--card-width) / 100),
+      transparent calc(var(--card-width) / 20),
       transparent 100%
   ),
   linear-gradient(

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import HiddenCard from './HiddenCard.vue';
+import HiddenCard from '@/components/HiddenCard.vue';
 
 export default {
   name: 'StockPile',
@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/cardVariables.css';
+@import '@/assets/cardVariables.css';
 
 .stock-pile-container {
   display: flex;
@@ -111,6 +111,7 @@ export default {
   font-size: calc(var(--card-base-size) * 18);
   color: var(--disabled-color);
 }
+
 .empty-placeholder div {
   margin: var(--base-margin);
 }
