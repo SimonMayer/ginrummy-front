@@ -1,5 +1,17 @@
 <template>
   <div class="match-table">
+    <ul class="players-list">
+      <MatchPlayer
+          v-for="player in nonSelfPlayers"
+          :key="player.user_id"
+          :ref="'player-' + player.user_id"
+          :username="player.username"
+          :hand=[]
+          :hiddenCardCount="player.hiddenCardCount"
+          :highlightPlayer="player.highlightPlayer"
+          :selectable=false
+      />
+    </ul>
     <div class="pile-container">
       <StockPile
           v-if="match && match.stock_pile_size !== undefined"
@@ -18,14 +30,14 @@
     </button>
     <ul class="players-list">
       <MatchPlayer
-          v-for="player in processedPlayers"
-          :key="player.user_id"
-          :ref="'player-' + player.user_id"
-          :username="player.username"
-          :hand="player.hand"
-          :hiddenCardCount="player.hiddenCardCount"
-          :highlightPlayer="player.highlightPlayer"
-          :selectable="player.selectable"
+          v-if="selfPlayer"
+          :key="selfPlayer.user_id"
+          :ref="'player-self'"
+          :username="selfPlayer.username"
+          :hand="myHand"
+          :hiddenCardCount="0"
+          :highlightPlayer="selfPlayer.highlightPlayer"
+          :selectable="isCurrentUserTurn"
       />
     </ul>
   </div>
@@ -83,14 +95,29 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    processedPlayers() {
-      return this.players.map(player => ({
-        ...player,
-        hand: player.user_id === this.signedInUserId ? this.myHand : [],
-        hiddenCardCount: player.user_id !== this.signedInUserId ? player.handSize : 0,
-        highlightPlayer: player.user_id === this.currentTurnUserId,
-        selectable: this.isCurrentUserTurn,
-      }));
+    selfPlayer() {
+      const player = this.players.find(player => player.user_id === this.signedInUserId);
+      if (player) {
+        return {
+          ...player,
+          highlightPlayer: player.user_id === this.currentTurnUserId,
+        };
+      }
+      return null;
+    },
+    nonSelfPlayers() {
+      const selfIndex = this.players.findIndex(player => player.user_id === this.signedInUserId);
+      if (selfIndex === -1) {
+        // If self player is not found, return the original array processed as usual
+        return this.players.map(this.transformPlayer);
+      }
+
+      const beforeSelf = this.players.slice(0, selfIndex);
+      const afterSelf = this.players.slice(selfIndex + 1);
+
+      const reorderedPlayers = [...afterSelf, ...beforeSelf];
+
+      return reorderedPlayers.map(this.transformPlayer);
     },
     isCurrentUserTurn() {
       return this.currentTurnUserId === this.signedInUserId;
@@ -107,9 +134,9 @@ export default {
       return this.getSelectedCardCount() === 1;
     },
     isDiscardButtonDisabled() {
-      const signedInPlayer = this.$refs['player-' + this.signedInUserId];
+      const signedInPlayer = this.$refs['player-self'];
       if (signedInPlayer) {
-        signedInPlayer[0].hand; // causes a refresh — otherwise button seems to remain enabled
+        signedInPlayer.hand; // causes a refresh — otherwise button seems to remain enabled
       }
 
       return !this.isCurrentUserTurn || this.loading || !this.hasDrawAction || !this.hasOneSelectedCard();
@@ -119,13 +146,20 @@ export default {
         this.sseService.disconnect();
       }
     },
+    transformPlayer(player) {
+      return {
+        ...player,
+        hiddenCardCount: player.handSize,
+        highlightPlayer: player.user_id === this.currentTurnUserId,
+      };
+    },
     getSelectedCards() {
-      const signedInPlayer = this.$refs['player-' + this.signedInUserId];
+      const signedInPlayer = this.$refs['player-self'];
       if (!signedInPlayer) {
         return [];
       }
 
-      return signedInPlayer[0].getSelectedCards();
+      return signedInPlayer.getSelectedCards();
     },
     getSelectedCardCount() {
       return this.getSelectedCards().length;
