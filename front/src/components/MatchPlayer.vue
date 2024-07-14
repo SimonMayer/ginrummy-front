@@ -1,21 +1,21 @@
 <template>
-  <li :class="['player-item', { 'highlighted': highlightPlayer }]">
+  <div :class="['player-item', { 'highlighted': highlightPlayer }]">
     {{ username }}
-    <ul class="hand" v-if="hiddenCardCount">
-      <li v-for="n in hiddenCardCount" :key="n" class="card-item">
+    <div class="hand" v-if="hiddenCardCount">
+      <div v-for="n in hiddenCardCount" :key="n" class="card-item">
         <HiddenCard />
-      </li>
-    </ul>
-    <ul class="hand" v-if="hand.length">
-      <li
+      </div>
+    </div>
+    <div class="hand" v-if="hand.length">
+      <div
           v-for="card in hand"
           :key="card.card_id"
           :class="['card-item', { selectable: selectable }]"
       >
         <VisibleCard ref="visibleCards" :cardProp="card" :selectable="selectable" />
-      </li>
-    </ul>
-  </li>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -84,7 +84,6 @@ export default {
     flex-direction: row;
     padding: 0;
     margin: var(--base-margin) 0 0 0;
-    list-style-type: none;
 
     .card-item {
       transition: transform 0.3s ease;

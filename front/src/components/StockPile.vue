@@ -52,7 +52,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: var(--base-margin);
+  margin: var(--base-margin);
 }
 
 .stock-pile {

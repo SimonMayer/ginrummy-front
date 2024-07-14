@@ -1,6 +1,6 @@
 <template>
   <div class="match-table">
-    <ul class="players-list">
+    <div class="non-self-players-container">
       <MatchPlayer
           v-for="player in nonSelfPlayers"
           :key="player.user_id"
@@ -10,8 +10,9 @@
           :hiddenCardCount="player.hiddenCardCount"
           :highlightPlayer="player.highlightPlayer"
           :selectable="false"
+          class="non-self-player"
       />
-    </ul>
+    </div>
     <div class="pile-container">
       <StockPile
           v-if="match && match.stock_pile_size !== undefined"
@@ -25,10 +26,12 @@
           @top-card-clicked="handleDiscardPileClick"
       />
     </div>
-    <button @click="handleDiscardClick" :disabled="isDiscardButtonDisabled()">
-      Discard
-    </button>
-    <ul class="players-list">
+    <div class="buttons-container">
+      <button @click="handleDiscardClick" :disabled="isDiscardButtonDisabled()">
+        Discard
+      </button>
+    </div>
+    <div class="self-player-container">
       <MatchPlayer
           v-if="selfPlayer"
           :key="selfPlayer.user_id"
@@ -38,8 +41,9 @@
           :hiddenCardCount="0"
           :highlightPlayer="selfPlayer.highlightPlayer"
           :selectable="isCurrentUserTurn"
+          class="self-player"
       />
-    </ul>
+    </div>
   </div>
 </template>
 
@@ -298,13 +302,23 @@ export default {
     gap: var(--base-margin);
   }
 
-  .players-list {
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
+  .buttons-container {
     display: flex;
-    flex-wrap: wrap;
+    gap: var(--base-margin);
+    justify-content: center;
+    width: 100%;
+  }
+
+  .non-self-players-container {
+    display: flex;
     justify-content: space-between;
+    width: 100%;
+  }
+
+  .self-player-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
 }
 </style>
