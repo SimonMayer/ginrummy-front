@@ -48,8 +48,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/assets/globalVariables.css';
-@import '@/assets/globalStyles.css';
+@import '@/assets/globalVariables';
+@import '@/assets/globalStyles';
 </style>
 
 <style lang="scss" scoped>
@@ -68,7 +68,7 @@ export default {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--base-padding);
   box-sizing: border-box;
 }
 </style>

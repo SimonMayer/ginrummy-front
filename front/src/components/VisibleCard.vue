@@ -128,19 +128,19 @@ export default {
     transform: rotate(180deg);
   }
 
-  .spades {
+  &.spades {
     color: var(--card-suit-spades-color);
   }
 
-  .hearts {
+  &.hearts {
     color: var(--card-suit-hearts-color);
   }
 
-  .clubs {
+  &.clubs {
     color: var(--card-suit-clubs-color);
   }
 
-  .diamonds {
+  &.diamonds {
     color: var(--card-suit-diamonds-color);
   }
 
