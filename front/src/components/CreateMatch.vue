@@ -24,7 +24,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/globalVariables';
+
 .create-match {
   display: flex;
   flex-direction: column;

@@ -62,8 +62,9 @@ export default {
 };
 </script>
 
-<style scoped>
-@import '@/assets/cardVariables.css';
+<style lang="scss" scoped>
+@import '@/assets/globalVariables.css';
+@import '@/assets/cards/variables.css';
 
 .player-item {
   background-color: rgba(var(--secondary-color-rgb), 0.2);
@@ -72,34 +73,34 @@ export default {
   margin: var(--base-margin) 0;
   border: 1px solid var(--secondary-color);
   border-radius: var(--border-radius);
-}
 
-.highlighted {
-  border: 2px solid var(--primary-color);
-  background-color: var(--tertiary-color);
-}
+  &.highlighted {
+    border: 2px solid var(--primary-color);
+    background-color: var(--tertiary-color);
+  }
 
-.hand {
-  display: flex;
-  flex-direction: row;
-  padding: 0;
-  margin: var(--base-margin) 0 0 0;
-  list-style-type: none;
-}
+  .hand {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    margin: var(--base-margin) 0 0 0;
+    list-style-type: none;
 
-.card-item {
-  transition: transform 0.3s ease;
-}
+    .card-item {
+      transition: transform 0.3s ease;
 
-.card-item.selectable {
-  cursor: pointer;
-}
+      &.selectable {
+        cursor: pointer;
+      }
 
-.card-item.selected {
-  transform: translateY(-20px);
-}
+      &.selected {
+        transform: translateY(-20px);
+      }
 
-.card-item:not(:first-child) {
-  margin-left: calc(var(--card-width) * -0.8);
+      &:not(:first-child) {
+        margin-left: calc(var(--card-width) * -0.8);
+      }
+    }
+  }
 }
 </style>

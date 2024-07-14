@@ -47,12 +47,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 @import '@/assets/globalVariables.css';
 @import '@/assets/globalStyles.css';
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
 #app {
   display: flex;
   flex-direction: column;

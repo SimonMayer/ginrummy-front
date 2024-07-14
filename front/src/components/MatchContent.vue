@@ -90,7 +90,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/globalVariables';
+
 .match-content {
   width: 100%;
 }

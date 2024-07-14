@@ -4,12 +4,13 @@
     --secondary-color-rgb: 35, 61, 77;
     --tertiary-color: #7CA982;
     --accent-color: #F7B32B;
+    --disabled-color: #B0BEC5;
+    --text-color: #FFFFFF;
+    --error-color: #9B1D20;
+    --error-accent-color: #DA2C38;
     --button-hover-color: #7CA982;
     --button-active-color: #FE7F2D;
-    --disabled-color: #B0BEC5;
-    --text-color: #ffffff;
-    --error-color: #9b1d20;
-    --error-accent-color: #DA2C38;
+    --input-background-color: #F9F9F9;
     --font-family: 'Roboto', sans-serif;
     --base-padding: 10px;
     --base-margin: 10px;

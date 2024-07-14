@@ -281,28 +281,30 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/globalVariables';
+
 .match-table {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: var(--base-padding);
   gap: var(--base-margin);
-}
 
-.pile-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--base-margin);
-}
+  .pile-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--base-margin);
+  }
 
-.players-list {
-  list-style-type: none;
-  padding: 0;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  .players-list {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
 }
 </style>

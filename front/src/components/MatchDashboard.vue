@@ -84,7 +84,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/globalVariables';
+
 .match-dashboard {
   display: flex;
   flex-direction: column;

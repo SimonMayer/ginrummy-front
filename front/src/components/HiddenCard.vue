@@ -8,8 +8,9 @@ export default {
 };
 </script>
 
-<style scoped>
-@import '@/assets/cardVariables.css';
-@import '@/assets/cardStyles.css';
-@import '@/assets/cardBacking.css';
+<style lang="scss" scoped>
+@import '@/assets/globalVariables.css';
+@import '@/assets/cards/variables.css';
+@import '@/assets/cards/styles.css';
+@import '@/assets/cards/backing.css';
 </style>

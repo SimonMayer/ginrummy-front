@@ -20,8 +20,10 @@ export default {
 };
 </script>
 
-<style scoped>
-@import '@/assets/cardPatterns.css';
+<style lang="scss" scoped>
+@import '@/assets/globalVariables';
+@import '@/assets/cards/variables.css';
+@import '@/assets/cards/facePatterns';
 
 .pattern {
   position: absolute;
@@ -35,9 +37,9 @@ export default {
   justify-content: center;
   justify-items: center;
   align-items: center;
-}
 
-.suit-symbol {
-  font-size: var(--card-pattern-font-size);
+  .suit-symbol {
+    font-size: var(--card-pattern-font-size);
+  }
 }
 </style>
