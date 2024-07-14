@@ -10,9 +10,9 @@
       <div
           v-for="card in hand"
           :key="card.card_id"
-          :class="['card-item', { selectable: selectable }]"
+          :class="['card-item', { selectable: selectable, selected: isSelected(card) }]"
       >
-        <VisibleCard ref="visibleCards" :cardProp="card" :selectable="selectable" />
+        <VisibleCard ref="visibleCards" :cardProp="card" :selectable="selectable" @update:selected="handleSelected" />
       </div>
     </div>
   </div>
@@ -51,12 +51,23 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      selectedCards: []
+    };
+  },
   methods: {
     getSelectedCards() {
       if (!this.$refs.visibleCards) {
         return [];
       }
       return this.$refs.visibleCards.filter(visibleCard => visibleCard.isCardSelected());
+    },
+    handleSelected() {
+      this.selectedCards = this.getSelectedCards().map(card => card.cardProp.card_id);
+    },
+    isSelected(card) {
+      return this.selectedCards.includes(card.card_id);
     }
   }
 };
