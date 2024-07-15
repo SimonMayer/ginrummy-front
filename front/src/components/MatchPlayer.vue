@@ -116,16 +116,19 @@ export default {
     flex-direction: row;
     padding: 0;
     margin: var(--base-margin) 0 0 0;
+    perspective: 750px;
 
     .card-item {
       transition: transform 0.3s ease;
+      transform: rotateX(-55deg) translateX(20px) rotateY(0deg) translateZ(-30px);
+      transform-origin: bottom center;
 
       &.selectable {
         cursor: pointer;
       }
 
       &.selected {
-        transform: translateY(-20px);
+        transform: rotateX(-55deg) translateX(20px) rotateY(5deg) translateY(-30px) translateZ(-30px);
       }
 
       &:not(:first-child) {
