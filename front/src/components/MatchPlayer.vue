@@ -1,6 +1,15 @@
 <template>
   <div :class="['player-item', { 'highlighted': highlightPlayer }]">
     {{ username }}
+    <div class="melds-container">
+      <PlayedMeld
+          v-for="meld in melds"
+          :key="meld.meld_id"
+          :id="meld.meld_id"
+          :type="meld.meld_type"
+          :cards="meld.cards"
+      />
+    </div>
     <div class="hand" v-if="hiddenCardCount">
       <div v-for="n in hiddenCardCount" :key="n" class="card-item">
         <HiddenCard />
@@ -21,12 +30,14 @@
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
 import VisibleCard from '@/components/VisibleCard.vue';
+import PlayedMeld from '@/components/PlayedMeld.vue';
 
 export default {
   name: 'MatchPlayer',
   components: {
     HiddenCard,
-    VisibleCard
+    VisibleCard,
+    PlayedMeld
   },
   props: {
     username: {
@@ -49,6 +60,10 @@ export default {
     selectable: {
       type: Boolean,
       default: false
+    },
+    melds: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -88,6 +103,12 @@ export default {
   &.highlighted {
     border: 2px solid var(--primary-color);
     background-color: var(--tertiary-color);
+  }
+
+  .melds-container {
+    display: flex;
+    gap: var(--base-margin);
+    justify-content: space-between;
   }
 
   .hand {

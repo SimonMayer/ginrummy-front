@@ -9,6 +9,7 @@
           :hand="[]"
           :hiddenCardCount="player.hiddenCardCount"
           :highlightPlayer="player.highlightPlayer"
+          :melds="player.melds"
           :selectable="false"
           class="non-self-player"
       />
@@ -43,6 +44,7 @@
           :hand="myHand"
           :hiddenCardCount="0"
           :highlightPlayer="selfPlayer.highlightPlayer"
+          :melds="selfPlayer.melds"
           :selectable="isCurrentUserTurn"
           class="self-player"
       />
@@ -110,23 +112,20 @@ export default {
     selfPlayer() {
       const player = this.players.find(player => player.user_id === this.signedInUserId);
       if (player) {
-        return {
-          ...player,
-          highlightPlayer: player.user_id === this.currentTurnUserId,
-        };
+        return this.transformPlayer(player);
       }
       return null;
     },
     nonSelfPlayers() {
       const selfIndex = this.players.findIndex(player => player.user_id === this.signedInUserId);
       if (selfIndex === -1) {
-        return this.players.map(this.transformPlayer);
+        return this.players.map(this.transformNonSelfPlayer);
       }
 
       const beforeSelf = this.players.slice(0, selfIndex);
       const afterSelf = this.players.slice(selfIndex + 1);
 
-      return [...afterSelf, ...beforeSelf].map(this.transformPlayer);
+      return [...afterSelf, ...beforeSelf].map(this.transformNonSelfPlayer);
     },
     isCurrentUserTurn() {
       return this.currentTurnUserId === this.signedInUserId;
@@ -170,8 +169,13 @@ export default {
     transformPlayer(player) {
       return {
         ...player,
-        hiddenCardCount: player.handSize,
         highlightPlayer: player.user_id === this.currentTurnUserId,
+      };
+    },
+    transformNonSelfPlayer(player) {
+      return {
+        ...this.transformPlayer(player),
+        hiddenCardCount: player.handSize,
       };
     },
     getSelectedCards() {
@@ -219,6 +223,7 @@ export default {
         this.players.forEach(player => {
           const playerData = players.find(p => p.user_id === player.user_id);
           player.handSize = playerData ? playerData.hand.size : 0;
+          player.melds = playerData.melds;
         });
         this.match.stock_pile_size = data.stock_pile_size || 0;
         this.match.discard_pile = data.discard_pile || [];
