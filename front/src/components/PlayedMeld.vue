@@ -37,14 +37,32 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/globalVariables';
-
-.meld {
-  display: flex;
+@import '@/assets/cards/variables.css';
+@mixin fan-shape($num-cards, $span) {
+  @for $i from 1 through $num-cards {
+    $rotation: (($i - ($num-cards / 2)) * ($span / $num-cards));
+    .card:nth-child(#{$i}) {
+      transform: rotate($rotation);
+    }
+  }
 }
 
-.card {
-  &:not(:first-child) {
-    margin-left: calc(var(--card-width) * -0.85);
+.meld {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .card {
+    position: absolute;
+    transform-origin: bottom left;
+    transition: transform 0.3s;
+  }
+
+  &.set {
+    width: calc(var(--card-width) + (var(--card-height) / 2));
+    height: calc(var(--card-height) + (var(--card-width) / 2));
+    @include fan-shape(4, 30deg); // Up to 4 cards
   }
 }
 </style>

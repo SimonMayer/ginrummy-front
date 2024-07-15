@@ -67,4 +67,16 @@ export default {
 @import '@/assets/globalVariables';
 @import '@/assets/cards/variables.css';
 @import '@/assets/players';
+
+.hand {
+  margin: calc(var(--base-margin) * 2) 0 0 0;
+
+  .card {
+    @include card-transform(0deg, 0, 0.4);
+
+    &.selected {
+      @include card-transform(3deg, calc(var(--card-height) / -5), 0.4);
+    }
+  }
+}
 </style>

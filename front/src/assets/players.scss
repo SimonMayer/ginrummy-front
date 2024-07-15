@@ -1,5 +1,5 @@
-@mixin card-transform($rotate-y, $translate-y) {
-  transform: rotateX(-55deg) translateX(20px) rotateY($rotate-y) translateY($translate-y) translateZ(-30px);
+@mixin card-transform($rotate-y, $translate-y, $translate-z-multiplier) {
+  transform: rotateX(-55deg) translateX(calc(var(--card-width) / -5)) rotateY($rotate-y) translateY($translate-y) translateZ(calc(var(--card-height) * $translate-z-multiplier));
 }
 
 .player-item {
@@ -26,19 +26,13 @@
     flex-direction: row;
     justify-content: center;
     padding: 0 var(--card-width);
-    margin: var(--base-margin) 0 0 0;
-    perspective: 750px;
+    perspective: calc(var(--card-height) * 5);
 
     .card {
       transition: transform 0.3s ease;
-      @include card-transform(0deg, 0);
 
       &.selectable {
         cursor: pointer;
-      }
-
-      &.selected {
-        @include card-transform(3deg, -30px);
       }
 
       &:not(:first-child) {
