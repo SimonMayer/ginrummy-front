@@ -45,7 +45,7 @@
           :hiddenCardCount="0"
           :highlightPlayer="selfPlayer.highlightPlayer"
           :melds="selfPlayer.melds"
-          :selectable="isCurrentUserTurn"
+          :selectable="isHandSelectable"
           class="self-player"
       />
     </div>
@@ -132,6 +132,9 @@ export default {
     },
     hasDrawAction() {
       return this.currentTurnActions.some(action => action.action_type === 'draw');
+    },
+    isHandSelectable() {
+      return this.isCurrentUserTurn && this.hasDrawAction;
     },
     stockPileDisabled() {
       return !this.isCurrentUserTurn || this.loading || this.hasDrawAction;
