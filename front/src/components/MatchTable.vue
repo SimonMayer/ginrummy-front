@@ -1,16 +1,14 @@
 <template>
   <div class="match-table">
     <div class="non-self-players-container">
-      <MatchPlayer
+      <NonSelfMatchPlayer
           v-for="player in nonSelfPlayers"
           :key="player.user_id"
           :ref="'player-' + player.user_id"
           :username="player.username"
-          :hand="[]"
           :hiddenCardCount="player.hiddenCardCount"
           :highlightPlayer="player.highlightPlayer"
           :melds="player.melds"
-          :selectable="false"
           class="non-self-player"
       />
     </div>
@@ -36,13 +34,12 @@
       </button>
     </div>
     <div class="self-player-container">
-      <MatchPlayer
+      <SelfMatchPlayer
           v-if="selfPlayer"
           :key="selfPlayer.user_id"
           :ref="'player-self'"
           :username="selfPlayer.username"
           :hand="myHand"
-          :hiddenCardCount="0"
           :highlightPlayer="selfPlayer.highlightPlayer"
           :melds="selfPlayer.melds"
           :selectable="isHandSelectable"
@@ -56,7 +53,8 @@
 import configService from "@/services/configService";
 import StockPile from '@/components/StockPile.vue';
 import DiscardPile from '@/components/DiscardPile.vue';
-import MatchPlayer from '@/components/MatchPlayer.vue';
+import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
+import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
 import turnsService from '@/services/turnsService';
 import matchesService from '@/services/matchesService';
 import roundsService from '@/services/roundsService';
@@ -67,7 +65,8 @@ export default {
   components: {
     StockPile,
     DiscardPile,
-    MatchPlayer,
+    SelfMatchPlayer,
+    NonSelfMatchPlayer
   },
   props: {
     matchId: {
