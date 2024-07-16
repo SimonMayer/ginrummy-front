@@ -6,6 +6,7 @@
           :key="player.user_id"
           :ref="'player-' + player.user_id"
           :username="player.username"
+          :score="player.score"
           :hiddenCardCount="player.hiddenCardCount"
           :highlightPlayer="player.highlightPlayer"
           :melds="player.melds"
@@ -42,6 +43,7 @@
           :key="selfPlayer.user_id"
           :ref="'player-self'"
           :username="selfPlayer.username"
+          :score="selfPlayer.score"
           :hand="myHand"
           :highlightPlayer="selfPlayer.highlightPlayer"
           :melds="selfPlayer.melds"
@@ -141,6 +143,16 @@ export default {
     },
     stockPileDisabled() {
       return !this.isCurrentUserTurn || this.loading || this.hasDrawAction;
+    },
+    playerScores() {
+      return this.players.map(player => {
+        const score = !player.melds ? 0 : player.melds.reduce((totalScore, meld) => {
+          return totalScore + meld.cards.reduce((sum, card) => {
+            return card.user_id === player.user_id ? sum + card.point_value : sum;
+          }, 0);
+        }, 0);
+        return { user_id: player.user_id, score };
+      });
     }
   },
   methods: {
@@ -196,9 +208,11 @@ export default {
       }
     },
     transformPlayer(player) {
+      const playerScore = this.playerScores.find(score => score.user_id === player.user_id);
       return {
         ...player,
         highlightPlayer: player.user_id === this.currentTurnUserId,
+        score: playerScore ? playerScore.score : 0,
       };
     },
     transformNonSelfPlayer(player) {

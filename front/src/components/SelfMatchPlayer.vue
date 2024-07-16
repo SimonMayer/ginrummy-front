@@ -1,6 +1,9 @@
 <template>
   <div class="player-item self-player" :class="{ 'highlighted': highlightPlayer }">
-    {{ username }}
+    <div class="player-details">
+      <NamePlate :name="username" />
+      <div class="score">Score: {{ score }}</div>
+    </div>
     <div class="melds-container">
       <PlayedMeld
           v-for="meld in melds"
@@ -27,10 +30,12 @@
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
 import PlayedMeld from '@/components/PlayedMeld.vue';
+import NamePlate from "@/components/NamePlate.vue";
 
 export default {
   name: 'SelfMatchPlayer',
   components: {
+    NamePlate,
     VisibleCard,
     PlayedMeld
   },
@@ -39,7 +44,8 @@ export default {
     hand: Array,
     highlightPlayer: Boolean,
     selectable: Boolean,
-    melds: Array
+    melds: Array,
+    score: Number
   },
   data() {
     return {

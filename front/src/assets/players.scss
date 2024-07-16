@@ -40,4 +40,22 @@
       }
     }
   }
+
+  .player-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--base-padding);
+    margin: var(--base-margin) 0;
+
+    .username {
+      flex: 1;
+      text-align: left;
+    }
+
+    .score {
+      flex: 1;
+      text-align: right;
+    }
+  }
 }

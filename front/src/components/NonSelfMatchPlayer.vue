@@ -1,6 +1,5 @@
 <template>
   <div class="player-item non-self-player" :class="{ 'highlighted': highlightPlayer }">
-    {{ username }}
     <div class="hand">
       <HiddenCard v-for="n in hiddenCardCount" :key="n" class="card" />
     </div>
@@ -13,24 +12,31 @@
           :cards="meld.cards"
       />
     </div>
+    <div class="player-details">
+      <NamePlate :name="username" />
+      <div class="score">Score: {{ score }}</div>
+    </div>
   </div>
 </template>
 
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
 import PlayedMeld from '@/components/PlayedMeld.vue';
+import NamePlate from '@/components/NamePlate.vue';
 
 export default {
   name: 'NonSelfMatchPlayer',
   components: {
     HiddenCard,
-    PlayedMeld
+    PlayedMeld,
+    NamePlate
   },
   props: {
     username: String,
     hiddenCardCount: Number,
     highlightPlayer: Boolean,
-    melds: Array
+    melds: Array,
+    score: Number
   }
 };
 </script>
@@ -39,6 +45,7 @@ export default {
 @import '@/assets/globalVariables';
 @import '@/assets/cards/variables.css';
 @import '@/assets/players';
+
 .hand {
   height: calc(var(--card-height) * 0.4);
 
