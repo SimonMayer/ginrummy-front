@@ -28,31 +28,31 @@ export default {
   $characterWidth: 1.13125;
 
   $fontSize: 8px;
-  @if ($size < ($width / ($characterWidth * 16px))) {
+  @if ($size < calc($width / ($characterWidth * 16px))) {
     $fontSize: 16px;
-  } @else if ($size < ($width / ($characterWidth * 14px))) {
+  } @else if ($size < calc($width / ($characterWidth * 14px))) {
     $fontSize: 14px;
-  } @else if (ceil($size / 2) < ($width / ($characterWidth * 14px))) {
+  } @else if (ceil(calc($size / 2)) < calc($width / ($characterWidth * 14px))) {
     $fontSize: 14px;
-  } @else if (ceil($size / 2) < ($width / ($characterWidth * 13px))) {
+  } @else if (ceil(calc($size / 2)) < calc($width / ($characterWidth * 13px))) {
     $fontSize: 13px;
-  } @else if (ceil($size / 2) < ($width / ($characterWidth * 12px))) {
+  } @else if (ceil(calc($size / 2)) < calc($width / ($characterWidth * 12px))) {
     $fontSize: 12px;
-  } @else if (ceil($size / 2) < ($width / ($characterWidth * 11px))) {
+  } @else if (ceil(calc($size / 2)) < calc($width / ($characterWidth * 11px))) {
     $fontSize: 11px;
-  } @else if (ceil($size / 2) < ($width / ($characterWidth * 10px))) {
+  } @else if (ceil(calc($size / 2)) < calc($width / ($characterWidth * 10px))) {
     $fontSize: 10px;
-  } @else if (ceil($size / 3) < ($width / ($characterWidth * 10px))) {
+  } @else if (ceil(calc($size / 3)) < calc($width / ($characterWidth * 10px))) {
     $fontSize: 10px;
-  } @else if (ceil($size / 3) < ($width / ($characterWidth * 9.5px))) {
+  } @else if (ceil(calc($size / 3)) < calc($width / ($characterWidth * 9.5px))) {
     $fontSize: 9.5px;
-  } @else if (ceil($size / 3) < ($width / ($characterWidth * 8.5px))) {
+  } @else if (ceil(calc($size / 3)) < calc($width / ($characterWidth * 8.5px))) {
     $fontSize: 8.5px;
   }
 
-  $lineCount: floor($height / $fontSize);
+  $lineCount: floor(calc($height / $fontSize));
   font-size: $fontSize;
-  line-height: ($height / $lineCount);
+  line-height: calc($height / $lineCount);
 }
 
 .name-container {
