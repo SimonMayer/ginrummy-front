@@ -38,7 +38,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--base-padding);
+    padding: var(--base-padding) 0;
     margin: var(--base-margin) 0;
 
     .username {
