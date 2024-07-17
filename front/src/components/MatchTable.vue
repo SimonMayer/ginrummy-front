@@ -37,7 +37,7 @@
               :id="meld.meld_id"
               :type="meld.meld_type"
               :cards="meld.cards"
-              :selected="selectedMeld === meld.meld_id"
+              :selected="selectedMeldId === meld.meld_id"
               :selectable="isMeldSelectable"
               @select:meld="handleMeldClick(meld.meld_id)"
           />
@@ -161,6 +161,9 @@ export default {
         return allMelds.concat(player.melds || []);
       }, []);
     },
+    selectedMeldId() {
+      return this.selectedMeld ? this.selectedMeld.meld_id : null;
+    },
     isCurrentUserTurn() {
       return this.currentTurnUserId === this.signedInUserId;
     },
@@ -273,10 +276,11 @@ export default {
       return this.getSelectedCards().length;
     },
     handleMeldClick(meldId) {
-      if (this.selectedMeld === meldId) {
+      const meld = this.allMelds.find(meld => meld.meld_id === meldId);
+      if (!meld || (this.selectedMeldId === meldId)) {
         this.selectedMeld = null;
       } else {
-        this.selectedMeld = meldId;
+        this.selectedMeld = meld;
       }
     },
     async loadMatchDetails() {
