@@ -24,8 +24,10 @@
         />
         <DiscardPile
             v-if="match && match.discard_pile"
+            :ref="'discard-pile'"
             :visibleCards="match.discard_pile"
-            @top-card-clicked="handleDiscardPileClick"
+            :selectableCards="getSelectableDiscardPileCards()"
+            @update:selected="forceRefresh()"
             :disabled="discardPileDisabled"
         />
       </div>
@@ -43,18 +45,11 @@
           />
         </div>
         <div class="buttons-container">
-          <button @click="handlePlaySetClick" :disabled="playSetButtonDisabled">
-            Play set
-          </button>
-          <button @click="handlePlayRunClick" :disabled="playRunButtonDisabled">
-            Play run
-          </button>
-          <button @click="handleExtendMeldClick" :disabled="extendMeldButtonDisabled">
-            Extend meld
-          </button>
-          <button @click="handleDiscardClick" :disabled="discardButtonDisabled">
-            Discard
-          </button>
+          <button @click="handleDrawFromDiscardPileClick" :disabled="drawFromDiscardPileButtonDisabled">Draw from discard pile</button>
+          <button @click="handlePlaySetClick" :disabled="playSetButtonDisabled">Play set</button>
+          <button @click="handlePlayRunClick" :disabled="playRunButtonDisabled">Play run</button>
+          <button @click="handleExtendMeldClick" :disabled="extendMeldButtonDisabled">Extend meld</button>
+          <button @click="handleDiscardClick" :disabled="discardButtonDisabled">Discard</button>
         </div>
         <div class="self-player-container">
           <SelfMatchPlayer
@@ -230,6 +225,10 @@ export default {
           this.getSelectedHandCards().length === this.myHand.length ||
           !this.isValidMeldExtension();
     },
+    drawFromDiscardPileButtonDisabled() {
+      this.refreshValues; // forces a recompute when refreshValues is changed
+      return !this.isCurrentUserTurn || this.loading || this.hasDrawAction || !this.isOnlyTopDiscardPileCardSelected();
+    },
     playerScores() {
       const scores = {};
 
@@ -251,6 +250,17 @@ export default {
   methods: {
     hasOneHandCardSelected() {
       return this.getSelectedHandCardCount() === 1;
+    },
+    hasOneDiscardPileCardSelected() {
+      const selectedDiscardPileCards = this.getSelectedDiscardPileCards();
+      return selectedDiscardPileCards.length === 1;
+    },
+    isOnlyTopDiscardPileCardSelected() {
+      if (!this.hasOneDiscardPileCardSelected()) {
+        return false;
+      }
+      const selectedDiscardPileCards = this.getSelectedDiscardPileCards();
+      return this.getTopDiscardPileCard() === selectedDiscardPileCards[0].cardProp;
     },
     forceRefresh() {
       // forces refresh of computed values
@@ -308,6 +318,21 @@ export default {
         hiddenCardCount: player.handSize,
       };
     },
+    getTopDiscardPileCard() {
+      const discardPile = this.match.discard_pile;
+      if (!discardPile) {
+        return null
+      }
+      return discardPile[discardPile.length - 1];
+    },
+    getSelectedDiscardPileCards() {
+      const discardPile = this.$refs['discard-pile'];
+      if (!discardPile) {
+        return [];
+      }
+
+      return discardPile.getSelectedCards();
+    },
     getSelectedHandCards() {
       const signedInPlayer = this.$refs['player-self'];
       if (!signedInPlayer) {
@@ -318,6 +343,22 @@ export default {
     },
     getSelectedHandCardCount() {
       return this.getSelectedHandCards().length;
+    },
+    unselectDiscardPileCards() {
+      const discardPile = this.$refs['discard-pile'];
+      if (!discardPile) {
+        return [];
+      }
+
+      discardPile.unselectAllCards();
+    },
+    unselectHandCards() {
+      const signedInPlayer = this.$refs['player-self'];
+      if (!signedInPlayer) {
+        return [];
+      }
+
+      signedInPlayer.unselectAllCards();
     },
     handleMeldClick(meldId) {
       const meld = this.allMelds.find(meld => meld.meld_id === meldId);
@@ -386,12 +427,22 @@ export default {
         }
       }
     },
-    async handleDiscardPileClick() {
-      if (this.isCurrentUserTurn && !this.loading && !this.hasDrawAction && this.match.discard_pile.length > 0) {
+    getSelectableDiscardPileCards() {
+      if (!this.isCurrentUserTurn || this.loading || this.hasDrawAction) {
+        return [];
+      } else if (this.isMeldSelectable) {
+        return this.match.discard_pile;
+      } else {
+        return [this.getTopDiscardPileCard()];
+      }
+    },
+    async handleDrawFromDiscardPileClick() {
+      if (this.isCurrentUserTurn && !this.loading && !this.hasDrawAction && this.isOnlyTopDiscardPileCardSelected()) {
         this.$emit('loading', true);
         try {
           const card = await turnsService.drawFromDiscardPile(this.matchId);
           this.myHand.push(card);
+          this.unselectDiscardPileCards();
           this.match.discard_pile.pop();
         } catch (error) {
           this.$emit('error', 'Failed to draw from discard pile!', error);
@@ -408,6 +459,7 @@ export default {
           const cardId = selectedCard.cardData.card_id;
 
           await turnsService.discardCard(this.matchId, cardId);
+          this.unselectHandCards();
           this.myHand = this.myHand.filter(card => card.card_id !== cardId);
         } catch (error) {
           this.$emit('error', 'Failed to discard card!', error);
@@ -512,7 +564,7 @@ export default {
   align-items: stretch;
   gap: var(--base-margin);
 
-  .game-section{
+  .game-section {
     &.full-width {
       flex-basis: 100%;
       padding: 10px;

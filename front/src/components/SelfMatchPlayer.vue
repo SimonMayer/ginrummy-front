@@ -12,8 +12,8 @@
           ref="visibleCards"
           v-for="card in hand"
           :key="card.card_id"
-          :class="['card', { selectable: selectable, selected: isSelected(card) }]"
           :cardProp="card"
+          :class="['card', { selectable: selectable, selected: isSelected(card) }]"
           :selectable="selectable"
           @update:selected="handleSelected"
       />
@@ -53,6 +53,12 @@ export default {
     handleSelected() {
       this.selectedCards = this.getSelectedCards().map(card => card.cardProp.card_id);
       this.$emit('update:selected');
+    },
+    unselectAllCards() {
+      if (!this.$refs.visibleCards) {
+        return;
+      }
+      this.$refs.visibleCards.forEach(visibleCard => visibleCard.unselect());
     },
     isSelected(card) {
       return this.selectedCards.includes(card.card_id);

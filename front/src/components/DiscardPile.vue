@@ -1,12 +1,13 @@
 <template>
   <div class="discard-pile">
     <VisibleCard
-        v-for="(card, index) in visibleCards"
+        ref="visibleCards"
+        v-for="(card) in visibleCards"
         :key="card.card_id"
         :cardProp="card"
-        :class="{ clickable: isCardClickable(index) }"
-        :clickable="isCardClickable(index)"
-        @card-clicked="handleClick(index)"
+        :class="{ selectable: isCardSelectable(card), selected: isSelected(card) }"
+        :selectable="isCardSelectable(card)"
+        @update:selected="handleSelected"
     />
     <div v-if="isEmpty" class="empty-placeholder">
       <div>Discarded cards will appear here</div>
@@ -39,6 +40,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    selectableCards: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      selectedCards: []
+    };
   },
   computed: {
     isEmpty() {
@@ -46,17 +56,28 @@ export default {
     }
   },
   methods: {
-    isTopCard(index) {
-      return index === this.visibleCards.length - 1;
+    isCardSelectable(card) {
+      return !this.disabled && this.selectableCards.includes(card);
     },
-    isCardClickable(index) {
-      return !this.disabled && this.isTopCard(index);
-    },
-    handleClick() {
-      if (!this.disabled) {
-        this.$emit('top-card-clicked');
+    getSelectedCards() {
+      if (!this.$refs.visibleCards) {
+        return [];
       }
+      return this.$refs.visibleCards.filter(visibleCard => visibleCard.isCardSelected());
     },
+    handleSelected() {
+      this.selectedCards = this.getSelectedCards().map(card => card.cardProp.card_id);
+      this.$emit('update:selected');
+    },
+    unselectAllCards() {
+      if (!this.$refs.visibleCards) {
+        return;
+      }
+      this.$refs.visibleCards.forEach(visibleCard => visibleCard.unselect());
+    },
+    isSelected(card) {
+      return this.selectedCards.includes(card.card_id);
+    }
   },
 };
 </script>
@@ -73,26 +94,32 @@ export default {
   padding: calc(var(--card-height) * 0.1) calc(var(--card-width) * 0.1);
   height: var(--card-height);
 
-  .clickable {
+  .selectable {
     cursor: pointer;
   }
 
   @for $i from 1 through 52 {
     .card:nth-child(#{$i}) {
+      $rotate: rotate(0);
       @if $i == 1 {
-        transform: rotate(0.6deg);
+        $rotate: rotate(0.6deg);
       } @else if $i % 5 == 0 {
-        transform: rotate(-0.3deg);
+        $rotate: rotate(-0.3deg);
       } @else if $i % 3 == 0 {
-        transform: rotate(-1.2deg);
+        $rotate: rotate(-1.2deg);
       } @else if $i % 2 == 0 {
-        transform: rotate(-0.8deg);
+        $rotate: rotate(-0.8deg);
       } @else if $i % 2 != 0 {
-        transform: rotate(1deg);
+        $rotate: rotate(1deg);
       }
+      transform: $rotate;
 
       @if $i != 1 {
         margin-left: calc(var(--card-width) * -0.85);
+      }
+
+      &.selected {
+        transform: $rotate translateY(calc(var(--card-height) * -0.2));
       }
     }
   }
