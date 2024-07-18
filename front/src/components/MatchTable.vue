@@ -44,7 +44,7 @@
           />
         </div>
         <div class="buttons-container">
-          <button @click="handleDrawFromDiscardPileClick" :disabled="drawFromDiscardPileButtonDisabled">Draw from discard pile</button>
+          <button @click="handleDrawOneFromDiscardPileClick" :disabled="drawOneFromDiscardPileButtonDisabled">Draw one from discard pile</button>
           <button @click="handlePlaySetClick" :disabled="playSetButtonDisabled">Play set</button>
           <button @click="handlePlayRunClick" :disabled="playRunButtonDisabled">Play run</button>
           <button @click="handleExtendMeldClick" :disabled="extendMeldButtonDisabled">Extend meld</button>
@@ -147,10 +147,10 @@ export default {
       return selfPlayer && selfPlayer.melds && selfPlayer.melds.length > 0;
     },
     isHandSelectable() {
-      return this.isCurrentUserTurn && this.hasDrawAction;
+      return this.canDrawMultiple() || (this.canAct() && this.hasDrawAction);
     },
     isMeldSelectable() {
-      return this.isCurrentUserTurn && this.hasDrawAction && this.hasPlayedMeld;
+      return this.canAct() && this.hasPlayedMeld;
     },
     stockPileDisabled() {
       return !this.canDrawFromStockPile()
@@ -171,9 +171,9 @@ export default {
       this.refreshValues; // forces a recompute when refreshValues is changed
       return !this.canExtendMeld();
     },
-    drawFromDiscardPileButtonDisabled() {
+    drawOneFromDiscardPileButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canDrawFromDiscardPile();
+      return !this.canDrawOneFromDiscardPile();
     },
     playerScores() {
       const scores = {};
@@ -198,6 +198,9 @@ export default {
     },
     hasAllHandCardsSelected() {
       return this.getSelectedHandCardCount() === this.myHand.length;
+    },
+    hasNoDiscardPileCardsSelected() {
+      return this.getSelectedDiscardPileCards().length === 0;
     },
     hasOneDiscardPileCardSelected() {
       return this.getSelectedDiscardPileCards().length === 1;
@@ -233,11 +236,17 @@ export default {
     canDraw() {
       return this.canAct() && !this.hasDrawAction;
     },
-    canDrawFromStockPile() {
-      return this.canDraw();
+    canDrawOne() {
+      return this.canDraw() && this.hasNoHandCardsSelected() && !this.selectedMeld;
     },
-    canDrawFromDiscardPile() {
-      return this.canDraw() && this.isOnlyTopDiscardPileCardSelected();
+    canDrawMultiple() {
+      return this.canDraw() && this.hasPlayedMeld;
+    },
+    canDrawFromStockPile() {
+      return this.canDrawOne() && this.hasNoDiscardPileCardsSelected();
+    },
+    canDrawOneFromDiscardPile() {
+      return this.canDrawOne() && this.isOnlyTopDiscardPileCardSelected();
     },
     canPlayMeld() {
       return this.canAct() &&
@@ -301,9 +310,9 @@ export default {
       return discardPile ? discardPile[discardPile.length - 1] : null;
     },
     getSelectableDiscardPileCards() {
-      return !this.isCurrentUserTurn || this.loading || this.hasDrawAction
-          ? []
-          : this.hasPlayedMeld ? this.match.discard_pile : [this.getTopDiscardPileCard()];
+      return this.canDrawMultiple()
+          ? this.match.discard_pile
+          : this.canDrawOne() ? [this.getTopDiscardPileCard()] : [];
     },
     getSelectedCards(refName) {
       return this.$refs[refName] ? this.$refs[refName].getSelectedCards() : [];
@@ -385,13 +394,13 @@ export default {
       }
     },
     async handleStockPileClick() {
-      await this.handleDrawFromPileClick('stock');
+      await this.handleDrawOneFromPileClick('stock');
     },
-    async handleDrawFromDiscardPileClick() {
-      await this.handleDrawFromPileClick('discard');
+    async handleDrawOneFromDiscardPileClick() {
+      await this.handleDrawOneFromPileClick('discard');
     },
-    async handleDrawFromPileClick(pileType) {
-      if ((pileType === 'discard' && !this.canDrawFromDiscardPile()) || !this.canDraw()) {
+    async handleDrawOneFromPileClick(pileType) {
+      if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile()) || !this.canDraw()) {
         return;
       }
       await this.performAction(async () => {
