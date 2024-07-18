@@ -2,7 +2,7 @@
   <div class="discard-pile">
     <VisibleCard
         ref="visibleCards"
-        v-for="(card) in visibleCards"
+        v-for="card in visibleCards"
         :key="card.card_id"
         :cardProp="card"
         :class="{ selectable: isCardSelectable(card), selected: isSelected(card) }"
@@ -17,12 +17,14 @@
 
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
+import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
 
 export default {
   name: 'DiscardPile',
   components: {
     VisibleCard,
   },
+  mixins: [visibleCardSelectionMixin],
   props: {
     visibleCards: {
       type: Array,
@@ -36,19 +38,10 @@ export default {
         ));
       },
     },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
     selectableCards: {
       type: Array,
       default: () => [],
     },
-  },
-  data() {
-    return {
-      selectedCards: []
-    };
   },
   computed: {
     isEmpty() {
@@ -57,28 +50,9 @@ export default {
   },
   methods: {
     isCardSelectable(card) {
-      return !this.disabled && this.selectableCards.includes(card);
-    },
-    getSelectedCards() {
-      if (!this.$refs.visibleCards) {
-        return [];
-      }
-      return this.$refs.visibleCards.filter(visibleCard => visibleCard.isCardSelected());
-    },
-    handleSelected() {
-      this.selectedCards = this.getSelectedCards().map(card => card.cardProp.card_id);
-      this.$emit('update:selected');
-    },
-    unselectAllCards() {
-      if (!this.$refs.visibleCards) {
-        return;
-      }
-      this.$refs.visibleCards.forEach(visibleCard => visibleCard.unselect());
-    },
-    isSelected(card) {
-      return this.selectedCards.includes(card.card_id);
+      return this.selectableCards.includes(card);
     }
-  },
+  }
 };
 </script>
 

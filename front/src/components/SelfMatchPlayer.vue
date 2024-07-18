@@ -24,6 +24,7 @@
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
 import NamePlate from "@/components/NamePlate.vue";
+import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
 
 export default {
   name: 'SelfMatchPlayer',
@@ -31,38 +32,13 @@ export default {
     NamePlate,
     VisibleCard
   },
+  mixins: [visibleCardSelectionMixin],
   props: {
     username: String,
     hand: Array,
     highlightPlayer: Boolean,
     selectable: Boolean,
     score: Number
-  },
-  data() {
-    return {
-      selectedCards: []
-    };
-  },
-  methods: {
-    getSelectedCards() {
-      if (!this.$refs.visibleCards) {
-        return [];
-      }
-      return this.$refs.visibleCards.filter(visibleCard => visibleCard.isCardSelected());
-    },
-    handleSelected() {
-      this.selectedCards = this.getSelectedCards().map(card => card.cardProp.card_id);
-      this.$emit('update:selected');
-    },
-    unselectAllCards() {
-      if (!this.$refs.visibleCards) {
-        return;
-      }
-      this.$refs.visibleCards.forEach(visibleCard => visibleCard.unselect());
-    },
-    isSelected(card) {
-      return this.selectedCards.includes(card.card_id);
-    }
   }
 };
 </script>
