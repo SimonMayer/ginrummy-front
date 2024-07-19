@@ -40,6 +40,7 @@
               :cards="meld.cards"
               :selected="selectedMeldId === meld.meld_id"
               :selectable="isMeldSelectable"
+              :runOrders="runOrders"
               @select:meld="handleMeldClick(meld.meld_id)"
           />
         </div>
