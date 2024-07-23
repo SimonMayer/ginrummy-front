@@ -33,7 +33,7 @@ def init_route(app):
         try:
             database_service.start_transaction(connection)
 
-            turn = turns_service.get_current_turn(cursor, match_id)
+            turn = turns_service.get_current_turn(match_id)
             validation_error = turns_service.validate_user_turn(turn, user_id)
             if validation_error:
                 return jsonify(validation_error[0]), validation_error[1]
@@ -127,7 +127,7 @@ def init_route(app):
 
             new_hand_card_ids = []
             # Process cards from discard pile
-            for card in upper_discard_pile_cards:
+            for card in reversed(upper_discard_pile_cards):
                 discard_pile_service.remove_card(cursor, card[0], round_id)
                 if card[0] in discard_pile_card_ids:
                     melds_service.add_card_to_meld(cursor, meld_id, card[0], user_id)

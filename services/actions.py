@@ -16,6 +16,22 @@ def validate_draw_this_turn(cursor, turn_id):
         return {"error": "You must draw a card before you can perform this action"}, 400
     return None
 
+def record_start_round_action(cursor, turn_id):
+    query = """
+    INSERT INTO `Actions` (`turn_id`, `action_type`, `full_details`, `public_details`)
+    VALUES (%s, 'round_start', 'Round started', 'Round started')
+    """
+    execute_query(cursor, query, (turn_id,))
+    return cursor.lastrowid
+
+def record_end_round_action(cursor, turn_id):
+    query = """
+    INSERT INTO `Actions` (`turn_id`, `action_type`, `full_details`, `public_details`)
+    VALUES (%s, 'round_end', 'Round ended', 'Round ended')
+    """
+    execute_query(cursor, query, (turn_id,))
+    return cursor.lastrowid
+
 def record_draw_from_stock_pile_action(cursor, turn_id, card_id):
     card_details = cards_service.get_card_details(cursor, card_id)
     card_rank, card_suit, card_point_value = card_details
@@ -89,14 +105,34 @@ def record_extend_meld_action(cursor, turn_id, user_id, meld_id, card_ids):
 
     return action_id
 
-def get_new_actions(match_id, latest_action_id=None):
+def get_latest_action_id(match_id):
     database_config = load_database_config()
     connection = connect_to_database(database_config)
-    cursor = connection.cursor(buffered=True)
+    cursor = connection.cursor(buffered=True, dictionary=True)
 
     try:
         query = """
-            SELECT `a`.`action_id`, `a`.`turn_id`, `a`.`action_type`, `a`.`public_details`
+            SELECT MAX(`a`.`action_id`) as latest_action_id
+            FROM `Actions` `a`
+            JOIN `Turns` `t` ON `a`.`turn_id` = `t`.`turn_id`
+            JOIN `Rounds` `r` ON `t`.`round_id` = `r`.`round_id`
+            WHERE `r`.`match_id` = %s
+        """
+        result = fetch_one(cursor, query, (match_id,))
+        return int(result['latest_action_id']) if result and result['latest_action_id'] else None
+    except Exception as err:
+        handle_error(connection, err)
+    finally:
+        close_resources(cursor, connection)
+
+def get_new_actions(match_id, latest_action_id=None):
+    database_config = load_database_config()
+    connection = connect_to_database(database_config)
+    cursor = connection.cursor(buffered=True, dictionary=True)
+
+    try:
+        query = """
+            SELECT `a`.`action_id`, `a`.`turn_id`, `a`.`action_type`, `a`.`public_details`, `r`.`round_id`
             FROM `Actions` `a`
             JOIN `Turns` `t` ON `a`.`turn_id` = `t`.`turn_id`
             JOIN `Rounds` `r` ON `t`.`round_id` = `r`.`round_id`

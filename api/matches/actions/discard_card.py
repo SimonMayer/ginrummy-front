@@ -30,7 +30,7 @@ def init_route(app):
         try:
             database_service.start_transaction(connection)
 
-            turn = turns_service.get_current_turn(cursor, match_id)
+            turn = turns_service.get_current_turn(match_id)
             validation_error = turns_service.validate_user_turn(turn, user_id)
             if validation_error:
                 return jsonify(validation_error[0]), validation_error[1]
@@ -65,6 +65,7 @@ def init_route(app):
 
             if len(user_hand) == 1: # last card discarded
                 rounds_service.end_round(cursor, round_id)
+                actions_service.record_end_round_action(cursor, turn_id)
 
                 # Update scores for each player
                 for player in players_list:
