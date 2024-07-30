@@ -1,5 +1,5 @@
 <template>
-  <div class="match-table" v-if="match">
+  <div class="match-table" v-if="match && match.start_time">
     <div class="game-section full-width">
       <div class="non-self-players-container">
         <NonSelfMatchPlayer
@@ -17,13 +17,13 @@
     <div class="game-section row">
       <div class="game-column pile-container">
         <StockPile
-            v-if="match && match.stock_pile_size !== undefined"
+            v-if="match.stock_pile_size !== undefined"
             :size="match.stock_pile_size"
             @click="handleStockPileClick"
             :disabled="stockPileDisabled"
         />
         <DiscardPile
-            v-if="match && match.discard_pile"
+            v-if="match.discard_pile"
             :ref="'discard-pile'"
             :visibleCards="match.discard_pile"
             :selectableCards="getSelectableDiscardPileCards()"
@@ -54,8 +54,7 @@
           <button @click="handleDrawMultipleFromDiscardPileClick" :disabled="drawMultipleFromDiscardPileButtonDisabled">
             Draw multiple from discard pile
           </button>
-          <button @click="handlePlaySetClick" :disabled="playSetButtonDisabled">Play set</button>
-          <button @click="handlePlayRunClick" :disabled="playRunButtonDisabled">Play run</button>
+          <button @click="handlePlayMeldClick" :disabled="playMeldButtonDisabled">Play meld</button>
           <button @click="handleExtendMeldClick" :disabled="extendMeldButtonDisabled">Extend meld</button>
           <button @click="handleDiscardClick" :disabled="discardButtonDisabled">Discard</button>
         </div>
@@ -169,13 +168,9 @@ export default {
       this.refreshValues; // forces a recompute when refreshValues is changed
       return !this.canDiscard();
     },
-    playSetButtonDisabled() {
+    playMeldButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canPlaySet();
-    },
-    playRunButtonDisabled() {
-      this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canPlayRun();
+      return !this.canPlaySet() && !this.canPlayRun();
     },
     extendMeldButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed
@@ -420,16 +415,16 @@ export default {
       }
     },
     async loadRoundDataForPlayers(roundId) {
-        const data = await roundsService.getRoundDataForPlayers(roundId);
-        const players = data.players;
-        this.players.forEach(player => {
-          const playerData = players.find(p => p.user_id === player.user_id);
-          player.handSize = playerData ? playerData.hand.size : 0;
-          player.melds = playerData.melds;
-          player.score = playerData.score.total_score;
-        });
-        this.match.stock_pile_size = data.stock_pile_size || 0;
-        this.match.discard_pile = data.discard_pile || [];
+      const data = await roundsService.getRoundDataForPlayers(roundId);
+      const players = data.players;
+      this.players.forEach(player => {
+        const playerData = players.find(p => p.user_id === player.user_id);
+        player.handSize = playerData ? playerData.hand.size : 0;
+        player.melds = playerData.melds;
+        player.score = playerData.score.total_score;
+      });
+      this.match.stock_pile_size = data.stock_pile_size || 0;
+      this.match.discard_pile = data.discard_pile || [];
     },
     async performAction(action, errorMessage) {
       this.$emit('loading', true);
@@ -499,21 +494,16 @@ export default {
         this.myHand = this.myHand.filter(card => card.card_id !== cardId);
       }, 'Failed to discard card!');
     },
-    async handlePlayMeldClick(meldType) {
-      if(!this.canPlaySet() && !this.canPlayRun()) {
+    async handlePlayMeldClick() {
+      if (!this.canPlaySet() && !this.canPlayRun()) {
         return;
       }
+      const meldType = this.canPlaySet() ? 'set' : 'run';
       await this.performAction(async () => {
         const cardIds = this.getSelectedHandCards().map(card => card.card_id);
         await turnsService.playMeld(this.matchId, cardIds, meldType);
         this.myHand = this.myHand.filter(card => !cardIds.includes(card.card_id));
       }, `Failed to play meld!`);
-    },
-    async handlePlaySetClick() {
-      await this.handlePlayMeldClick('set');
-    },
-    async handlePlayRunClick() {
-      await this.handlePlayMeldClick('run');
     },
     async handleExtendMeldClick() {
       if(!this.canExtendMeld()) {

@@ -33,6 +33,7 @@ apiClient.interceptors.request.use(config => {
 apiClient.interceptors.response.use(response => {
     return response;
 }, async error => {
+    console.error('error', error);
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
