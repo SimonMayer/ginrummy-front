@@ -62,11 +62,12 @@ if [ "$is_ssl_certificate_required" = true ]; then
     fi
 fi
 
-# Clone the Repository
-git clone git@github.com:SimonMayer/ginrummy-front.git /root/ginrummy-front
-
-# Navigate to the App Directory
-cd /root/ginrummy-front
+# Clone the Repository or pull the latest changes
+if [ -d "/root/ginrummy-front" ]; then
+    cd /root/ginrummy-front && git pull
+else
+    git clone git@github.com:SimonMayer/ginrummy-front.git /root/ginrummy-front && cd /root/ginrummy-front
+fi
 
 # Install npm and vue-cli-service
 apt install npm -y
@@ -94,8 +95,26 @@ module.exports = {
 };
 EOL
 
-# Run the Vue app
-npm run serve -- --host 0.0.0.0 --port 8080 &
+# Set Up systemd Service
+echo "
+[Unit]
+Description=Vue.js instance to serve ginrummy-front
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/root/ginrummy-front
+ExecStart=/usr/bin/npm run serve -- --host 0.0.0.0 --port 8080
+
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/ginrummy-front.service
+
+# Reload systemd and Start Vue.js Service
+systemctl daemon-reload
+systemctl start ginrummy-front
+systemctl enable ginrummy-front
 
 # Set Up Nginx as a Reverse Proxy with SSL
 echo "
