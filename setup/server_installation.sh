@@ -6,8 +6,30 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+# Function to validate the URL
+function validate_url() {
+    local url=$1
+    local regex="^https?://([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]+)?(/.*)?$"
+    if [[ $url =~ $regex ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Prompt for the domain name for the Vue app
 read -p "Enter the domain name for the Vue app (e.g., subdomain.domain.example): " DOMAIN_NAME
+
+# Prompt for the base URL of the engine
+while true; do
+    read -p "Enter the base URL of the engine: " BASE_URL
+    BASE_URL=${BASE_URL%/}  # Trim trailing slash if it exists
+    if validate_url "$BASE_URL"; then
+        break
+    else
+        echo "Invalid URL. Please ensure it starts with http:// or https:// and is followed by a valid domain."
+    fi
+done
 
 # Check if SSL certificate already exists
 if [ ! -f "/etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem" ]; then
@@ -68,6 +90,11 @@ if [ -d "/root/ginrummy-front" ]; then
 else
     git clone git@github.com:SimonMayer/ginrummy-front.git /root/ginrummy-front && cd /root/ginrummy-front
 fi
+
+# Create /root/ginrummy-front/.env.local with VUE_APP_BASE_URL set
+cat <<EOL > /root/ginrummy-front/.env.local
+VUE_APP_BASE_URL=$BASE_URL
+EOL
 
 # Install npm and vue-cli-service
 apt install npm -y
