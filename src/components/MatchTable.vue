@@ -88,10 +88,15 @@ import turnsService from '@/services/turnsService';
 import matchesService from '@/services/matchesService';
 import roundsService from '@/services/roundsService';
 import SSEService from '@/services/sseService';
+import canActionsMixin from '@/mixins/canActionsMixin.js';
+import handSelectionMixin from '@/mixins/handSelectionMixin.js';
+import discardPileMixin from '@/mixins/discardPileMixin.js';
+import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
 
 export default {
   name: 'MatchTable',
   components: { PlayedMeld, StockPile, DiscardPile, SelfMatchPlayer, NonSelfMatchPlayer },
+  mixins: [canActionsMixin, handSelectionMixin, discardPileMixin, meldSelectionMixin],
   props: {
     matchId: { type: Number, required: true },
     players: { type: Array, required: true },
@@ -186,124 +191,9 @@ export default {
     }
   },
   methods: {
-    hasNoHandCardsSelected() {
-      return this.getSelectedHandCardCount() === 0;
-    },
-    hasOneHandCardSelected() {
-      return this.getSelectedHandCardCount() === 1;
-    },
-    hasAllHandCardsSelected() {
-      return this.getSelectedHandCardCount() === this.myHand.length;
-    },
-    isCardAvailableForHandAfterDrawMultipleAction() {
-      const selectedCardCount = this.getSelectedHandCardCount() + this.getSelectedDiscardPileCardCount();
-      return selectedCardCount < (this.myHand.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
-    },
-    hasNoDiscardPileCardsSelected() {
-      return this.getSelectedDiscardPileCardCount() === 0;
-    },
-    hasOneDiscardPileCardSelected() {
-      return this.getSelectedDiscardPileCardCount() === 1;
-    },
-    isOnlyTopDiscardPileCardSelected() {
-      return this.hasOneDiscardPileCardSelected() && this.getTopDiscardPileCard().card_id === this.getSelectedDiscardPileCards()[0]?.card_id;
-    },
-    isAnyDiscardPileCardSelected() {
-      return this.getSelectedDiscardPileCardCount() > 0;
-    },
-    isBottomSelectedDiscardPileCardAtTheTop() {
-      return this.getBottomSelectedCardInDiscardPile().card_id === this.getTopDiscardPileCard().card_id;
-    },
-    areAllCardsOfSameRank(cards) {
-      return cards.every(card => card.rank === cards[0].rank);
-    },
-    areAllCardsOfSameSuit(cards) {
-      return cards.every(card => card.suit === cards[0].suit);
-    },
-    doCardsMakeValidRun(cards) {
-      return this.areAllCardsOfSameSuit(cards) && this.runOrders.some(order => {
-        const ranks = cards.map(card => card.rank);
-        const indices = ranks.map(rank => order.indexOf(rank)).sort((a, b) => a - b);
-        return indices.every((index, i) => i === 0 || index === indices[i - 1] + 1);
-      });
-    },
-    doSelectedHandCardsMakeValidRun() {
-      return this.doCardsMakeValidRun(this.getSelectedHandCards());
-    },
-    isEnoughCardsForMeld(cards) {
-      return cards.length >= this.minimumMeldSize;
-    },
-    isRotationThatAllowsMelds(){
-      return this.rotationNumber >= this.allowMeldsFromRotation;
-    },
-    canAct() {
-      return this.isCurrentUserTurn && !this.loading;
-    },
-    canDraw() {
-      return this.canAct() && !this.hasDrawAction;
-    },
-    canDrawOne() {
-      return this.canDraw() && this.hasNoHandCardsSelected() && !this.selectedMeld;
-    },
-    canDrawMultiple() {
-      return this.canDraw() && this.hasPlayedMeld;
-    },
-    canDrawFromStockPile() {
-      return this.canDrawOne() && this.hasNoDiscardPileCardsSelected();
-    },
-    canDrawOneFromDiscardPile() {
-      return this.canDrawOne() && this.isOnlyTopDiscardPileCardSelected();
-    },
-    canDrawMultipleFromDiscardPile() {
-      return this.canDrawMultiple() &&
-          this.isRotationThatAllowsMelds() &&
-          this.isAnyDiscardPileCardSelected() &&
-          !this.isBottomSelectedDiscardPileCardAtTheTop() &&
-          this.isCardAvailableForHandAfterDrawMultipleAction() &&
-          this.doSelectedCardsFormValidMeld();
-    },
-    canPlayMeld() {
-      return this.canAct() &&
-          this.hasDrawAction &&
-          !this.selectedMeld &&
-          this.isRotationThatAllowsMelds() &&
-          this.isEnoughCardsForMeld(this.getSelectedHandCards()) &&
-          !this.hasAllHandCardsSelected();
-    },
-    canPlayRun() {
-      return this.canPlayMeld() && this.doSelectedHandCardsMakeValidRun();
-    },
-    canPlaySet() {
-      return this.canPlayMeld() && this.areAllCardsOfSameRank(this.getSelectedHandCards());
-    },
-    canExtendMeld() {
-      return this.canAct() &&
-          this.hasDrawAction &&
-          this.hasPlayedMeld &&
-          this.selectedMeld &&
-          this.isRotationThatAllowsMelds() &&
-          !this.hasNoHandCardsSelected() &&
-          !this.hasAllHandCardsSelected() &&
-          this.isValidMeldExtension();
-    },
-    canDiscard() {
-      return this.canAct() && this.hasDrawAction && !this.selectedMeld && this.hasOneHandCardSelected();
-    },
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
-    },
-    doSelectedCardsFormValidMeld() {
-      const allSelectedCards = this.getAllSelectedCards();
-      return this.isEnoughCardsForMeld(allSelectedCards) &&
-          (this.areAllCardsOfSameRank(allSelectedCards) || this.doCardsMakeValidRun(allSelectedCards));
-    },
-    isValidMeldExtension() {
-      if (!this.selectedMeld || this.hasNoHandCardsSelected() || this.hasAllHandCardsSelected()) {
-        return false;
-      }
-      const allCards = [...this.getSelectedMeldCards(), ...this.getSelectedHandCards()];
-      return this.areAllCardsOfSameRank(allCards) || this.doCardsMakeValidRun(allCards);
     },
     cleanupSSE() {
       if (this.sseService) {
@@ -322,63 +212,14 @@ export default {
         hiddenCardCount: player.handSize,
       };
     },
-    getTopDiscardPileCard() {
-      const discardPile = this.match.discard_pile;
-      return discardPile ? discardPile[discardPile.length - 1] : null;
-    },
-    getDiscardPileCardsStartingFromBottomSelectedCard() {
-      const discardPile = this.match.discard_pile;
-      const bottomCardIndex = discardPile.findIndex(card => card.card_id === this.getBottomSelectedCardInDiscardPile().card_id);
-      return discardPile.slice(bottomCardIndex);
-    },
-    getSelectableDiscardPileCards() {
-      return this.canDrawMultiple()
-          ? this.match.discard_pile
-          : this.canDrawOne() ? [this.getTopDiscardPileCard()] : [];
-    },
     getSelectedCards(refName) {
       return this.$refs[refName] ? this.$refs[refName].getSelectedCards() : [];
-    },
-    getAllSelectedCards() {
-      return [...this.getSelectedMeldCards(), ...this.getSelectedHandCards(), ...this.getSelectedDiscardPileCards()];
-    },
-    getSelectedMeldCards() {
-      return this.selectedMeld ? this.selectedMeld.cards : [];
-    },
-    getSelectedDiscardPileCards() {
-      return this.getSelectedCards('discard-pile').map(card => card.cardData);
-    },
-    getSelectedDiscardPileCardCount() {
-      return this.getSelectedDiscardPileCards().length;
-    },
-    getBottomSelectedCardInDiscardPile() {
-      const selectedDiscardPileCards = this.getSelectedDiscardPileCards();
-      return selectedDiscardPileCards ? selectedDiscardPileCards[0] : null
-    },
-    getSelectedHandCards() {
-      return this.getSelectedCards('player-self').map(card => card.cardData);
-    },
-    getSelectedHandCardCount() {
-      return this.getSelectedHandCards().length;
     },
     unselectCardsByRef(refName) {
       const ref = this.$refs[refName];
       if (ref) {
         ref.unselectAllCards();
       }
-    },
-    unselectHandCards() {
-      this.unselectCardsByRef('player-self');
-    },
-    unselectDiscardPileCards() {
-      this.unselectCardsByRef('discard-pile');
-    },
-    unselectMeld() {
-      this.selectedMeld = null;
-    },
-    handleMeldClick(meldId) {
-      const meld = this.allMelds.find(meld => meld.meld_id === meldId);
-      this.selectedMeld = !meld || (this.selectedMeldId === meldId) ? null : meld;
     },
     async loadMatchDetails() {
       try {
