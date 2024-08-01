@@ -1,12 +1,11 @@
 <template>
   <div class="match-dashboard">
-    <ErrorBox v-if="errorTitle" :title="errorTitle" :message="errorMessage" @close="clearErrorBox" />
+    <ErrorBox />
     <LoadingIndicator :visible="loading" />
     <MatchContent
         :match="match"
         :matchId="matchId"
         :signedInUserId="signedInUserId"
-        @error="handleError"
         @match-started="loadMatchDetails"
     />
   </div>
@@ -14,7 +13,6 @@
 
 <script>
 import matchesService from '@/services/matchesService';
-import { setErrorMessage, clearErrorMessage } from '@/utils/errorHandler';
 import ErrorBox from '@/components/ErrorBox.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
 import MatchContent from '@/components/MatchContent.vue';
@@ -37,8 +35,6 @@ export default {
         match_id: null,
         start_time: null,
       },
-      errorTitle: '',
-      errorMessage: '',
       signedInUserId: parseInt(localStorage.getItem('user_id'), 10),
     };
   },
@@ -51,7 +47,7 @@ export default {
     ]);
   },
   methods: {
-    ...mapActions(['setLoading']),
+    ...mapActions(['setLoading', 'setError']),
     async loadData(tasks) {
       for (const { method, errorTitle } of tasks) {
         await this.handleApiCall(method, errorTitle);
@@ -62,8 +58,7 @@ export default {
       try {
         await apiCall();
       } catch (error) {
-        setErrorMessage(this, errorTitle, error);
-        console.error(error);
+        this.setError({title: errorTitle, error});
       } finally {
         this.setLoading(false);
       }
@@ -72,12 +67,6 @@ export default {
       this.match = await matchesService.getMatchDetails(this.matchId);
       this.match.match_id = this.matchId; // Ensure match_id is set
     },
-    handleError(title, error) {
-      setErrorMessage(this, title, error);
-    },
-    clearErrorBox() {
-      clearErrorMessage(this);
-    }
   },
 };
 </script>

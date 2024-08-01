@@ -1,25 +1,29 @@
 <template>
-  <div class="wrapper">
+  <div v-if="hasError" class="wrapper">
     <div class="error-box">
-      <div class="title">{{ title }}</div>
-      <div v-if="message" class="message">{{ message }}</div>
-      <div class="close-button" @click="$emit('close')"></div>
+      <div class="title">{{ errorTitle }}</div>
+      <div v-if="errorMessage" class="message">{{ errorMessage }}</div>
+      <div class="close-button" @click="clearError"></div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
   name: 'ErrorBox',
-  props: {
-    title: {
-      type: String,
-      required: true
+  computed: {
+    ...mapState(['errorTitle', 'error']),
+    hasError() {
+      return !!this.error;
     },
-    message: {
-      type: String,
-      default: ''
+    errorMessage() {
+      return this.error ? (this.error.response?.data?.error || this.error.message || '') : '';
     }
+  },
+  methods: {
+    ...mapActions(['clearError'])
   }
 };
 </script>

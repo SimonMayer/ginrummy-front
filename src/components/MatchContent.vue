@@ -66,17 +66,14 @@ export default {
     await this.loadPlayers();
   },
   methods: {
-    ...mapActions(['setLoading']),
-    handleError(title, error) {
-      this.$emit('error', title, error);
-    },
+    ...mapActions(['setLoading', 'setError']),
     async loadConfig() {
       try {
         const config = await configService.getGameConfig();
         this.minPlayers = config.players.minimumAllowed;
         this.maxPlayers = config.players.maximumAllowed;
       } catch (error) {
-        this.handleError('Failed to fetch game configuration!', error);
+        this.setError({title: 'Failed to fetch game configuration!', error: error});
       }
     },
     async loadPlayers() {
@@ -84,7 +81,7 @@ export default {
       try {
         this.players = await matchesService.getPlayers(this.matchId);
       } catch (error) {
-        this.handleError('Failed to fetch players!', error);
+        this.setError({title: 'Failed to fetch players!', error: error});
       } finally {
         this.setLoading(false);
       }
@@ -97,7 +94,7 @@ export default {
           await this.$refs.matchTable.loadAllData();
           this.$emit('match-started');
         } catch (error) {
-          this.handleError('Failed to start match!', error);
+          this.setError({title: 'Failed to start match!', error: error});
         } finally {
           this.setLoading(false);
         }
@@ -107,7 +104,7 @@ export default {
       try {
         return await usersService.searchUsers(term);
       } catch (error) {
-        this.handleError('Failed to search users!', error);
+        this.setError({title: 'Failed to search users!', error: error});
         return [];
       }
     },
@@ -117,7 +114,7 @@ export default {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
           await this.loadPlayers();
         } catch (error) {
-          this.handleError('Failed to add player!', error);
+          this.setError({title: 'Failed to add player!', error: error});
         }
       } else {
         alert('Maximum number of players reached.');

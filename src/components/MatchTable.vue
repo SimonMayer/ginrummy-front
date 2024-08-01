@@ -92,7 +92,7 @@ import canActionsMixin from '@/mixins/canActionsMixin.js';
 import handSelectionMixin from '@/mixins/handSelectionMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
 import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
-import {mapActions, mapState} from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: 'MatchTable',
@@ -192,7 +192,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setLoading']),
+    ...mapActions(['setLoading', 'setError']),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
@@ -229,7 +229,7 @@ export default {
         this.match = data;
         this.currentRoundId = data.current_round_id;
       } catch (error) {
-        this.$emit('error', 'Failed to fetch match details!', error);
+        this.setError({ title: 'Failed to fetch match details!', error: error });
       }
     },
     async loadCurrentTurn() {
@@ -248,7 +248,7 @@ export default {
           const data = await roundsService.getMyHand(this.currentRoundId);
           this.myHand = data.cards;
         } catch (error) {
-          this.$emit('error', 'Failed to fetch your hand!', error);
+          this.setError({ title: 'Failed to fetch your hand!', error: error });
         }
       }
     },
@@ -274,7 +274,7 @@ export default {
       try {
         await action();
       } catch (error) {
-        this.$emit('error', errorMessage, error);
+        this.setError({ title: errorMessage, error: error });
       } finally {
         this.setLoading(false);
         this.forceRefresh();
@@ -365,9 +365,6 @@ export default {
         await this.loadCurrentRoundData();
       }, 'Failed to start new round!');
     },
-    handleError(title, error) {
-      this.$emit('error', title, error);
-    },
     async loadConfig() {
       try {
         const config = await configService.getGameConfig();
@@ -375,7 +372,7 @@ export default {
         this.minimumMeldSize = config.minimumMeldSize;
         this.runOrders = config.runOrders;
       } catch (error) {
-        this.handleError('Failed to fetch game configuration!', error);
+        this.setError({ title: 'Failed to fetch game configuration!', error: error });
       }
     },
     async loadAllData() {
