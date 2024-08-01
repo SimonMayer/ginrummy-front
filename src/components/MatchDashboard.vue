@@ -1,6 +1,5 @@
 <template>
   <div class="match-dashboard">
-    <LoadingIndicator :visible="loading" />
     <MatchContent
         :match="match"
         :matchId="matchId"
@@ -10,14 +9,12 @@
 </template>
 
 <script>
-import LoadingIndicator from '@/components/LoadingIndicator.vue';
 import MatchContent from '@/components/MatchContent.vue';
 import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'MatchDashboard',
   components: {
-    LoadingIndicator,
     MatchContent,
   },
   data() {
@@ -27,7 +24,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['loading', 'match']),
+    ...mapState(['match']),
   },
   async created() {
     await this.fetchMatch(this.matchId);

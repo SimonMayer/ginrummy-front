@@ -1,19 +1,18 @@
 <template>
   <transition name="fade">
-    <div v-if="visible" class="loading-overlay">
+    <div v-if="loading" class="loading-overlay">
       <div class="spinner"></div>
     </div>
   </transition>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'LoadingIndicator',
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-    },
+  computed: {
+    ...mapState(['loading']),
   },
 };
 </script>
@@ -55,7 +54,7 @@ export default {
   transition: opacity 0.5s ease;
 }
 
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+.fade-enter, .fade-leave-to {
   opacity: 0;
 }
 </style>

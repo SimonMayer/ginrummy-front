@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <NavigationMenu />
+    <LoadingIndicator />
     <ErrorBox />
     <router-view @auth-success="handleAuthSuccess" />
   </div>
@@ -12,12 +13,14 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import ErrorBox from '@/components/ErrorBox.vue';
 import NavigationMenu from '@/components/NavigationMenu.vue';
+import LoadingIndicator from '@/components/LoadingIndicator.vue';
 
 export default {
   name: 'App',
   components: {
     NavigationMenu,
-    ErrorBox
+    ErrorBox,
+    LoadingIndicator
   },
   setup() {
     const router = useRouter();

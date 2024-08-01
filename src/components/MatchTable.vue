@@ -77,15 +77,15 @@
 </template>
 
 <script>
-import configService from "@/services/configService";
 import PlayedMeld from '@/components/PlayedMeld.vue';
 import StockPile from '@/components/StockPile.vue';
 import DiscardPile from '@/components/DiscardPile.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
-import turnsService from '@/services/turnsService';
+import configService from "@/services/configService";
 import roundsService from '@/services/roundsService';
 import SSEService from '@/services/sseService';
+import turnsService from '@/services/turnsService';
 import canActionsMixin from '@/mixins/canActionsMixin.js';
 import handSelectionMixin from '@/mixins/handSelectionMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
