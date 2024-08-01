@@ -106,7 +106,6 @@ export default {
       myHand: [],
       rotationNumber: null,
       currentTurnUserId: null,
-      currentTurnActions: [],
       sseService: null,
       currentTurnId: null,
       latestActionId: null,
@@ -123,7 +122,7 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState(['loading', 'config', 'match', 'matchPlayers']),
+    ...mapState(['loading', 'config', 'match', 'matchPlayers', 'currentTurnActions']),
     ...mapGetters(['currentRoundId']),
     allowMeldsFromRotation() {
       return this.config.allowMeldsFromRotation;
@@ -194,7 +193,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setLoading', 'setError', 'fetchMatch']),
+    ...mapActions(['setLoading', 'setError', 'fetchMatch', 'setCurrentTurnActions', 'appendCurrentTurnAction']),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
@@ -229,7 +228,7 @@ export default {
       if (this.currentRoundId) {
         const data = await roundsService.getCurrentTurn(this.currentRoundId);
         this.currentTurnUserId = data.user_id;
-        this.currentTurnActions = data.actions || [];
+        this.setCurrentTurnActions(data.actions || []);
         this.currentTurnId = data.turn_id;
         this.latestActionId = data.latest_action_id;
         this.rotationNumber = data.rotation_number;
@@ -397,7 +396,7 @@ export default {
               this.latestActionId = data.action.action_id;
 
               if (data.turn_id === this.currentTurnId) {
-                this.currentTurnActions.push(data.action);
+                this.appendCurrentTurnAction(data.action);
               }
 
               if (newCurrentRoundId !== this.currentRoundId) {

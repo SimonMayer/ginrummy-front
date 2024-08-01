@@ -17,7 +17,8 @@ const store = createStore({
         },
         matches: [],
         match: null,
-        matchPlayers: []
+        matchPlayers: [],
+        currentTurnActions: []
     },
     mutations: {
         SET_AUTHENTICATED(state, payload) {
@@ -45,6 +46,12 @@ const store = createStore({
         },
         SET_MATCH_PLAYERS(state, players) {
             state.matchPlayers = players;
+        },
+        SET_CURRENT_TURN_ACTIONS(state, actions) {
+            state.currentTurnActions = actions;
+        },
+        APPEND_CURRENT_TURN_ACTION(state, action) {
+            state.currentTurnActions.push(action);
         }
     },
     actions: {
@@ -96,6 +103,12 @@ const store = createStore({
                 commit('SET_LOADING', false);
             }
         },
+        async setCurrentTurnActions({ commit }, actions) {
+            commit('SET_CURRENT_TURN_ACTIONS', actions);
+        },
+        appendCurrentTurnAction({ commit }, action) {
+            commit('APPEND_CURRENT_TURN_ACTION', action);
+        },
         signOut({ commit }) {
             localStorage.removeItem('rest_access_token');
             localStorage.removeItem('sse_access_token');
@@ -117,6 +130,7 @@ const store = createStore({
         match: state => state.match,
         matches: state => state.matches,
         matchPlayers: state => state.matchPlayers,
+        currentTurnActions: state => state.currentTurnActions
     }
 });
 
