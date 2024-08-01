@@ -104,11 +104,7 @@ export default {
     return {
       refreshValues: 0,
       myHand: [],
-      rotationNumber: null,
-      currentTurnUserId: null,
       sseService: null,
-      currentTurnId: null,
-      latestActionId: null,
       selectedMeld: null,
     };
   },
@@ -122,7 +118,7 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState(['loading', 'config', 'match', 'matchPlayers', 'currentTurnActions']),
+    ...mapState(['loading', 'config', 'currentTurn', 'latestActionId', 'match', 'matchPlayers']),
     ...mapGetters(['currentRoundId']),
     allowMeldsFromRotation() {
       return this.config.allowMeldsFromRotation;
@@ -153,10 +149,10 @@ export default {
       return this.selectedMeld ? this.selectedMeld.meld_id : null;
     },
     isCurrentUserTurn() {
-      return this.currentTurnUserId === this.signedInUserId;
+      return this.currentTurn.userId === this.signedInUserId;
     },
     hasDrawAction() {
-      return this.currentTurnActions.some(action => action.action_type === 'draw');
+      return this.currentTurn.actions.some(action => action.action_type === 'draw');
     },
     hasPlayedMeld() {
       const selfPlayer = this.matchPlayers.find(player => player.user_id === this.signedInUserId);
@@ -193,7 +189,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setLoading', 'setError', 'fetchMatch', 'setCurrentTurnActions', 'appendCurrentTurnAction']),
+    ...mapActions(['setLoading', 'setError', 'fetchMatch', 'setLatestActionId', 'appendCurrentTurnAction', 'fetchCurrentTurn', 'clearCurrentTurn']),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
@@ -206,7 +202,7 @@ export default {
     transformPlayer(player) {
       return {
         ...player,
-        highlightPlayer: player.user_id === this.currentTurnUserId
+        highlightPlayer: player.user_id === this.currentTurn.userId
       };
     },
     transformNonSelfPlayer(player) {
@@ -222,16 +218,6 @@ export default {
       const ref = this.$refs[refName];
       if (ref) {
         ref.unselectAllCards();
-      }
-    },
-    async loadCurrentTurn() {
-      if (this.currentRoundId) {
-        const data = await roundsService.getCurrentTurn(this.currentRoundId);
-        this.currentTurnUserId = data.user_id;
-        this.setCurrentTurnActions(data.actions || []);
-        this.currentTurnId = data.turn_id;
-        this.latestActionId = data.latest_action_id;
-        this.rotationNumber = data.rotation_number;
       }
     },
     async loadMyHand() {
@@ -377,7 +363,7 @@ export default {
       this.initializeSSE();
     },
     async loadCurrentRoundData() {
-      await this.loadCurrentTurn();
+      await this.fetchCurrentTurn();
       await this.loadMyHand();
       await this.loadCurrentRoundDataForPlayers();
     },
@@ -393,9 +379,9 @@ export default {
               const newCurrentRoundId = data.current_status.round_id;
               const newCurrentTurnId = data.current_status.turn_id;
 
-              this.latestActionId = data.action.action_id;
+              this.setLatestActionId(data.action.action_id);
 
-              if (data.turn_id === this.currentTurnId) {
+              if (data.turn_id === this.currentTurn.id) {
                 this.appendCurrentTurnAction(data.action);
               }
 
@@ -406,9 +392,8 @@ export default {
                 } else {
                   this.loadCurrentRoundData();
                 }
-              } else if (newCurrentTurnId !== this.currentTurnId) {
-                this.currentTurnId = newCurrentTurnId;
-                this.loadCurrentTurn();
+              } else if (newCurrentTurnId !== this.currentTurn.id) {
+                this.fetchCurrentTurn();
                 this.loadCurrentRoundDataForPlayers();
               } else if (['draw', 'play_meld', 'extend_meld'].includes(data.action.action_type)) {
                 // load changes to discard pile, stock pile, and melds — currently these all require reload of round data

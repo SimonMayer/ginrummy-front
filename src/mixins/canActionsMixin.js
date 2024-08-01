@@ -47,9 +47,6 @@ export default {
         isEnoughCardsForMeld(cards) {
             return cards.length >= this.minimumMeldSize;
         },
-        isRotationThatAllowsMelds(){
-            return this.rotationNumber >= this.allowMeldsFromRotation;
-        },
         doSelectedCardsFormValidMeld() {
             const allSelectedCards = this.getAllSelectedCards();
             return this.isEnoughCardsForMeld(allSelectedCards) &&

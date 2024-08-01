@@ -33,7 +33,9 @@ export default {
             return cards.length >= this.minimumMeldSize;
         },
         isRotationThatAllowsMelds(){
-            return this.rotationNumber >= this.allowMeldsFromRotation;
+            return this.currentTurn &&
+                this.currentTurn.rotationNumber != null &&
+                this.currentTurn.rotationNumber >= this.allowMeldsFromRotation;
         },
         doSelectedCardsFormValidMeld() {
             const allSelectedCards = this.getAllSelectedCards();

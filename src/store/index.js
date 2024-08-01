@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 import router from '@/router';
 import matchesService from '@/services/matchesService';
+import roundsService from '@/services/roundsService';
 
 const store = createStore({
     state: {
@@ -15,10 +16,16 @@ const store = createStore({
             minPlayers: 0,
             maxPlayers: 0,
         },
+        currentTurn: {
+            actions: [],
+            userId: null,
+            id: null,
+            rotationNumber: null,
+        },
+        latestActionId: null,
         matches: [],
         match: null,
         matchPlayers: [],
-        currentTurnActions: []
     },
     mutations: {
         SET_AUTHENTICATED(state, payload) {
@@ -47,11 +54,22 @@ const store = createStore({
         SET_MATCH_PLAYERS(state, players) {
             state.matchPlayers = players;
         },
-        SET_CURRENT_TURN_ACTIONS(state, actions) {
-            state.currentTurnActions = actions;
+        SET_CURRENT_TURN(state, turn) {
+            state.currentTurn = turn;
+        },
+        CLEAR_CURRENT_TURN(state) {
+            state.currentTurn = {
+                actions: [],
+                userId: null,
+                id: null,
+                rotationNumber: null,
+            };
         },
         APPEND_CURRENT_TURN_ACTION(state, action) {
-            state.currentTurnActions.push(action);
+            state.currentTurn.actions.push(action);
+        },
+        SET_LATEST_ACTION_ID(state, actionId) {
+            state.latestActionId = actionId;
         }
     },
     actions: {
@@ -103,11 +121,38 @@ const store = createStore({
                 commit('SET_LOADING', false);
             }
         },
-        async setCurrentTurnActions({ commit }, actions) {
-            commit('SET_CURRENT_TURN_ACTIONS', actions);
+        async fetchCurrentTurn({ commit, getters }) {
+            const currentRoundId = getters.currentRoundId;
+            if (!currentRoundId) {
+                commit('CLEAR_CURRENT_TURN');
+                return;
+            }
+
+            commit('SET_LOADING', true);
+            try {
+                const data = await roundsService.getCurrentTurn(currentRoundId);
+                const turn = {
+                    actions: data.actions || [],
+                    userId: data.user_id,
+                    id: data.turn_id,
+                    rotationNumber: data.rotation_number,
+                };
+                commit('SET_CURRENT_TURN', turn);
+                commit('SET_LATEST_ACTION_ID', data.latest_action_id);
+            } catch (error) {
+                commit('SET_ERROR', { title: 'Failed to fetch current turn', error: error });
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        clearCurrentTurn({ commit }) {
+            commit('CLEAR_CURRENT_TURN');
         },
         appendCurrentTurnAction({ commit }, action) {
             commit('APPEND_CURRENT_TURN_ACTION', action);
+        },
+        setLatestActionId({ commit }, actionId) {
+            commit('SET_LATEST_ACTION_ID', actionId);
         },
         signOut({ commit }) {
             localStorage.removeItem('rest_access_token');
@@ -123,14 +168,15 @@ const store = createStore({
         currentRoundId(state) {
             return state.match ? state.match.current_round_id : null;
         },
+        currentTurn: state => state.currentTurn,
         error: state => state.error,
         errorTitle: state => state.errorTitle,
         isAuthenticated: state => state.isAuthenticated,
+        latestActionId: state => state.latestActionId,
         loading: state => state.loading,
         match: state => state.match,
         matches: state => state.matches,
         matchPlayers: state => state.matchPlayers,
-        currentTurnActions: state => state.currentTurnActions
     }
 });
 
