@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'ItemSearch',
   props: {
@@ -50,12 +52,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setLoading', 'setError']),
     async search() {
       if (this.searchTerm.length > 2) {
+        this.setLoading(true);
         try {
           this.searchResults = await this.searchFunction(this.searchTerm);
         } catch (error) {
-          console.error('Search failed:', error);
+          this.setError({ title: 'Search failed', error });
+        } finally {
+          this.setLoading(false);
         }
       } else {
         this.searchResults = [];

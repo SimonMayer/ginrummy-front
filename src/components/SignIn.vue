@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import apiClient from '@/api/axios';
 
 export default {
@@ -21,7 +22,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['setLoading', 'setError']),
     async signIn() {
+      this.setLoading(true);
       try {
         const response = await apiClient.post('/auth/sign-in', {
           username: this.username,
@@ -34,8 +37,9 @@ export default {
 
         this.$emit('auth-success');
       } catch (error) {
-        alert('Sign in failed!');
-        console.error(error);
+        this.setError({title: 'Sign in failed', error});
+      } finally {
+        this.setLoading(false);
       }
     }
   }

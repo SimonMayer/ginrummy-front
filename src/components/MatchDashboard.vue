@@ -1,6 +1,5 @@
 <template>
   <div class="match-dashboard">
-    <ErrorBox />
     <LoadingIndicator :visible="loading" />
     <MatchContent
         :match="match"
@@ -13,7 +12,6 @@
 
 <script>
 import matchesService from '@/services/matchesService';
-import ErrorBox from '@/components/ErrorBox.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
 import MatchContent from '@/components/MatchContent.vue';
 import { mapState, mapActions } from 'vuex';
@@ -21,7 +19,6 @@ import { mapState, mapActions } from 'vuex';
 export default {
   name: 'MatchDashboard',
   components: {
-    ErrorBox,
     LoadingIndicator,
     MatchContent,
   },

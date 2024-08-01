@@ -68,12 +68,15 @@ export default {
   methods: {
     ...mapActions(['setLoading', 'setError']),
     async loadConfig() {
+      this.setLoading(true);
       try {
         const config = await configService.getGameConfig();
         this.minPlayers = config.players.minimumAllowed;
         this.maxPlayers = config.players.maximumAllowed;
       } catch (error) {
         this.setError({title: 'Failed to fetch game configuration!', error: error});
+      } finally {
+        this.setLoading(false);
       }
     },
     async loadPlayers() {

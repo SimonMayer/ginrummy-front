@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <NavigationMenu :isAuthenticated="isAuthenticated" :signOut="signOut" />
+    <ErrorBox />
     <router-view @auth-success="handleAuthSuccess" />
   </div>
 </template>
@@ -8,12 +9,14 @@
 <script>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import ErrorBox from '@/components/ErrorBox.vue';
 import NavigationMenu from '@/components/NavigationMenu.vue';
 
 export default {
   name: 'App',
   components: {
-    NavigationMenu
+    NavigationMenu,
+    ErrorBox
   },
   setup() {
     const isAuthenticated = ref(false);
