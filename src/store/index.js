@@ -26,6 +26,7 @@ const store = createStore({
         matches: [],
         match: null,
         matchPlayers: [],
+        myHand: [],
     },
     mutations: {
         SET_AUTHENTICATED(state, payload) {
@@ -76,6 +77,15 @@ const store = createStore({
         },
         SET_LATEST_ACTION_ID(state, actionId) {
             state.latestActionId = actionId;
+        },
+        SET_MY_HAND(state, hand) {
+            state.myHand = hand;
+        },
+        APPEND_CARDS_TO_MY_HAND(state, cards) {
+            state.myHand.push(...cards);
+        },
+        REMOVE_CARDS_FROM_MY_HAND(state, cardIds) {
+            state.myHand = state.myHand.filter(card => !cardIds.includes(card.card_id));
         }
     },
     actions: {
@@ -170,6 +180,29 @@ const store = createStore({
             localStorage.removeItem('user_id');
             commit('SET_AUTHENTICATED', false);
             router.push('/');
+        },
+        async fetchMyHand({ commit, getters }) {
+            const currentRoundId = getters.currentRoundId;
+            if (!currentRoundId) {
+                commit('SET_MY_HAND', []);
+                return;
+            }
+
+            commit('SET_LOADING', true);
+            try {
+                const data = await roundsService.getMyHand(currentRoundId);
+                commit('SET_MY_HAND', data.cards);
+            } catch (error) {
+                commit('SET_ERROR', { title: 'Failed to fetch your hand!', error });
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        },
+        appendCardsToMyHand({ commit }, cards) {
+            commit('APPEND_CARDS_TO_MY_HAND', cards);
+        },
+        removeCardsFromMyHand({ commit }, cardIds) {
+            commit('REMOVE_CARDS_FROM_MY_HAND', cardIds);
         }
     },
     getters: {
@@ -196,7 +229,8 @@ const store = createStore({
         selfPlayer: (state) => {
             const userId = parseInt(localStorage.getItem('user_id'), 10);
             return state.matchPlayers.find(player => player.user_id === userId);
-        }
+        },
+        myHand: state => state.myHand
     }
 });
 

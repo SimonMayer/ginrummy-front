@@ -59,7 +59,6 @@
               v-if="selfPlayer"
               :key="selfPlayer.user_id"
               :ref="'player-self'"
-              :hand="myHand"
               :selectable="isHandSelectable"
               class="self-player"
               @update:selected="forceRefresh()"
@@ -97,7 +96,6 @@ export default {
   data() {
     return {
       refreshValues: 0,
-      myHand: [],
       sseService: null,
       selectedMeld: null,
     };
@@ -106,13 +104,14 @@ export default {
     this.setLoading(true);
     await this.loadConfig();
     await this.loadAllData();
+    await this.fetchMyHand();
     this.setLoading(false);
   },
   beforeUnmount() {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState(['loading', 'config', 'currentTurn', 'latestActionId', 'match', 'matchPlayers']),
+    ...mapState(['loading', 'config', 'currentTurn', 'latestActionId', 'match', 'matchPlayers', 'myHand']),
     ...mapGetters(['currentRoundId', 'selfPlayer', 'nonSelfPlayers']),
     allowMeldsFromRotation() {
       return this.config.allowMeldsFromRotation;
@@ -172,7 +171,19 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setLoading', 'setError', 'fetchMatch', 'setLatestActionId', 'appendCurrentTurnAction', 'fetchCurrentTurn', 'clearCurrentTurn']),
+    ...mapActions([
+      'setLoading',
+      'setConfig',
+      'setError',
+      'fetchMatch',
+      'setLatestActionId',
+      'appendCurrentTurnAction',
+      'fetchCurrentTurn',
+      'clearCurrentTurn',
+      'fetchMyHand',
+      'appendCardsToMyHand',
+      'removeCardsFromMyHand'
+    ]),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
@@ -189,16 +200,6 @@ export default {
       const ref = this.$refs[refName];
       if (ref) {
         ref.unselectAllCards();
-      }
-    },
-    async loadMyHand() {
-      if (this.currentRoundId) {
-        try {
-          const data = await roundsService.getMyHand(this.currentRoundId);
-          this.myHand = data.cards;
-        } catch (error) {
-          this.setError({title: 'Failed to fetch your hand!', error: error});
-        }
       }
     },
     async loadCurrentRoundDataForPlayers() {
@@ -250,7 +251,7 @@ export default {
           this.match.discard_pile.pop();
         }
         this.unselectDiscardPileCards();
-        this.myHand.push(card);
+        this.appendCardsToMyHand([card]);
       }, `Failed to draw from ${pileType} pile!`);
     },
     async handleDrawMultipleFromDiscardPileClick() {
@@ -269,10 +270,8 @@ export default {
         this.unselectDiscardPileCards();
         this.unselectHandCards();
         this.unselectMeld();
-        this.myHand = this.myHand.filter(handCard => !handCardIds.includes(handCard.card_id));
-        newHandCards.forEach(newHandCard => {
-          this.myHand.push(newHandCard);
-        });
+        this.removeCardsFromMyHand(handCardIds);
+        this.appendCardsToMyHand(newHandCards);
       }, `Failed to draw multiple from discard pile!`);
     },
     async handleDiscardClick() {
@@ -283,7 +282,7 @@ export default {
         const cardId = this.getSelectedHandCards()[0].card_id;
         await turnsService.discardCard(this.matchId, cardId);
         this.unselectHandCards();
-        this.myHand = this.myHand.filter(card => card.card_id !== cardId);
+        this.removeCardsFromMyHand([cardId]);
       }, 'Failed to discard card!');
     },
     async handlePlayMeldClick() {
@@ -294,7 +293,7 @@ export default {
       await this.performAction(async () => {
         const cardIds = this.getSelectedHandCards().map(card => card.card_id);
         await turnsService.playMeld(this.matchId, cardIds, meldType);
-        this.myHand = this.myHand.filter(card => !cardIds.includes(card.card_id));
+        this.removeCardsFromMyHand(cardIds);
       }, `Failed to play meld!`);
     },
     async handleExtendMeldClick() {
@@ -305,7 +304,7 @@ export default {
         const cardIds = this.getSelectedHandCards().map(card => card.card_id);
         await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
         this.unselectMeld();
-        this.myHand = this.myHand.filter(card => !cardIds.includes(card.card_id));
+        this.removeCardsFromMyHand(cardIds);
       }, 'Failed to extend meld!');
     },
     async handleStartNewRound() {
@@ -317,11 +316,7 @@ export default {
     async loadConfig() {
       try {
         const config = await configService.getGameConfig();
-        this.$store.dispatch('setConfig', {
-          allowMeldsFromRotation: config.allowMeldsFromRotation,
-          minimumMeldSize: config.minimumMeldSize,
-          runOrders: config.runOrders
-        });
+        this.setConfig(config);
       } catch (error) {
         this.setError({title: 'Failed to fetch game configuration!', error: error});
       }
@@ -335,7 +330,7 @@ export default {
     },
     async loadCurrentRoundData() {
       await this.fetchCurrentTurn();
-      await this.loadMyHand();
+      await this.fetchMyHand();
       await this.loadCurrentRoundDataForPlayers();
     },
     initializeSSE() {

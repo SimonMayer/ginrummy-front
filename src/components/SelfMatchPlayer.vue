@@ -10,7 +10,7 @@
     <div class="hand">
       <VisibleCard
           ref="visibleCards"
-          v-for="card in hand"
+          v-for="card in myHand"
           :key="card.card_id"
           :cardProp="card"
           :class="['card', { selectable: selectable, selected: isSelected(card) }]"
@@ -25,7 +25,7 @@
 import VisibleCard from '@/components/VisibleCard.vue';
 import NamePlate from "@/components/NamePlate.vue";
 import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'SelfMatchPlayer',
@@ -35,11 +35,11 @@ export default {
   },
   mixins: [visibleCardSelectionMixin],
   props: {
-    hand: Array,
     selectable: Boolean
   },
   computed: {
     ...mapGetters(['selfPlayer']),
+    ...mapState(['myHand'])
   }
 };
 </script>
