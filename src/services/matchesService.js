@@ -7,6 +7,9 @@ const matchesService = {
     async getPlayers(matchId) {
         return await apiService.get(`/matches/${matchId}/players`, 'Failed to fetch players!');
     },
+    async addPlayers(matchId, userIds) {
+        return await apiService.post(`/matches/${matchId}/players`, { user_ids: userIds }, 'Failed to add players!');
+    },
     async startMatch(matchId) {
         return await apiService.post(`/matches/${matchId}/start`, {}, 'Failed to start match!');
     }

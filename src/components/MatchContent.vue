@@ -10,18 +10,30 @@
         @error="handleError"
     />
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
+    <ItemSearch
+        v-if="!match.start_time && players.length < maxPlayers"
+        :placeholder="'Search for a player…'"
+        :searchFunction="searchUsers"
+        :displayProperty="'username'"
+        :excludeItems="players"
+        :excludeProperty="'user_id'"
+        @item-selected="addPlayer"
+    />
   </div>
 </template>
 
 <script>
 import MatchTable from '@/components/MatchTable.vue';
+import ItemSearch from '@/components/ItemSearch.vue';
 import matchesService from '@/services/matchesService';
 import configService from '@/services/configService';
+import usersService from '@/services/usersService';
 
 export default {
   name: 'MatchContent',
   components: {
     MatchTable,
+    ItemSearch,
   },
   props: {
     match: {
@@ -95,6 +107,26 @@ export default {
         } finally {
           this.updateLoading(false);
         }
+      }
+    },
+    async searchUsers(term) {
+      try {
+        return await usersService.searchUsers(term);
+      } catch (error) {
+        this.handleError('Failed to search users!', error);
+        return [];
+      }
+    },
+    async addPlayer(user) {
+      if (this.players.length < this.maxPlayers) {
+        try {
+          await matchesService.addPlayers(this.matchId, [user.user_id]);
+          await this.loadPlayers();
+        } catch (error) {
+          this.handleError('Failed to add player!', error);
+        }
+      } else {
+        alert('Maximum number of players reached.');
       }
     }
   }
