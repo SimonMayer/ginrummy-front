@@ -6,8 +6,6 @@
         :match="match"
         :matchId="matchId"
         :signedInUserId="signedInUserId"
-        :loading="loading"
-        @update-loading="updateLoading"
         @error="handleError"
         @match-started="loadMatchDetails"
     />
@@ -20,6 +18,7 @@ import { setErrorMessage, clearErrorMessage } from '@/utils/errorHandler';
 import ErrorBox from '@/components/ErrorBox.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
 import MatchContent from '@/components/MatchContent.vue';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'MatchDashboard',
@@ -38,11 +37,13 @@ export default {
         match_id: null,
         start_time: null,
       },
-      loading: true,
       errorTitle: '',
       errorMessage: '',
       signedInUserId: parseInt(localStorage.getItem('user_id'), 10),
     };
+  },
+  computed: {
+    ...mapState(['loading'])
   },
   async created() {
     await this.loadData([
@@ -50,35 +51,33 @@ export default {
     ]);
   },
   methods: {
+    ...mapActions(['setLoading']),
     async loadData(tasks) {
-      for (const {method, errorTitle} of tasks) {
+      for (const { method, errorTitle } of tasks) {
         await this.handleApiCall(method, errorTitle);
       }
     },
     async handleApiCall(apiCall, errorTitle) {
-      this.loading = true;
+      this.setLoading(true);
       try {
         await apiCall();
       } catch (error) {
         setErrorMessage(this, errorTitle, error);
         console.error(error);
       } finally {
-        this.loading = false;
+        this.setLoading(false);
       }
     },
     async loadMatchDetails() {
       this.match = await matchesService.getMatchDetails(this.matchId);
       this.match.match_id = this.matchId; // Ensure match_id is set
     },
-    updateLoading(loading) {
-      this.loading = loading;
-    },
     handleError(title, error) {
       setErrorMessage(this, title, error);
     },
     clearErrorBox() {
       clearErrorMessage(this);
-    },
+    }
   },
 };
 </script>

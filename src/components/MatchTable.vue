@@ -92,6 +92,7 @@ import canActionsMixin from '@/mixins/canActionsMixin.js';
 import handSelectionMixin from '@/mixins/handSelectionMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
 import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: 'MatchTable',
@@ -101,7 +102,6 @@ export default {
     matchId: { type: Number, required: true },
     players: { type: Array, required: true },
     signedInUserId: { type: Number, required: true },
-    loading: { type: Boolean, required: true }
   },
   data() {
     return {
@@ -122,15 +122,16 @@ export default {
     };
   },
   async created() {
-    this.$emit('loading', true);
+    this.setLoading(true);
     await this.loadConfig();
     await this.loadAllData();
-    this.$emit('loading', false);
+    this.setLoading(false);
   },
   beforeUnmount() {
     this.cleanupSSE();
   },
   computed: {
+    ...mapState(['loading']),
     selfPlayer() {
       const player = this.players.find(player => player.user_id === this.signedInUserId);
       return player ? this.transformPlayer(player) : null;
@@ -191,6 +192,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setLoading']),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
@@ -268,13 +270,13 @@ export default {
       this.match.discard_pile = data.discard_pile || [];
     },
     async performAction(action, errorMessage) {
-      this.$emit('loading', true);
+      this.setLoading(true);
       try {
         await action();
       } catch (error) {
         this.$emit('error', errorMessage, error);
       } finally {
-        this.$emit('loading', false);
+        this.setLoading(false);
         this.forceRefresh();
       }
     },

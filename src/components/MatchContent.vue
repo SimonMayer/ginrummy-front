@@ -5,8 +5,6 @@
         :matchId="matchId"
         :players="players"
         :signedInUserId="signedInUserId"
-        :loading="loading"
-        @loading="updateLoading"
         @error="handleError"
     />
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
@@ -28,6 +26,7 @@ import ItemSearch from '@/components/ItemSearch.vue';
 import matchesService from '@/services/matchesService';
 import configService from '@/services/configService';
 import usersService from '@/services/usersService';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'MatchContent',
@@ -47,13 +46,10 @@ export default {
     signedInUserId: {
       type: Number,
       required: true
-    },
-    loading: {
-      type: Boolean,
-      required: true
     }
   },
   computed: {
+    ...mapState(['loading']),
     canStartMatch() {
       return this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
     }
@@ -70,9 +66,7 @@ export default {
     await this.loadPlayers();
   },
   methods: {
-    updateLoading(loading) {
-      this.$emit('update-loading', loading);
-    },
+    ...mapActions(['setLoading']),
     handleError(title, error) {
       this.$emit('error', title, error);
     },
@@ -86,18 +80,18 @@ export default {
       }
     },
     async loadPlayers() {
-      this.updateLoading(true);
+      this.setLoading(true);
       try {
         this.players = await matchesService.getPlayers(this.matchId);
       } catch (error) {
         this.handleError('Failed to fetch players!', error);
       } finally {
-        this.updateLoading(false);
+        this.setLoading(false);
       }
     },
     async startMatch() {
       if (!this.loading) {
-        this.updateLoading(true);
+        this.setLoading(true);
         try {
           await matchesService.startMatch(this.matchId);
           await this.$refs.matchTable.loadAllData();
@@ -105,7 +99,7 @@ export default {
         } catch (error) {
           this.handleError('Failed to start match!', error);
         } finally {
-          this.updateLoading(false);
+          this.setLoading(false);
         }
       }
     },
