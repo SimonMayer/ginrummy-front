@@ -12,6 +12,7 @@
 
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'PlayedMeld',
@@ -38,13 +39,13 @@ export default {
     selectable: {
       type: Boolean,
       default: false
-    },
-    runOrders: {
-      type: Array,
-      required: true
     }
   },
   computed: {
+    ...mapState(['config']),
+    runOrders() {
+      return this.config.runOrders;
+    },
     sortedCards() {
       const ranks = this.cards.map(card => card.rank);
       for (let order of this.runOrders) {

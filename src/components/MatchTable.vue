@@ -40,7 +40,6 @@
               :cards="meld.cards"
               :selected="selectedMeldId === meld.meld_id"
               :selectable="isMeldSelectable"
-              :runOrders="runOrders"
               @select:meld="handleMeldClick(meld.meld_id)"
           />
         </div>
@@ -106,9 +105,6 @@ export default {
   data() {
     return {
       refreshValues: 0,
-      allowMeldsFromRotation: null,
-      minimumMeldSize: null,
-      runOrders: [],
       match: null,
       myHand: [],
       rotationNumber: null,
@@ -131,7 +127,16 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState(['loading']),
+    ...mapState(['loading', 'config']),
+    allowMeldsFromRotation() {
+      return this.config.allowMeldsFromRotation;
+    },
+    minimumMeldSize() {
+      return this.config.minimumMeldSize;
+    },
+    runOrders() {
+      return this.config.runOrders;
+    },
     selfPlayer() {
       const player = this.players.find(player => player.user_id === this.signedInUserId);
       return player ? this.transformPlayer(player) : null;
@@ -368,9 +373,11 @@ export default {
     async loadConfig() {
       try {
         const config = await configService.getGameConfig();
-        this.allowMeldsFromRotation = config.allowMeldsFromRotation;
-        this.minimumMeldSize = config.minimumMeldSize;
-        this.runOrders = config.runOrders;
+        this.$store.dispatch('setConfig', {
+          allowMeldsFromRotation: config.allowMeldsFromRotation,
+          minimumMeldSize: config.minimumMeldSize,
+          runOrders: config.runOrders
+        });
       } catch (error) {
         this.setError({ title: 'Failed to fetch game configuration!', error: error });
       }

@@ -4,7 +4,14 @@ const store = createStore({
     state: {
         loading: false,
         errorTitle: '',
-        error: null
+        error: null,
+        config: {
+            runOrders: [],
+            allowMeldsFromRotation: 0,
+            minimumMeldSize: 0,
+            minPlayers: 0,
+            maxPlayers: 0,
+        }
     },
     mutations: {
         SET_LOADING(state, payload) {
@@ -17,6 +24,9 @@ const store = createStore({
         CLEAR_ERROR(state) {
             state.errorTitle = '';
             state.error = null;
+        },
+        SET_CONFIG(state, config) {
+            state.config = config;
         }
     },
     actions: {
@@ -28,12 +38,16 @@ const store = createStore({
         },
         clearError({ commit }) {
             commit('CLEAR_ERROR');
+        },
+        setConfig({ commit }, config) {
+            commit('SET_CONFIG', config);
         }
     },
     getters: {
         loading: state => state.loading,
         errorTitle: state => state.errorTitle,
-        error: state => state.error
+        error: state => state.error,
+        config: state => state.config,
     }
 });
 

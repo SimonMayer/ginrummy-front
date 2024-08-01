@@ -49,15 +49,19 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loading']),
+    ...mapState(['loading', 'config']),
+    minPlayers() {
+      return this.config.minPlayers;
+    },
+    maxPlayers() {
+      return this.config.maxPlayers;
+    },
     canStartMatch() {
       return this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
     }
   },
   data() {
     return {
-      minPlayers: null,
-      maxPlayers: null,
       players: []
     };
   },
@@ -71,8 +75,13 @@ export default {
       this.setLoading(true);
       try {
         const config = await configService.getGameConfig();
-        this.minPlayers = config.players.minimumAllowed;
-        this.maxPlayers = config.players.maximumAllowed;
+        this.$store.dispatch('setConfig', {
+          allowMeldsFromRotation: config.allowMeldsFromRotation,
+          minimumMeldSize: config.minimumMeldSize,
+          runOrders: config.runOrders,
+          minPlayers: config.players.minimumAllowed,
+          maxPlayers: config.players.maximumAllowed
+        });
       } catch (error) {
         this.setError({title: 'Failed to fetch game configuration!', error: error});
       } finally {
