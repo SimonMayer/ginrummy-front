@@ -16,7 +16,7 @@ export default {
     async createMatch() {
       this.setLoading(true);
       try {
-        const response = await apiClient.post('/matches');
+        const response = await apiClient.post('/matches'); // todo — use a service
         alert(`Match created! Match ID: ${response.data.match_id}`);
       } catch (error) {
         this.setError({title: 'Failed to create match', error});

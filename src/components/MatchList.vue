@@ -15,34 +15,25 @@
 </template>
 
 <script>
-import apiClient from '@/api/axios';
+import { mapActions, mapState } from 'vuex';
 import { formatDateTime } from '@/utils/dateFormatter';
 
 export default {
   name: 'MatchList',
-  data() {
-    return {
-      matches: [],
-    };
-  },
-  async created() {
-    try {
-      const response = await apiClient.get('/matches');
-      this.matches = response.data;
-    } catch (error) {
-      alert('Failed to fetch matches!');
-      console.error(error);
-    }
-  },
   computed: {
+    ...mapState(['matches']),
     sortedMatches() {
       return this.matches.slice().sort((a, b) => new Date(b.create_time) - new Date(a.create_time));
     }
   },
+  async created() {
+    await this.fetchMatches();
+  },
   methods: {
+    ...mapActions(['fetchMatches']),
     formatDateTime
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

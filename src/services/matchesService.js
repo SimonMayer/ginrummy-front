@@ -1,6 +1,9 @@
 import apiService from '@/services/apiService';
 
 const matchesService = {
+    async getMatches() {
+        return await apiService.get(`/matches`, 'Failed to fetch match list!');
+    },
     async getMatchDetails(matchId) {
         return await apiService.get(`/matches/${matchId}`, 'Failed to fetch match details!');
     },

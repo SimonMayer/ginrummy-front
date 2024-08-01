@@ -1,19 +1,19 @@
 <template>
-  <div class="match-content">
+  <div class="match-content" v-if="match">
     <MatchTable
         ref="matchTable"
         :matchId="matchId"
-        :players="players"
+        :players="matchPlayers"
         :signedInUserId="signedInUserId"
         @error="handleError"
     />
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
     <ItemSearch
-        v-if="!match.start_time && players.length < maxPlayers"
+        v-if="!match.start_time && matchPlayers.length < maxPlayers"
         :placeholder="'Search for a player…'"
         :searchFunction="searchUsers"
         :displayProperty="'username'"
-        :excludeItems="players"
+        :excludeItems="matchPlayers"
         :excludeProperty="'user_id'"
         @item-selected="addPlayer"
     />
@@ -35,10 +35,6 @@ export default {
     ItemSearch,
   },
   props: {
-    match: {
-      type: Object,
-      required: true
-    },
     matchId: {
       type: Number,
       required: true
@@ -49,7 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loading', 'config']),
+    ...mapState(['loading', 'config', 'match', 'matchPlayers']),
     minPlayers() {
       return this.config.minPlayers;
     },
@@ -57,20 +53,16 @@ export default {
       return this.config.maxPlayers;
     },
     canStartMatch() {
-      return this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
+      return this.match && this.match.create_time && this.matchPlayers.length >= this.minPlayers && this.matchPlayers.length <= this.maxPlayers && !this.match.start_time;
     }
-  },
-  data() {
-    return {
-      players: []
-    };
   },
   async created() {
     await this.loadConfig();
-    await this.loadPlayers();
+    await this.fetchMatch(this.matchId);
+    await this.fetchMatchPlayers(this.matchId);
   },
   methods: {
-    ...mapActions(['setLoading', 'setError']),
+    ...mapActions(['setLoading', 'setError', 'fetchMatch', 'fetchMatchPlayers']),
     async loadConfig() {
       this.setLoading(true);
       try {
@@ -88,23 +80,13 @@ export default {
         this.setLoading(false);
       }
     },
-    async loadPlayers() {
-      this.setLoading(true);
-      try {
-        this.players = await matchesService.getPlayers(this.matchId);
-      } catch (error) {
-        this.setError({title: 'Failed to fetch players!', error: error});
-      } finally {
-        this.setLoading(false);
-      }
-    },
     async startMatch() {
       if (!this.loading) {
         this.setLoading(true);
         try {
           await matchesService.startMatch(this.matchId);
           await this.$refs.matchTable.loadAllData();
-          this.$emit('match-started');
+          this.fetchMatch(this.matchId);
         } catch (error) {
           this.setError({title: 'Failed to start match!', error: error});
         } finally {
@@ -121,10 +103,10 @@ export default {
       }
     },
     async addPlayer(user) {
-      if (this.players.length < this.maxPlayers) {
+      if (this.matchPlayers.length < this.maxPlayers) {
         try {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
-          await this.loadPlayers();
+          await this.fetchMatchPlayers(this.matchId);
         } catch (error) {
           this.setError({title: 'Failed to add player!', error: error});
         }

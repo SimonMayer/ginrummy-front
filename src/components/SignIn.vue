@@ -26,7 +26,7 @@ export default {
     async signIn() {
       this.setLoading(true);
       try {
-        const response = await apiClient.post('/auth/sign-in', {
+        const response = await apiClient.post('/auth/sign-in', { // todo — use a service
           username: this.username,
           password: this.password
         });
