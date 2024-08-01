@@ -35,7 +35,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const appName = 'Gin Rummy';
-    let title = to.meta.title ? appName + ' — ' + to.meta.title : appName;
+    let title = to.meta.title ? to.meta.title + ' — ' + appName : appName;
 
     for (const key in to.params) {
         if (Object.prototype.hasOwnProperty.call(to.params, key)) {

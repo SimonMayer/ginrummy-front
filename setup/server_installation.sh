@@ -52,7 +52,7 @@ fi
 # Prompt to add SSH key to GitHub
 cat ~/.ssh/id_rsa.pub
 echo "Add the above SSH key to your GitHub account."
-echo "Press [Enter] key after adding the SSH key to GitHub..."
+echo "Press [Enter] key after adding the SSH key to GitHub…"
 read -p ""
 
 # List of GitHub SSH key fingerprints
