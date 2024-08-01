@@ -22,7 +22,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['setLoading', 'setError']),
+    ...mapActions(['setLoading', 'setError', 'setAuthenticated']),
     async signIn() {
       this.setLoading(true);
       try {
@@ -34,6 +34,8 @@ export default {
         localStorage.setItem('sse_access_token', response.data.sse_access_token);
         localStorage.setItem('refresh_token', response.data.refresh_token);
         localStorage.setItem('user_id', response.data.user_id);
+
+        this.setAuthenticated(true);
 
         this.$emit('auth-success');
       } catch (error) {

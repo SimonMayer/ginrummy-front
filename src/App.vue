@@ -1,14 +1,15 @@
 <template>
   <div class="container">
-    <NavigationMenu :isAuthenticated="isAuthenticated" :signOut="signOut" />
+    <NavigationMenu />
     <ErrorBox />
     <router-view @auth-success="handleAuthSuccess" />
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import ErrorBox from '@/components/ErrorBox.vue';
 import NavigationMenu from '@/components/NavigationMenu.vue';
 
@@ -19,32 +20,22 @@ export default {
     ErrorBox
   },
   setup() {
-    const isAuthenticated = ref(false);
     const router = useRouter();
+    const store = useStore();
 
     const handleAuthSuccess = () => {
-      isAuthenticated.value = true;
+      store.dispatch('setAuthenticated', true);
       router.push('/matches');
-    };
-
-    const signOut = () => {
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('rest_access_token');
-      localStorage.removeItem('sse_access_token');
-      isAuthenticated.value = false;
-      router.push('/');
     };
 
     onMounted(() => {
       if (localStorage.getItem('refresh_token')) {
-        isAuthenticated.value = true;
+        store.dispatch('setAuthenticated', true);
       }
     });
 
     return {
-      isAuthenticated,
-      handleAuthSuccess,
-      signOut
+      handleAuthSuccess
     };
   }
 };

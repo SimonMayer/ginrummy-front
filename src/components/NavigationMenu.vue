@@ -18,17 +18,15 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
   name: 'NavigationMenu',
-  props: {
-    isAuthenticated: {
-      type: Boolean,
-      required: true
-    },
-    signOut: {
-      type: Function,
-      required: true
-    }
+  computed: {
+    ...mapState(['isAuthenticated'])
+  },
+  methods: {
+    ...mapActions(['signOut'])
   }
 };
 </script>

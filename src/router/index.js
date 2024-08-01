@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import store from '@/store';
 import MatchList from '@/components/MatchList.vue';
 import MatchDashboard from '@/components/MatchDashboard.vue';
 import SignIn from '@/components/SignIn.vue';
@@ -13,18 +14,18 @@ const routes = [
     {
         path: '/create-match',
         component: CreateMatch,
-        meta: { title: 'Create Match' }
+        meta: { title: 'Create Match', requiresAuth: true }
     },
     {
         path: '/matches',
         component: MatchList,
-        meta: { title: 'Your Matches' }
+        meta: { title: 'Your Matches', requiresAuth: true }
     },
     {
         path: '/matches/:id',
         component: MatchDashboard,
         props: true,
-        meta: { title: 'Match #{id}' }
+        meta: { title: 'Match #{id}', requiresAuth: true }
     }
 ];
 
@@ -45,7 +46,12 @@ router.beforeEach((to, from, next) => {
     }
 
     document.title = title;
-    next();
+
+    if (to.matched.some(record => record.meta.requiresAuth) && !store.state.isAuthenticated) {
+        next({ path: '/' });
+    } else {
+        next();
+    }
 });
 
 export default router;
