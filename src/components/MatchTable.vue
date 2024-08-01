@@ -84,14 +84,13 @@ import DiscardPile from '@/components/DiscardPile.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
 import turnsService from '@/services/turnsService';
-import matchesService from '@/services/matchesService';
 import roundsService from '@/services/roundsService';
 import SSEService from '@/services/sseService';
 import canActionsMixin from '@/mixins/canActionsMixin.js';
 import handSelectionMixin from '@/mixins/handSelectionMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
 import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 
 export default {
   name: 'MatchTable',
@@ -99,19 +98,16 @@ export default {
   mixins: [canActionsMixin, handSelectionMixin, discardPileMixin, meldSelectionMixin],
   props: {
     matchId: { type: Number, required: true },
-    players: { type: Array, required: true },
     signedInUserId: { type: Number, required: true },
   },
   data() {
     return {
       refreshValues: 0,
-      match: null,
       myHand: [],
       rotationNumber: null,
       currentTurnUserId: null,
       currentTurnActions: [],
       sseService: null,
-      currentRoundId: null,
       currentTurnId: null,
       latestActionId: null,
       selectedMeld: null,
@@ -127,7 +123,8 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState(['loading', 'config']),
+    ...mapState(['loading', 'config', 'match', 'matchPlayers']),
+    ...mapGetters(['currentRoundId']),
     allowMeldsFromRotation() {
       return this.config.allowMeldsFromRotation;
     },
@@ -138,18 +135,18 @@ export default {
       return this.config.runOrders;
     },
     selfPlayer() {
-      const player = this.players.find(player => player.user_id === this.signedInUserId);
+      const player = this.matchPlayers.find(player => player.user_id === this.signedInUserId);
       return player ? this.transformPlayer(player) : null;
     },
     nonSelfPlayers() {
-      const selfIndex = this.players.findIndex(player => player.user_id === this.signedInUserId);
+      const selfIndex = this.matchPlayers.findIndex(player => player.user_id === this.signedInUserId);
       if (selfIndex === -1) {
-        return this.players.map(this.transformNonSelfPlayer);
+        return this.matchPlayers.map(this.transformNonSelfPlayer);
       }
-      return [...this.players.slice(selfIndex + 1), ...this.players.slice(0, selfIndex)].map(this.transformNonSelfPlayer);
+      return [...this.matchPlayers.slice(selfIndex + 1), ...this.matchPlayers.slice(0, selfIndex)].map(this.transformNonSelfPlayer);
     },
     allMelds() {
-      return this.players.reduce((allMelds, player) => {
+      return this.matchPlayers.reduce((allMelds, player) => {
         return allMelds.concat(player.melds || []);
       }, []);
     },
@@ -163,7 +160,7 @@ export default {
       return this.currentTurnActions.some(action => action.action_type === 'draw');
     },
     hasPlayedMeld() {
-      const selfPlayer = this.players.find(player => player.user_id === this.signedInUserId);
+      const selfPlayer = this.matchPlayers.find(player => player.user_id === this.signedInUserId);
       return selfPlayer && selfPlayer.melds && selfPlayer.melds.length > 0;
     },
     isHandSelectable() {
@@ -197,7 +194,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setLoading', 'setError']),
+    ...mapActions(['setLoading', 'setError', 'fetchMatch']),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
@@ -228,15 +225,6 @@ export default {
         ref.unselectAllCards();
       }
     },
-    async loadMatchDetails() {
-      try {
-        const data = await matchesService.getMatchDetails(this.matchId);
-        this.match = data;
-        this.currentRoundId = data.current_round_id;
-      } catch (error) {
-        this.setError({ title: 'Failed to fetch match details!', error: error });
-      }
-    },
     async loadCurrentTurn() {
       if (this.currentRoundId) {
         const data = await roundsService.getCurrentTurn(this.currentRoundId);
@@ -253,7 +241,7 @@ export default {
           const data = await roundsService.getMyHand(this.currentRoundId);
           this.myHand = data.cards;
         } catch (error) {
-          this.setError({ title: 'Failed to fetch your hand!', error: error });
+          this.setError({title: 'Failed to fetch your hand!', error: error});
         }
       }
     },
@@ -265,7 +253,7 @@ export default {
     async loadRoundDataForPlayers(roundId) {
       const data = await roundsService.getRoundDataForPlayers(roundId);
       const players = data.players;
-      this.players.forEach(player => {
+      this.matchPlayers.forEach(player => {
         const playerData = players.find(p => p.user_id === player.user_id);
         player.handSize = playerData ? playerData.hand.size : 0;
         player.melds = playerData.melds;
@@ -279,7 +267,7 @@ export default {
       try {
         await action();
       } catch (error) {
-        this.setError({ title: errorMessage, error: error });
+        this.setError({title: errorMessage, error: error});
       } finally {
         this.setLoading(false);
         this.forceRefresh();
@@ -332,7 +320,7 @@ export default {
       }, `Failed to draw multiple from discard pile!`);
     },
     async handleDiscardClick() {
-      if(!this.canDiscard()){
+      if (!this.canDiscard()) {
         return;
       }
       await this.performAction(async () => {
@@ -354,7 +342,7 @@ export default {
       }, `Failed to play meld!`);
     },
     async handleExtendMeldClick() {
-      if(!this.canExtendMeld()) {
+      if (!this.canExtendMeld()) {
         return;
       }
       await this.performAction(async () => {
@@ -379,11 +367,13 @@ export default {
           runOrders: config.runOrders
         });
       } catch (error) {
-        this.setError({ title: 'Failed to fetch game configuration!', error: error });
+        this.setError({title: 'Failed to fetch game configuration!', error: error});
       }
     },
     async loadAllData() {
-      await this.loadMatchDetails();
+      if (!this.match) {
+        await this.fetchMatch(this.matchId);
+      }
       await this.loadCurrentRoundData();
       this.initializeSSE();
     },
@@ -411,7 +401,7 @@ export default {
               }
 
               if (newCurrentRoundId !== this.currentRoundId) {
-                this.currentRoundId = newCurrentRoundId;
+                this.fetchMatch(this.matchId); // currently the simplest way to update currentRoundId
                 if (newCurrentRoundId === null) {
                   this.loadRoundDataForPlayers(data.round_id);
                 } else {

@@ -5,7 +5,6 @@
         :matchId="matchId"
         :players="matchPlayers"
         :signedInUserId="signedInUserId"
-        @error="handleError"
     />
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
     <ItemSearch

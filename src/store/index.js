@@ -106,13 +106,16 @@ const store = createStore({
         }
     },
     getters: {
+        config: state => state.config,
+        currentRoundId(state) {
+            return state.match ? state.match.current_round_id : null;
+        },
+        error: state => state.error,
+        errorTitle: state => state.errorTitle,
         isAuthenticated: state => state.isAuthenticated,
         loading: state => state.loading,
-        errorTitle: state => state.errorTitle,
-        error: state => state.error,
-        config: state => state.config,
-        matches: state => state.matches,
         match: state => state.match,
+        matches: state => state.matches,
         matchPlayers: state => state.matchPlayers,
     }
 });
