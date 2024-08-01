@@ -54,6 +54,12 @@ const store = createStore({
         SET_MATCH_PLAYERS(state, players) {
             state.matchPlayers = players;
         },
+        UPDATE_PLAYERS_CURRENT_TURN(state, currentTurnUserId) {
+            state.matchPlayers = state.matchPlayers.map(player => ({
+                ...player,
+                hasCurrentTurn: player.user_id === currentTurnUserId
+            }));
+        },
         SET_CURRENT_TURN(state, turn) {
             state.currentTurn = turn;
         },
@@ -110,11 +116,12 @@ const store = createStore({
                 commit('SET_LOADING', false);
             }
         },
-        async fetchMatchPlayers({ commit }, matchId) {
+        async fetchMatchPlayers({ commit, state }, matchId) {
             commit('SET_LOADING', true);
             try {
                 const matchPlayersData = await matchesService.getPlayers(matchId);
                 commit('SET_MATCH_PLAYERS', matchPlayersData);
+                commit('UPDATE_PLAYERS_CURRENT_TURN', state.currentTurn.userId);
             } catch (error) {
                 commit('SET_ERROR', { title: 'Failed to fetch match players', error: error });
             } finally {
@@ -125,6 +132,7 @@ const store = createStore({
             const currentRoundId = getters.currentRoundId;
             if (!currentRoundId) {
                 commit('CLEAR_CURRENT_TURN');
+                commit('UPDATE_PLAYERS_CURRENT_TURN', null);
                 return;
             }
 
@@ -138,6 +146,7 @@ const store = createStore({
                     rotationNumber: data.rotation_number,
                 };
                 commit('SET_CURRENT_TURN', turn);
+                commit('UPDATE_PLAYERS_CURRENT_TURN', turn.userId);
                 commit('SET_LATEST_ACTION_ID', data.latest_action_id);
             } catch (error) {
                 commit('SET_ERROR', { title: 'Failed to fetch current turn', error: error });
@@ -177,6 +186,17 @@ const store = createStore({
         match: state => state.match,
         matches: state => state.matches,
         matchPlayers: state => state.matchPlayers,
+        getPlayerById: (state) => (id) => {
+            return state.matchPlayers.find(player => player.user_id === id);
+        },
+        nonSelfPlayers: (state) => {
+            const userId = parseInt(localStorage.getItem('user_id'), 10);
+            return state.matchPlayers.filter(player => player.user_id !== userId);
+        },
+        selfPlayer: (state) => {
+            const userId = parseInt(localStorage.getItem('user_id'), 10);
+            return state.matchPlayers.find(player => player.user_id === userId);
+        }
     }
 });
 

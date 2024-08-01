@@ -1,11 +1,11 @@
 <template>
-  <div class="player-item self-player">
-    <div v-if="highlightPlayer" class="highlight-container">
-      <div :class="{ 'highlight': highlightPlayer }"></div>
+  <div v-if="selfPlayer" class="player-item self-player">
+    <div v-if="selfPlayer.hasCurrentTurn" class="highlight-container">
+      <div class="highlight"></div>
     </div>
     <div class="player-details">
-      <div class="username"><NamePlate :name="username" /></div>
-      <div class="score">Score: {{ score }}</div>
+      <div class="username"><NamePlate :name="selfPlayer.username" /></div>
+      <div class="score">Score: {{ selfPlayer.score }}</div>
     </div>
     <div class="hand">
       <VisibleCard
@@ -25,6 +25,7 @@
 import VisibleCard from '@/components/VisibleCard.vue';
 import NamePlate from "@/components/NamePlate.vue";
 import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'SelfMatchPlayer',
@@ -34,11 +35,11 @@ export default {
   },
   mixins: [visibleCardSelectionMixin],
   props: {
-    username: String,
     hand: Array,
-    highlightPlayer: Boolean,
-    selectable: Boolean,
-    score: Number
+    selectable: Boolean
+  },
+  computed: {
+    ...mapGetters(['selfPlayer']),
   }
 };
 </script>

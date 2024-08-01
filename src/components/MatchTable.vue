@@ -6,10 +6,7 @@
             v-for="player in nonSelfPlayers"
             :key="player.user_id"
             :ref="'player-' + player.user_id"
-            :username="player.username"
-            :score="player.score"
-            :hiddenCardCount="player.hiddenCardCount"
-            :highlightPlayer="player.highlightPlayer"
+            :userId="player.user_id"
             class="non-self-player"
         />
       </div>
@@ -62,10 +59,7 @@
               v-if="selfPlayer"
               :key="selfPlayer.user_id"
               :ref="'player-self'"
-              :username="selfPlayer.username"
-              :score="selfPlayer.score"
               :hand="myHand"
-              :highlightPlayer="selfPlayer.highlightPlayer"
               :selectable="isHandSelectable"
               class="self-player"
               @update:selected="forceRefresh()"
@@ -119,7 +113,7 @@ export default {
   },
   computed: {
     ...mapState(['loading', 'config', 'currentTurn', 'latestActionId', 'match', 'matchPlayers']),
-    ...mapGetters(['currentRoundId']),
+    ...mapGetters(['currentRoundId', 'selfPlayer', 'nonSelfPlayers']),
     allowMeldsFromRotation() {
       return this.config.allowMeldsFromRotation;
     },
@@ -128,17 +122,6 @@ export default {
     },
     runOrders() {
       return this.config.runOrders;
-    },
-    selfPlayer() {
-      const player = this.matchPlayers.find(player => player.user_id === this.signedInUserId);
-      return player ? this.transformPlayer(player) : null;
-    },
-    nonSelfPlayers() {
-      const selfIndex = this.matchPlayers.findIndex(player => player.user_id === this.signedInUserId);
-      if (selfIndex === -1) {
-        return this.matchPlayers.map(this.transformNonSelfPlayer);
-      }
-      return [...this.matchPlayers.slice(selfIndex + 1), ...this.matchPlayers.slice(0, selfIndex)].map(this.transformNonSelfPlayer);
     },
     allMelds() {
       return this.matchPlayers.reduce((allMelds, player) => {
@@ -198,18 +181,6 @@ export default {
       if (this.sseService) {
         this.sseService.disconnect();
       }
-    },
-    transformPlayer(player) {
-      return {
-        ...player,
-        highlightPlayer: player.user_id === this.currentTurn.userId
-      };
-    },
-    transformNonSelfPlayer(player) {
-      return {
-        ...this.transformPlayer(player),
-        hiddenCardCount: player.handSize,
-      };
     },
     getSelectedCards(refName) {
       return this.$refs[refName] ? this.$refs[refName].getSelectedCards() : [];
