@@ -1,6 +1,6 @@
 <template>
   <div class="item-search">
-    <input v-model="searchTerm" @input="search" :placeholder="placeholder" />
+    <input v-model="searchInput" @input="onSearchInput" :placeholder="placeholder" />
     <ul v-if="filteredResults.length">
       <li v-for="item in filteredResults" :key="item.id" @click="selectItem(item)" class="search-item">
         {{ item[displayProperty] }}
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'ItemSearch',
@@ -34,17 +34,24 @@ export default {
     excludeProperty: {
       type: String,
       required: true
+    },
+    searchKey: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
-      searchTerm: '',
-      searchResults: []
+      searchInput: ''
     };
   },
   computed: {
+    ...mapGetters({
+      searchTerm: 'getSearchTerm',
+      searchResultsList: 'getSearchResults'
+    }),
     filteredResults() {
-      return this.searchResults.filter(
+      return this.searchResultsList(this.searchKey).filter(
           result => !this.excludeItems.some(
               excludeItem => excludeItem[this.excludeProperty] === result[this.excludeProperty]
           )
@@ -52,24 +59,17 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setLoading', 'setError']),
-    async search() {
-      if (this.searchTerm.length > 2) {
-        this.setLoading(true);
-        try {
-          this.searchResults = await this.searchFunction(this.searchTerm);
-        } catch (error) {
-          this.setError({ title: 'Search failed', error });
-        } finally {
-          this.setLoading(false);
-        }
-      } else {
-        this.searchResults = [];
-      }
+    ...mapActions(['setSearchTerm', 'registerSearchFunction']),
+    onSearchInput() {
+      this.setSearchTerm({key: this.searchKey, term: this.searchInput});
     },
     selectItem(item) {
       this.$emit('item-selected', item);
     }
+  },
+  mounted() {
+    this.searchInput = this.searchTerm(this.searchKey);
+    this.registerSearchFunction({key: this.searchKey, searchFunction: this.searchFunction});
   }
 };
 </script>

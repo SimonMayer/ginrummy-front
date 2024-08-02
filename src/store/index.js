@@ -28,6 +28,8 @@ const store = createStore({
         match: null,
         matchPlayers: [],
         myHand: [],
+        searches: {},
+        searchFunctions: {}
     },
     mutations: {
         SET_AUTHENTICATED(state, payload) {
@@ -87,6 +89,21 @@ const store = createStore({
         },
         REMOVE_CARDS_FROM_MY_HAND(state, cardIds) {
             state.myHand = state.myHand.filter(card => !cardIds.includes(card.card_id));
+        },
+        SET_SEARCH_TERM(state, { key, term }) {
+            if (!state.searches[key]) {
+                state.searches[key] = {};
+            }
+            state.searches[key].term = term;
+        },
+        SET_SEARCH_RESULTS(state, { key, results }) {
+            if (!state.searches[key]) {
+                state.searches[key] = {};
+            }
+            state.searches[key].results = results;
+        },
+        REGISTER_SEARCH_FUNCTION(state, { key, searchFunction }) {
+            state.searchFunctions[key] = searchFunction;
         }
     },
     actions: {
@@ -218,6 +235,29 @@ const store = createStore({
         },
         removeCardsFromMyHand({ commit }, cardIds) {
             commit('REMOVE_CARDS_FROM_MY_HAND', cardIds);
+        },
+        setSearchTerm({ commit, dispatch, state }, { key, term }) {
+            commit('SET_SEARCH_TERM', { key, term });
+            if (term.length >= 3) {
+                dispatch('performSearch', { key, term, searchFunction: state.searchFunctions[key] });
+            } else {
+                commit('SET_SEARCH_RESULTS', { key, results: [] });
+            }
+        },
+        async performSearch({ commit, dispatch }, { key, term, searchFunction }) {
+            dispatch('setLoading', true);
+            commit('SET_SEARCH_TERM', { key, term });
+            try {
+                const results = await searchFunction(term);
+                commit('SET_SEARCH_RESULTS', { key, results });
+            } catch (error) {
+                dispatch('setError', { title: 'Search failed!', error });
+            } finally {
+                dispatch('setLoading', false);
+            }
+        },
+        registerSearchFunction({ commit }, { key, searchFunction }) {
+            commit('REGISTER_SEARCH_FUNCTION', { key, searchFunction });
         }
     },
     getters: {
@@ -245,7 +285,9 @@ const store = createStore({
             const userId = parseInt(localStorage.getItem('user_id'), 10);
             return state.matchPlayers.find(player => player.user_id === userId);
         },
-        myHand: state => state.myHand
+        myHand: state => state.myHand,
+        getSearchTerm: state => key => state.searches[key]?.term || '',
+        getSearchResults: state => key => state.searches[key]?.results || []
     }
 });
 

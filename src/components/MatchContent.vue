@@ -14,6 +14,7 @@
         :displayProperty="'username'"
         :excludeItems="matchPlayers"
         :excludeProperty="'user_id'"
+        :searchKey="'userSearch'"
         @item-selected="addPlayer"
     />
   </div>
