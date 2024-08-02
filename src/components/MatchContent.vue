@@ -23,7 +23,6 @@
 import MatchTable from '@/components/MatchTable.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
 import matchesService from '@/services/matchesService';
-import configService from '@/services/configService';
 import usersService from '@/services/usersService';
 import { mapState, mapActions } from 'vuex';
 
@@ -44,41 +43,30 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loading', 'config', 'match', 'matchPlayers']),
+    ...mapState(['loading', 'gameConfig', 'match', 'matchPlayers']),
     minPlayers() {
-      return this.config.minPlayers;
+      return this.gameConfig.minPlayers;
     },
     maxPlayers() {
-      return this.config.maxPlayers;
+      return this.gameConfig.maxPlayers;
     },
     canStartMatch() {
       return this.match && this.match.create_time && this.matchPlayers.length >= this.minPlayers && this.matchPlayers.length <= this.maxPlayers && !this.match.start_time;
     }
   },
   async created() {
-    await this.loadConfig();
+    await this.fetchGameConfig();
     await this.fetchMatch(this.matchId);
     await this.fetchMatchPlayers(this.matchId);
   },
   methods: {
-    ...mapActions(['setLoading', 'setError', 'fetchMatch', 'fetchMatchPlayers']),
-    async loadConfig() {
-      this.setLoading(true);
-      try {
-        const config = await configService.getGameConfig();
-        this.$store.dispatch('setConfig', {
-          allowMeldsFromRotation: config.allowMeldsFromRotation,
-          minimumMeldSize: config.minimumMeldSize,
-          runOrders: config.runOrders,
-          minPlayers: config.players.minimumAllowed,
-          maxPlayers: config.players.maximumAllowed
-        });
-      } catch (error) {
-        this.setError({title: 'Failed to fetch game configuration!', error: error});
-      } finally {
-        this.setLoading(false);
-      }
-    },
+    ...mapActions([
+      'setLoading',
+      'setError',
+      'fetchGameConfig',
+      'fetchMatch',
+      'fetchMatchPlayers'
+    ]),
     async startMatch() {
       if (!this.loading) {
         this.setLoading(true);

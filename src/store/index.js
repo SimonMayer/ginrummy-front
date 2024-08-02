@@ -2,6 +2,7 @@ import { createStore } from 'vuex';
 import router from '@/router';
 import matchesService from '@/services/matchesService';
 import roundsService from '@/services/roundsService';
+import configService from "@/services/configService";
 
 const store = createStore({
     state: {
@@ -9,7 +10,7 @@ const store = createStore({
         loading: false,
         errorTitle: '',
         error: null,
-        config: {
+        gameConfig: {
             runOrders: [],
             allowMeldsFromRotation: 0,
             minimumMeldSize: 0,
@@ -43,8 +44,8 @@ const store = createStore({
             state.errorTitle = '';
             state.error = null;
         },
-        SET_CONFIG(state, config) {
-            state.config = config;
+        SET_GAME_CONFIG(state, gameConfig) {
+            state.gameConfig = gameConfig;
         },
         SET_MATCHES(state, matches) {
             state.matches = matches;
@@ -101,8 +102,22 @@ const store = createStore({
         clearError({ commit }) {
             commit('CLEAR_ERROR');
         },
-        setConfig({ commit }, config) {
-            commit('SET_CONFIG', config);
+        async fetchGameConfig({ commit }) {
+            commit('SET_LOADING', true);
+            try {
+                const configData = await configService.getGameConfig();
+                commit('SET_GAME_CONFIG', {
+                    allowMeldsFromRotation: configData.allowMeldsFromRotation,
+                    minimumMeldSize: configData.minimumMeldSize,
+                    runOrders: configData.runOrders,
+                    minPlayers: configData.players.minimumAllowed,
+                    maxPlayers: configData.players.maximumAllowed
+                });
+            } catch (error) {
+                commit('SET_ERROR', { title: 'Failed to fetch game configuration!', error: error });
+            } finally {
+                commit('SET_LOADING', false);
+            }
         },
         async fetchMatches({ commit }) {
             commit('SET_LOADING', true);
@@ -110,7 +125,7 @@ const store = createStore({
                 const matchesData = await matchesService.getMatches();
                 commit('SET_MATCHES', matchesData);
             } catch (error) {
-                commit('SET_ERROR', { title: 'Failed to fetch matches', error: error });
+                commit('SET_ERROR', { title: 'Failed to fetch matches!', error: error });
             } finally {
                 commit('SET_LOADING', false);
             }
@@ -121,7 +136,7 @@ const store = createStore({
                 const match = await matchesService.getMatchDetails(matchId);
                 commit('SET_MATCH', match);
             } catch (error) {
-                commit('SET_ERROR', { title: 'Failed to fetch match details', error: error });
+                commit('SET_ERROR', { title: 'Failed to fetch match details!', error: error });
             } finally {
                 commit('SET_LOADING', false);
             }
@@ -133,7 +148,7 @@ const store = createStore({
                 commit('SET_MATCH_PLAYERS', matchPlayersData);
                 commit('UPDATE_PLAYERS_CURRENT_TURN', state.currentTurn.userId);
             } catch (error) {
-                commit('SET_ERROR', { title: 'Failed to fetch match players', error: error });
+                commit('SET_ERROR', { title: 'Failed to fetch match players!', error: error });
             } finally {
                 commit('SET_LOADING', false);
             }
@@ -159,7 +174,7 @@ const store = createStore({
                 commit('UPDATE_PLAYERS_CURRENT_TURN', turn.userId);
                 commit('SET_LATEST_ACTION_ID', data.latest_action_id);
             } catch (error) {
-                commit('SET_ERROR', { title: 'Failed to fetch current turn', error: error });
+                commit('SET_ERROR', { title: 'Failed to fetch current turn!', error: error });
             } finally {
                 commit('SET_LOADING', false);
             }
@@ -206,13 +221,13 @@ const store = createStore({
         }
     },
     getters: {
-        config: state => state.config,
         currentRoundId(state) {
             return state.match ? state.match.current_round_id : null;
         },
         currentTurn: state => state.currentTurn,
         error: state => state.error,
         errorTitle: state => state.errorTitle,
+        gameConfig: state => state.gameConfig,
         isAuthenticated: state => state.isAuthenticated,
         latestActionId: state => state.latestActionId,
         loading: state => state.loading,

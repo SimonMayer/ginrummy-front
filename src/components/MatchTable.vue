@@ -75,7 +75,6 @@ import StockPile from '@/components/StockPile.vue';
 import DiscardPile from '@/components/DiscardPile.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
-import configService from "@/services/configService";
 import roundsService from '@/services/roundsService';
 import SSEService from '@/services/sseService';
 import turnsService from '@/services/turnsService';
@@ -102,7 +101,7 @@ export default {
   },
   async created() {
     this.setLoading(true);
-    await this.loadConfig();
+    await this.fetchGameConfig();
     await this.loadAllData();
     await this.fetchMyHand();
     this.setLoading(false);
@@ -111,16 +110,16 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState(['loading', 'config', 'currentTurn', 'latestActionId', 'match', 'matchPlayers', 'myHand']),
+    ...mapState(['loading', 'gameConfig', 'currentTurn', 'latestActionId', 'match', 'matchPlayers', 'myHand']),
     ...mapGetters(['currentRoundId', 'selfPlayer', 'nonSelfPlayers']),
     allowMeldsFromRotation() {
-      return this.config.allowMeldsFromRotation;
+      return this.gameConfig.allowMeldsFromRotation;
     },
     minimumMeldSize() {
-      return this.config.minimumMeldSize;
+      return this.gameConfig.minimumMeldSize;
     },
     runOrders() {
-      return this.config.runOrders;
+      return this.gameConfig.runOrders;
     },
     allMelds() {
       return this.matchPlayers.reduce((allMelds, player) => {
@@ -173,8 +172,8 @@ export default {
   methods: {
     ...mapActions([
       'setLoading',
-      'setConfig',
       'setError',
+      'fetchGameConfig',
       'fetchMatch',
       'setLatestActionId',
       'appendCurrentTurnAction',
@@ -312,14 +311,6 @@ export default {
         await roundsService.startRound(this.matchId);
         await this.loadCurrentRoundData();
       }, 'Failed to start new round!');
-    },
-    async loadConfig() {
-      try {
-        const config = await configService.getGameConfig();
-        this.setConfig(config);
-      } catch (error) {
-        this.setError({title: 'Failed to fetch game configuration!', error: error});
-      }
     },
     async loadAllData() {
       if (!this.match) {
