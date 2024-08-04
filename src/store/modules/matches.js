@@ -52,7 +52,7 @@ const actions = {
         try {
             const match = await matchesService.getMatchDetails(matchId);
             commit('SET_MATCH', match);
-            dispatch('currentRound/setRoundId', match.current_round_id, { root: true });
+            dispatch('currentRound/setCurrentRoundId', match.current_round_id, { root: true });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch match details!', error }, { root: true });

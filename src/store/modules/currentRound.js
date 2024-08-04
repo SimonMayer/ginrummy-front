@@ -9,7 +9,7 @@ const mutations = {
 };
 
 const actions = {
-    setRoundId({ commit }, roundId) {
+    setCurrentRoundId({ commit }, roundId) {
         commit('SET_CURRENT_ROUND_ID', roundId);
     },
 };

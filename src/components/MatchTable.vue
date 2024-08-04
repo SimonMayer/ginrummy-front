@@ -174,6 +174,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      setCurrentRoundId: 'currentRound/setCurrentRoundId',
       appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
       clearCurrentTurn: 'currentTurn/clearCurrentTurn',
       fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
@@ -204,31 +205,42 @@ export default {
         ref.unselectAllCards();
       }
     },
-    async loadCurrentRoundDataForPlayers() {
-      if (this.currentRoundId) {
-        this.loadRoundDataForPlayers(this.currentRoundId);
-      }
-    },
     async loadRoundDataForPlayers(roundId) {
-      const data = await roundsService.getRoundDataForPlayers(roundId);
-      const players = data.players;
+      if (!roundId) {
+        this.players.forEach(player => {
+          player.melds = [];
+        });
+        return;
+      }
+      const players = await roundsService.getPlayers(roundId);
+
       this.players.forEach(player => {
         const playerData = players.find(p => p.user_id === player.user_id);
         player.handSize = playerData ? playerData.hand.size : 0;
         player.melds = playerData.melds;
         player.score = playerData.score.total_score;
       });
-      this.match.stock_pile_size = data.stock_pile_size || 0;
-      this.match.discard_pile = data.discard_pile || [];
+    },
+    async loadStockPileSize(roundId) {
+      if (!roundId) {
+        this.match.stock_pile_size = 52;
+        return;
+      }
+      const stockPileSize = await roundsService.getStockPileSize(roundId);
+      this.match.stock_pile_size = stockPileSize.size || 0;
+    },
+    async loadDiscardPile(roundId) {
+      const discardPile = !roundId ? [] : await roundsService.getDiscardPileList(roundId);
+      this.match.discard_pile = discardPile || [];
     },
     async performAction(action, errorMessage) {
-      this.setLoading(true);
+      await this.setLoading(true);
       try {
         await action();
       } catch (error) {
-        this.setError({title: errorMessage, error: error});
+        await this.setError({title: errorMessage, error: error});
       } finally {
-        this.setLoading(false);
+        await this.setLoading(false);
         this.forceRefresh();
       }
     },
@@ -253,7 +265,7 @@ export default {
           this.match.discard_pile.pop();
         }
         this.unselectDiscardPileCards();
-        this.appendCardsToMyHand([card]);
+        await this.appendCardsToMyHand([card]);
       }, `Failed to draw from ${pileType} pile!`);
     },
     async handleDrawMultipleFromDiscardPileClick() {
@@ -272,8 +284,8 @@ export default {
         this.unselectDiscardPileCards();
         this.unselectHandCards();
         this.unselectMeld();
-        this.removeCardsFromMyHand(handCardIds);
-        this.appendCardsToMyHand(newHandCards);
+        await this.removeCardsFromMyHand(handCardIds);
+        await this.appendCardsToMyHand(newHandCards);
       }, `Failed to draw multiple from discard pile!`);
     },
     async handleDiscardClick() {
@@ -284,7 +296,7 @@ export default {
         const cardId = this.getSelectedHandCards()[0].card_id;
         await turnsService.discardCard(this.matchId, cardId);
         this.unselectHandCards();
-        this.removeCardsFromMyHand([cardId]);
+        await this.removeCardsFromMyHand([cardId]);
       }, 'Failed to discard card!');
     },
     async handlePlayMeldClick() {
@@ -295,7 +307,7 @@ export default {
       await this.performAction(async () => {
         const cardIds = this.getSelectedHandCards().map(card => card.card_id);
         await turnsService.playMeld(this.matchId, cardIds, meldType);
-        this.removeCardsFromMyHand(cardIds);
+        await this.removeCardsFromMyHand(cardIds);
       }, `Failed to play meld!`);
     },
     async handleExtendMeldClick() {
@@ -306,22 +318,27 @@ export default {
         const cardIds = this.getSelectedHandCards().map(card => card.card_id);
         await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
         this.unselectMeld();
-        this.removeCardsFromMyHand(cardIds);
+        await this.removeCardsFromMyHand(cardIds);
       }, 'Failed to extend meld!');
     },
     async handleStartNewRound() {
       await this.performAction(async () => {
-        await roundsService.startRound(this.matchId);
+        const roundId = await roundsService.startRound(this.matchId);
+        await this.setCurrentRoundId(roundId);
         await this.fetchCurrentTurn({forceFetch: true});
         await this.fetchMyHand({forceFetch: true});
-        await this.loadCurrentRoundDataForPlayers();
+        await this.loadRoundDataForPlayers(this.currentRoundId);
+        await this.loadStockPileSize(this.currentRoundId);
+        await this.loadDiscardPile(this.currentRoundId);
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
       await this.fetchMatch({matchId: this.matchId, forceFetch: forceFetch});
       await this.fetchCurrentTurn({forceFetch: forceFetch});
       await this.fetchMyHand({forceFetch: forceFetch});
-      await this.loadCurrentRoundDataForPlayers();
+      await this.loadRoundDataForPlayers(this.currentRoundId);
+      await this.loadStockPileSize(this.currentRoundId);
+      await this.loadDiscardPile(this.currentRoundId);
       this.initializeSSE();
     },
     initializeSSE() {
@@ -343,20 +360,33 @@ export default {
               }
 
               if (newCurrentRoundId !== this.currentRoundId) {
-                this.fetchMatch({matchId: this.matchId, forceFetch: true}); // currently the simplest way to update currentRoundId
-                if (newCurrentRoundId === null) {
+                this.setCurrentRoundId(newCurrentRoundId);
+
+                if (this.currentRoundId === null) {
                   this.loadRoundDataForPlayers(data.round_id);
+                  this.loadStockPileSize(data.round_id);
+                  this.loadDiscardPile(data.round_id);
                 } else {
                   this.fetchCurrentTurn({forceFetch: true});
                   this.fetchMyHand({forceFetch: true});
-                  this.loadCurrentRoundDataForPlayers();
+                  this.loadRoundDataForPlayers(this.currentRoundId);
+                  this.loadStockPileSize(this.currentRoundId);
+                  this.loadDiscardPile(this.currentRoundId);
                 }
+
               } else if (newCurrentTurnId !== this.currentTurn.id) {
                 this.fetchCurrentTurn({forceFetch: true});
-                this.loadCurrentRoundDataForPlayers();
-              } else if (['draw', 'play_meld', 'extend_meld'].includes(data.action.action_type)) {
-                // load changes to discard pile, stock pile, and melds — currently these all require reload of round data
-                this.loadCurrentRoundDataForPlayers();
+                this.loadRoundDataForPlayers(this.currentRoundId);
+                this.loadStockPileSize(this.currentRoundId);
+                this.loadDiscardPile(this.currentRoundId);
+
+              } else if (['draw'].includes(data.action.action_type)) {
+                this.loadStockPileSize(this.currentRoundId);
+                this.loadDiscardPile(this.currentRoundId);
+
+              } else if (['play_meld', 'extend_meld'].includes(data.action.action_type)) {
+                // currently the only way to reload meld data
+                this.loadRoundDataForPlayers(this.currentRoundId);
               }
             },
             (error) => {
