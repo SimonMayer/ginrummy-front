@@ -101,9 +101,9 @@ export default {
   },
   async created() {
     this.setLoading(true);
-    await this.fetchGameConfig();
+    await this.fetchGameConfig({});
     await this.loadAllData();
-    await this.fetchMyHand();
+    await this.fetchMyHand({});
     this.setLoading(false);
   },
   beforeUnmount() {
@@ -323,8 +323,8 @@ export default {
       this.initializeSSE();
     },
     async loadCurrentRoundData() {
-      await this.fetchCurrentTurn();
-      await this.fetchMyHand();
+      await this.fetchCurrentTurn({});
+      await this.fetchMyHand({});
       await this.loadCurrentRoundDataForPlayers();
     },
     initializeSSE() {
@@ -353,7 +353,7 @@ export default {
                   this.loadCurrentRoundData();
                 }
               } else if (newCurrentTurnId !== this.currentTurn.id) {
-                this.fetchCurrentTurn();
+                this.fetchCurrentTurn({});
                 this.loadCurrentRoundDataForPlayers();
               } else if (['draw', 'play_meld', 'extend_meld'].includes(data.action.action_type)) {
                 // load changes to discard pile, stock pile, and melds — currently these all require reload of round data

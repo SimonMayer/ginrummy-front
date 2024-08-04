@@ -55,7 +55,7 @@ export default {
     }
   },
   async created() {
-    await this.fetchGameConfig();
+    await this.fetchGameConfig({});
     await this.fetchMatch({matchId: this.matchId});
     await this.fetchPlayers({matchId: this.matchId});
   },
