@@ -30,16 +30,16 @@ const actions = {
             commit('SET_SEARCH_RESULTS', { key, results: [] });
         }
     },
-    async performSearch({ commit }, { key, term, searchFunction }) {
-        commit('loading/SET_LOADING', true, { root: true });
+    async performSearch({ commit, dispatch }, { key, term, searchFunction }) {
+        dispatch('loading/setLoading', true, { root: true });
         commit('SET_SEARCH_TERM', { key, term });
         try {
             const results = await searchFunction(term);
             commit('SET_SEARCH_RESULTS', { key, results });
         } catch (error) {
-            commit('error/SET_ERROR', { title: 'Search failed!', error }, { root: true });
+            dispatch('error/setError', { title: 'Search failed!', error }, { root: true });
         } finally {
-            commit('loading/SET_LOADING', false, { root: true });
+            dispatch('loading/setLoading', false, { root: true });
         }
     },
     registerSearchFunction({ commit }, { key, searchFunction }) {
