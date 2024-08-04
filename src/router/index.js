@@ -47,7 +47,7 @@ router.beforeEach((to, from, next) => {
 
     document.title = title;
 
-    if (to.matched.some(record => record.meta.requiresAuth) && !store.state.isAuthenticated) {
+    if (to.matched.some(record => record.meta.requiresAuth) && !store.state.auth.isAuthenticated) {
         next({ path: '/' });
     } else {
         next();

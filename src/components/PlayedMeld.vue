@@ -42,10 +42,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['config']),
-    runOrders() {
-      return this.config.runOrders;
-    },
+    ...mapState({
+      runOrders: state => state.gameConfig.runOrders,
+    }),
     sortedCards() {
       const ranks = this.cards.map(card => card.rank);
       for (let order of this.runOrders) {

@@ -27,13 +27,13 @@ export default {
     const store = useStore();
 
     const handleAuthSuccess = () => {
-      store.dispatch('setAuthenticated', true);
+      store.dispatch('auth/setAuthenticated', true);
       router.push('/matches');
     };
 
     onMounted(() => {
       if (localStorage.getItem('refresh_token')) {
-        store.dispatch('setAuthenticated', true);
+        store.dispatch('auth/setAuthenticated', true);
       }
     });
 

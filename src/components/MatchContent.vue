@@ -3,16 +3,15 @@
     <MatchTable
         ref="matchTable"
         :matchId="matchId"
-        :players="matchPlayers"
         :signedInUserId="signedInUserId"
     />
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
     <ItemSearch
-        v-if="!match.start_time && matchPlayers.length < maxPlayers"
+        v-if="!match.start_time && players.length < maxPlayers"
         :placeholder="'Search for a player…'"
         :searchFunction="searchUsers"
         :displayProperty="'username'"
-        :excludeItems="matchPlayers"
+        :excludeItems="players"
         :excludeProperty="'user_id'"
         :searchKey="'userSearch'"
         @item-selected="addPlayer"
@@ -44,30 +43,30 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loading', 'gameConfig', 'match', 'matchPlayers']),
-    minPlayers() {
-      return this.gameConfig.minPlayers;
-    },
-    maxPlayers() {
-      return this.gameConfig.maxPlayers;
-    },
+    ...mapState({
+      maxPlayers: state => state.gameConfig.maxPlayers,
+      minPlayers: state => state.gameConfig.minPlayers,
+      loading: state => state.loading.loading,
+      match: state => state.matches.match,
+      players: state => state.players.players,
+    }),
     canStartMatch() {
-      return this.match && this.match.create_time && this.matchPlayers.length >= this.minPlayers && this.matchPlayers.length <= this.maxPlayers && !this.match.start_time;
+      return this.match && this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
     }
   },
   async created() {
     await this.fetchGameConfig();
     await this.fetchMatch(this.matchId);
-    await this.fetchMatchPlayers(this.matchId);
+    await this.fetchPlayers(this.matchId);
   },
   methods: {
-    ...mapActions([
-      'setLoading',
-      'setError',
-      'fetchGameConfig',
-      'fetchMatch',
-      'fetchMatchPlayers'
-    ]),
+    ...mapActions({
+      setError: 'error/setError',
+      fetchGameConfig: 'gameConfig/fetchGameConfig',
+      setLoading: 'loading/setLoading',
+      fetchMatch: 'matches/fetchMatch',
+      fetchPlayers: 'players/fetchPlayers',
+    }),
     async startMatch() {
       if (!this.loading) {
         this.setLoading(true);
@@ -91,10 +90,10 @@ export default {
       }
     },
     async addPlayer(user) {
-      if (this.matchPlayers.length < this.maxPlayers) {
+      if (this.players.length < this.maxPlayers) {
         try {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
-          await this.fetchMatchPlayers(this.matchId);
+          await this.fetchPlayers(this.matchId);
         } catch (error) {
           this.setError({title: 'Failed to add player!', error: error});
         }

@@ -31,7 +31,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getPlayerById']),
+    ...mapGetters({
+      getPlayerById: 'players/getPlayerById',
+    }),
     player() {
       return this.getPlayerById(this.userId);
     }

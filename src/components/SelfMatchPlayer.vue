@@ -38,8 +38,12 @@ export default {
     selectable: Boolean
   },
   computed: {
-    ...mapGetters(['selfPlayer']),
-    ...mapState(['myHand'])
+    ...mapGetters({
+      selfPlayer: 'players/selfPlayer',
+    }),
+    ...mapState({
+      myHand: state => state.hand.myHand,
+    }),
   }
 };
 </script>

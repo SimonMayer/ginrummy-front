@@ -14,7 +14,10 @@ import { mapState, mapActions } from 'vuex';
 export default {
   name: 'ErrorBox',
   computed: {
-    ...mapState(['errorTitle', 'error']),
+    ...mapState({
+      error: state => state.error.error,
+      errorTitle: state => state.error.errorTitle,
+    }),
     hasError() {
       return !!this.error;
     },
@@ -23,7 +26,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['clearError'])
+    ...mapActions({
+      clearError: 'error/clearError',
+    }),
   }
 };
 </script>

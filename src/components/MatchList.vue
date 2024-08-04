@@ -21,7 +21,9 @@ import { formatDateTime } from '@/utils/dateFormatter';
 export default {
   name: 'MatchList',
   computed: {
-    ...mapState(['matches']),
+    ...mapState({
+      matches: state => state.matches.matches,
+    }),
     sortedMatches() {
       return this.matches.slice().sort((a, b) => new Date(b.create_time) - new Date(a.create_time));
     }
@@ -30,7 +32,9 @@ export default {
     await this.fetchMatches();
   },
   methods: {
-    ...mapActions(['fetchMatches']),
+    ...mapActions({
+      fetchMatches: 'matches/fetchMatches',
+    }),
     formatDateTime
   }
 };

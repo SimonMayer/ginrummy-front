@@ -47,8 +47,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      searchTerm: 'getSearchTerm',
-      searchResultsList: 'getSearchResults'
+      searchResultsList: 'search/getSearchResults',
+      searchTerm: 'search/getSearchTerm',
     }),
     filteredResults() {
       return this.searchResultsList(this.searchKey).filter(
@@ -59,7 +59,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setSearchTerm', 'registerSearchFunction']),
+    ...mapActions({
+      registerSearchFunction: 'search/registerSearchFunction',
+      setSearchTerm: 'search/setSearchTerm',
+    }),
     onSearchInput() {
       this.setSearchTerm({key: this.searchKey, term: this.searchInput});
     },

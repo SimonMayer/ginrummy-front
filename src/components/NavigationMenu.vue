@@ -23,10 +23,14 @@ import { mapState, mapActions } from 'vuex';
 export default {
   name: 'NavigationMenu',
   computed: {
-    ...mapState(['isAuthenticated'])
+    ...mapState({
+      isAuthenticated: state => state.auth.isAuthenticated,
+    }),
   },
   methods: {
-    ...mapActions(['signOut'])
+    ...mapActions({
+      signOut: 'auth/signOut',
+    })
   }
 };
 </script>

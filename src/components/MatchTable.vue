@@ -110,19 +110,24 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState(['loading', 'gameConfig', 'currentTurn', 'latestActionId', 'match', 'matchPlayers', 'myHand']),
-    ...mapGetters(['currentRoundId', 'selfPlayer', 'nonSelfPlayers']),
-    allowMeldsFromRotation() {
-      return this.gameConfig.allowMeldsFromRotation;
-    },
-    minimumMeldSize() {
-      return this.gameConfig.minimumMeldSize;
-    },
-    runOrders() {
-      return this.gameConfig.runOrders;
-    },
+    ...mapState({
+      currentTurn: state => state.currentTurn.currentTurn,
+      latestActionId: state => state.currentTurn.latestActionId,
+      allowMeldsFromRotation: state => state.gameConfig.allowMeldsFromRotation,
+      minimumMeldSize: state => state.gameConfig.minimumMeldSize,
+      runOrders: state => state.gameConfig.runOrders,
+      myHand: state => state.hand.myHand,
+      loading: state => state.loading.loading,
+      match: state => state.matches.match,
+      players: state => state.players.players,
+    }),
+    ...mapGetters({
+      currentRoundId: 'currentRound/currentRoundId',
+      nonSelfPlayers: 'players/nonSelfPlayers',
+      selfPlayer: 'players/selfPlayer',
+    }),
     allMelds() {
-      return this.matchPlayers.reduce((allMelds, player) => {
+      return this.players.reduce((allMelds, player) => {
         return allMelds.concat(player.melds || []);
       }, []);
     },
@@ -136,7 +141,7 @@ export default {
       return this.currentTurn.actions.some(action => action.action_type === 'draw');
     },
     hasPlayedMeld() {
-      const selfPlayer = this.matchPlayers.find(player => player.user_id === this.signedInUserId);
+      const selfPlayer = this.players.find(player => player.user_id === this.signedInUserId);
       return selfPlayer && selfPlayer.melds && selfPlayer.melds.length > 0;
     },
     isHandSelectable() {
@@ -170,19 +175,19 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'setLoading',
-      'setError',
-      'fetchGameConfig',
-      'fetchMatch',
-      'setLatestActionId',
-      'appendCurrentTurnAction',
-      'fetchCurrentTurn',
-      'clearCurrentTurn',
-      'fetchMyHand',
-      'appendCardsToMyHand',
-      'removeCardsFromMyHand'
-    ]),
+    ...mapActions({
+      appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
+      clearCurrentTurn: 'currentTurn/clearCurrentTurn',
+      fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
+      setLatestActionId: 'currentTurn/setLatestActionId',
+      setError: 'error/setError',
+      fetchGameConfig: 'gameConfig/fetchGameConfig',
+      appendCardsToMyHand: 'hand/appendCardsToMyHand',
+      fetchMyHand: 'hand/fetchMyHand',
+      removeCardsFromMyHand: 'hand/removeCardsFromMyHand',
+      setLoading: 'loading/setLoading',
+      fetchMatch: 'matches/fetchMatch',
+    }),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
@@ -209,7 +214,7 @@ export default {
     async loadRoundDataForPlayers(roundId) {
       const data = await roundsService.getRoundDataForPlayers(roundId);
       const players = data.players;
-      this.matchPlayers.forEach(player => {
+      this.players.forEach(player => {
         const playerData = players.find(p => p.user_id === player.user_id);
         player.handSize = playerData ? playerData.hand.size : 0;
         player.melds = playerData.melds;

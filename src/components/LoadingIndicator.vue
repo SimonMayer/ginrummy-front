@@ -12,7 +12,9 @@ import { mapState } from 'vuex';
 export default {
   name: 'LoadingIndicator',
   computed: {
-    ...mapState(['loading']),
+    ...mapState({
+      loading: state => state.loading.loading,
+    }),
   },
 };
 </script>

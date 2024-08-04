@@ -24,14 +24,19 @@ export default {
     };
   },
   computed: {
-    ...mapState(['match']),
+    ...mapState({
+      match: state => state.matches.match,
+    }),
   },
   async created() {
     await this.fetchMatch(this.matchId);
-    await this.fetchMatchPlayers(this.matchId);
+    await this.fetchPlayers(this.matchId);
   },
   methods: {
-    ...mapActions(['fetchMatch', 'fetchMatchPlayers']),
+    ...mapActions({
+      fetchMatch: 'matches/fetchMatch',
+      fetchPlayers: 'players/fetchPlayers',
+    }),
   },
 };
 </script>

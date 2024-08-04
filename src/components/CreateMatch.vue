@@ -12,7 +12,10 @@ import apiClient from '@/api/axios';
 export default {
   name: 'CreateMatch',
   methods: {
-    ...mapActions(['setLoading', 'setError']),
+    ...mapActions({
+      setError: 'error/setError',
+      setLoading: 'loading/setLoading',
+    }),
     async createMatch() {
       this.setLoading(true);
       try {

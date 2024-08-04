@@ -22,7 +22,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['setLoading', 'setError', 'setAuthenticated']),
+    ...mapActions({
+      setAuthenticated: 'auth/setAuthenticated',
+      setError: 'error/setError',
+      setLoading: 'loading/setLoading',
+    }),
     async signIn() {
       this.setLoading(true);
       try {
