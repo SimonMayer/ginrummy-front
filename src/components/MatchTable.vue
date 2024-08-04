@@ -101,7 +101,7 @@ export default {
   },
   async created() {
     await this.fetchGameConfig({});
-    await this.loadAllData();
+    await this.loadAllData(false);
     await this.fetchMyHand({});
   },
   beforeUnmount() {
@@ -312,18 +312,17 @@ export default {
     async handleStartNewRound() {
       await this.performAction(async () => {
         await roundsService.startRound(this.matchId);
-        await this.loadCurrentRoundData();
+        await this.fetchCurrentTurn({forceFetch: true});
+        await this.fetchMyHand({forceFetch: true});
+        await this.loadCurrentRoundDataForPlayers();
       }, 'Failed to start new round!');
     },
-    async loadAllData() {
-      await this.fetchMatch({matchId: this.matchId});
-      await this.loadCurrentRoundData();
-      this.initializeSSE();
-    },
-    async loadCurrentRoundData() {
-      await this.fetchCurrentTurn({});
-      await this.fetchMyHand({});
+    async loadAllData(forceFetch = false) {
+      await this.fetchMatch({matchId: this.matchId, forceFetch: forceFetch});
+      await this.fetchCurrentTurn({forceFetch: forceFetch});
+      await this.fetchMyHand({forceFetch: forceFetch});
       await this.loadCurrentRoundDataForPlayers();
+      this.initializeSSE();
     },
     initializeSSE() {
       const latestActionId = this.latestActionId === null ? '' : this.latestActionId;
@@ -348,10 +347,12 @@ export default {
                 if (newCurrentRoundId === null) {
                   this.loadRoundDataForPlayers(data.round_id);
                 } else {
-                  this.loadCurrentRoundData();
+                  this.fetchCurrentTurn({forceFetch: true});
+                  this.fetchMyHand({forceFetch: true});
+                  this.loadCurrentRoundDataForPlayers();
                 }
               } else if (newCurrentTurnId !== this.currentTurn.id) {
-                this.fetchCurrentTurn({});
+                this.fetchCurrentTurn({forceFetch: true});
                 this.loadCurrentRoundDataForPlayers();
               } else if (['draw', 'play_meld', 'extend_meld'].includes(data.action.action_type)) {
                 // load changes to discard pile, stock pile, and melds — currently these all require reload of round data

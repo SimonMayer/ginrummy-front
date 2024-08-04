@@ -72,7 +72,7 @@ export default {
         this.setLoading(true);
         try {
           await matchesService.startMatch(this.matchId);
-          await this.$refs.matchTable.loadAllData();
+          await this.$refs.matchTable.loadAllData(true);
           this.fetchMatch({matchId: this.matchId, forceFetch: true});
         } catch (error) {
           this.setError({title: 'Failed to start match!', error: error});
