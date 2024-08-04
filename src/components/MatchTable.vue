@@ -444,7 +444,7 @@ export default {
 
     .discard-pile {
       position: absolute;
-      top: calc((var(--card-width) * 1.5) + var(--base-margin));
+      top: calc((var(--card-width) * 1.2) + var(--base-margin));
       left: calc(2 * var(--base-margin));
     }
   }

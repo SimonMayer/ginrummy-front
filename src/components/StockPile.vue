@@ -87,7 +87,7 @@ export default {
       }
 
       @if $i != 1 {
-        margin-left: calc(var(--card-width) * -1);
+        margin-left: calc(var(--card-width) * -1.01);
       }
     }
   }
