@@ -318,9 +318,7 @@ export default {
       }, 'Failed to start new round!');
     },
     async loadAllData() {
-      if (!this.match) {
-        await this.fetchMatch(this.matchId);
-      }
+      await this.fetchMatch({matchId: this.matchId});
       await this.loadCurrentRoundData();
       this.initializeSSE();
     },
@@ -348,7 +346,7 @@ export default {
               }
 
               if (newCurrentRoundId !== this.currentRoundId) {
-                this.fetchMatch(this.matchId); // currently the simplest way to update currentRoundId
+                this.fetchMatch({matchId: this.matchId, forceFetch: true}); // currently the simplest way to update currentRoundId
                 if (newCurrentRoundId === null) {
                   this.loadRoundDataForPlayers(data.round_id);
                 } else {

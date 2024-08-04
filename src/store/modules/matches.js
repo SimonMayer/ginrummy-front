@@ -1,5 +1,8 @@
 import matchesService from '@/services/matchesService';
 
+const FETCH_MATCHES_TIMEOUT = 60 * 60 * 1000;
+const FETCH_MATCH_TIMEOUT = 60 * 60 * 1000;
+
 const state = {
     matches: [],
     match: null,
@@ -15,27 +18,47 @@ const mutations = {
 };
 
 const actions = {
-    async fetchMatches({ commit }) {
-        commit('loading/SET_LOADING', true, { root: true });
+    async fetchMatches({ dispatch, commit }, forceFetch = false) {
+        const key = 'matches';
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_MATCHES_TIMEOUT, forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('loading/setLoading', true, { root: true });
+        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const matchesData = await matchesService.getMatches();
             commit('SET_MATCHES', matchesData);
+            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
-            commit('error/SET_ERROR', { title: 'Failed to fetch matches!', error }, { root: true });
+            dispatch('error/setError', { title: 'Failed to fetch matches!', error }, { root: true });
+            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
         } finally {
-            commit('loading/SET_LOADING', false, { root: true });
+            dispatch('loading/setLoading', false, { root: true });
         }
     },
-    async fetchMatch({ commit, dispatch }, matchId) {
-        commit('loading/SET_LOADING', true, { root: true });
+    async fetchMatch({ dispatch, commit }, { matchId, forceFetch = false }) {
+        const key = `match_${matchId}`;
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_MATCH_TIMEOUT, forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('loading/setLoading', true, { root: true });
+        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const match = await matchesService.getMatchDetails(matchId);
             commit('SET_MATCH', match);
             dispatch('currentRound/setRoundId', match.current_round_id, { root: true });
+            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
-            commit('error/SET_ERROR', { title: 'Failed to fetch match details!', error }, { root: true });
+            dispatch('error/setError', { title: 'Failed to fetch match details!', error }, { root: true });
+            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
         } finally {
-            commit('loading/SET_LOADING', false, { root: true });
+            dispatch('loading/setLoading', false, { root: true });
         }
     },
 };

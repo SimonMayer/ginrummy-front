@@ -56,7 +56,7 @@ export default {
   },
   async created() {
     await this.fetchGameConfig();
-    await this.fetchMatch(this.matchId);
+    await this.fetchMatch({matchId: this.matchId});
     await this.fetchPlayers(this.matchId);
   },
   methods: {
@@ -73,7 +73,7 @@ export default {
         try {
           await matchesService.startMatch(this.matchId);
           await this.$refs.matchTable.loadAllData();
-          this.fetchMatch(this.matchId);
+          this.fetchMatch({matchId: this.matchId, forceFetch: true});
         } catch (error) {
           this.setError({title: 'Failed to start match!', error: error});
         } finally {

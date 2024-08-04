@@ -29,7 +29,7 @@ export default {
     }),
   },
   async created() {
-    await this.fetchMatch(this.matchId);
+    await this.fetchMatch({matchId: this.matchId});
     await this.fetchPlayers(this.matchId);
   },
   methods: {

@@ -29,7 +29,7 @@ export default {
     }
   },
   async created() {
-    await this.fetchMatches();
+    await this.fetchMatches({forceFetch: true});
   },
   methods: {
     ...mapActions({
