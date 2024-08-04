@@ -2,7 +2,7 @@
   <div class="match-list">
     <h1>Your Matches</h1>
     <ul>
-      <li v-for="match in sortedMatches" :key="match.match_id">
+      <li v-for="match in sortedMatchList" :key="match.match_id">
         <router-link :to="`/matches/${match.match_id}`">
           <p>Match ID: {{ match.match_id }}</p>
           <p>Create Time: {{ formatDateTime(match.create_time) }}</p>
@@ -22,18 +22,18 @@ export default {
   name: 'MatchList',
   computed: {
     ...mapState({
-      matches: state => state.matches.matches,
+      matchList: state => state.matches.matchList,
     }),
-    sortedMatches() {
-      return this.matches.slice().sort((a, b) => new Date(b.create_time) - new Date(a.create_time));
+    sortedMatchList() {
+      return this.matchList.slice().sort((a, b) => new Date(b.create_time) - new Date(a.create_time));
     }
   },
   async created() {
-    await this.fetchMatches({forceFetch: true});
+    await this.fetchMatchList({forceFetch: true});
   },
   methods: {
     ...mapActions({
-      fetchMatches: 'matches/fetchMatches',
+      fetchMatchList: 'matches/fetchMatchList',
     }),
     formatDateTime
   }

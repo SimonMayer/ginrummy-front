@@ -1,16 +1,16 @@
 import matchesService from '@/services/matchesService';
 
-const FETCH_MATCHES_TIMEOUT = 60 * 60 * 1000;
+const FETCH_MATCH_LIST_TIMEOUT = 60 * 60 * 1000;
 const FETCH_MATCH_TIMEOUT = 60 * 60 * 1000;
 
 const state = {
-    matches: [],
+    matchList: [],
     match: null,
 };
 
 const mutations = {
-    SET_MATCHES(state, matches) {
-        state.matches = matches;
+    SET_MATCH_LIST(state, matchList) {
+        state.matchList = matchList;
     },
     SET_MATCH(state, match) {
         state.match = match;
@@ -18,9 +18,9 @@ const mutations = {
 };
 
 const actions = {
-    async fetchMatches({ dispatch, commit }, { forceFetch = false }) {
-        const key = 'matches';
-        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_MATCHES_TIMEOUT, forceFetch }, { root: true });
+    async fetchMatchList({ dispatch, commit }, { forceFetch = false }) {
+        const key = 'matchList';
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_MATCH_LIST_TIMEOUT, forceFetch }, { root: true });
 
         if (!shouldFetch) {
             return;
@@ -29,11 +29,11 @@ const actions = {
         dispatch('loading/setLoading', true, { root: true });
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
-            const matchesData = await matchesService.getMatches();
-            commit('SET_MATCHES', matchesData);
+            const matchList = await matchesService.getMatchList();
+            commit('SET_MATCH_LIST', matchList);
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch matches!', error }, { root: true });
+            dispatch('error/setError', { title: 'Failed to fetch match list!', error }, { root: true });
             dispatch('fetchStatus/recordFailedFetch', key, { root: true });
         } finally {
             dispatch('loading/setLoading', false, { root: true });
@@ -64,7 +64,7 @@ const actions = {
 };
 
 const getters = {
-    matches: state => state.matches,
+    matchList: state => state.matchList,
     match: state => state.match,
 };
 
