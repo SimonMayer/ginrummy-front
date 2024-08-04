@@ -40,6 +40,9 @@ const actions = {
             dispatch('loading/setLoading', false, { root: true });
         }
     },
+    updatePlayersCurrentTurn({ commit }, currentTurnUserId) {
+        commit('UPDATE_PLAYERS_CURRENT_TURN', currentTurnUserId);
+    },
 };
 
 const getters = {

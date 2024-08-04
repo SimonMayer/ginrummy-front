@@ -37,7 +37,7 @@ const actions = {
         const currentRoundId = rootGetters['currentRound/currentRoundId'];
         if (!currentRoundId) {
             commit('CLEAR_CURRENT_TURN');
-            commit('players/UPDATE_PLAYERS_CURRENT_TURN', null, { root: true });
+            dispatch('players/updatePlayersCurrentTurn', null, { root: true });
             return;
         }
 
@@ -59,7 +59,7 @@ const actions = {
                 rotationNumber: data.rotation_number,
             };
             commit('SET_CURRENT_TURN', turn);
-            commit('players/UPDATE_PLAYERS_CURRENT_TURN', turn.userId, { root: true });
+            dispatch('players/updatePlayersCurrentTurn', turn.userId, { root: true });
             commit('SET_LATEST_ACTION_ID', data.latest_action_id);
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
