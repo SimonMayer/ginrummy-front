@@ -100,11 +100,9 @@ export default {
     };
   },
   async created() {
-    this.setLoading(true);
     await this.fetchGameConfig({});
     await this.loadAllData();
     await this.fetchMyHand({});
-    this.setLoading(false);
   },
   beforeUnmount() {
     this.cleanupSSE();
