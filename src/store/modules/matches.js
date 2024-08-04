@@ -18,7 +18,7 @@ const mutations = {
 };
 
 const actions = {
-    async fetchMatches({ dispatch, commit }, forceFetch = false) {
+    async fetchMatches({ dispatch, commit }, { forceFetch = false }) {
         const key = 'matches';
         const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_MATCHES_TIMEOUT, forceFetch }, { root: true });
 

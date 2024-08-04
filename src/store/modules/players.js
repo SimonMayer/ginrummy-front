@@ -1,5 +1,7 @@
 import matchesService from '@/services/matchesService';
 
+const FETCH_PLAYERS_TIMEOUT = 24 * 60 * 60 * 1000;
+
 const state = {
     players: [],
 };
@@ -17,15 +19,25 @@ const mutations = {
 };
 
 const actions = {
-    async fetchPlayers({ commit }, matchId) {
-        commit('loading/SET_LOADING', true, { root: true });
+    async fetchPlayers({ dispatch, commit }, { matchId, forceFetch = false }) {
+        const key = `players_${matchId}`;
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_PLAYERS_TIMEOUT, forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('loading/setLoading', true, { root: true });
+        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const playersData = await matchesService.getPlayers(matchId);
             commit('SET_PLAYERS', playersData);
+            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
-            commit('error/SET_ERROR', { title: 'Failed to fetch match players!', error }, { root: true });
+            dispatch('error/setError', { title: 'Failed to fetch match players!', error }, { root: true });
+            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
         } finally {
-            commit('loading/SET_LOADING', false, { root: true });
+            dispatch('loading/setLoading', false, { root: true });
         }
     },
 };

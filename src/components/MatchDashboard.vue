@@ -30,7 +30,7 @@ export default {
   },
   async created() {
     await this.fetchMatch({matchId: this.matchId});
-    await this.fetchPlayers(this.matchId);
+    await this.fetchPlayers({matchId: this.matchId});
   },
   methods: {
     ...mapActions({

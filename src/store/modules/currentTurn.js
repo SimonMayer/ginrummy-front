@@ -1,5 +1,7 @@
 import roundsService from '@/services/roundsService';
 
+const FETCH_CURRENT_TURN_TIMEOUT = 30 * 1000;
+
 const state = {
     currentTurn: {
         actions: [],
@@ -31,7 +33,7 @@ const mutations = {
 };
 
 const actions = {
-    async fetchCurrentTurn({ commit, rootGetters }) {
+    async fetchCurrentTurn({ commit, dispatch, rootGetters }, { forceFetch = false }) {
         const currentRoundId = rootGetters['currentRound/currentRoundId'];
         if (!currentRoundId) {
             commit('CLEAR_CURRENT_TURN');
@@ -39,7 +41,15 @@ const actions = {
             return;
         }
 
-        commit('loading/SET_LOADING', true, { root: true });
+        const key = 'currentTurn';
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_CURRENT_TURN_TIMEOUT, forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('loading/setLoading', true, { root: true });
+        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const data = await roundsService.getCurrentTurn(currentRoundId);
             const turn = {
@@ -51,10 +61,12 @@ const actions = {
             commit('SET_CURRENT_TURN', turn);
             commit('players/UPDATE_PLAYERS_CURRENT_TURN', turn.userId, { root: true });
             commit('SET_LATEST_ACTION_ID', data.latest_action_id);
+            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
-            commit('error/SET_ERROR', { title: 'Failed to fetch current turn!', error }, { root: true });
+            dispatch('error/setError', { title: 'Failed to fetch current turn!', error }, { root: true });
+            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
         } finally {
-            commit('loading/SET_LOADING', false, { root: true });
+            dispatch('loading/setLoading', false, { root: true });
         }
     },
     clearCurrentTurn({ commit }) {

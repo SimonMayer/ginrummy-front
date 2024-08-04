@@ -57,7 +57,7 @@ export default {
   async created() {
     await this.fetchGameConfig();
     await this.fetchMatch({matchId: this.matchId});
-    await this.fetchPlayers(this.matchId);
+    await this.fetchPlayers({matchId: this.matchId});
   },
   methods: {
     ...mapActions({
@@ -93,7 +93,7 @@ export default {
       if (this.players.length < this.maxPlayers) {
         try {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
-          await this.fetchPlayers(this.matchId);
+          await this.fetchPlayers({matchId: this.matchId, forceFetch: true});
         } catch (error) {
           this.setError({title: 'Failed to add player!', error: error});
         }

@@ -1,5 +1,7 @@
 import roundsService from '@/services/roundsService';
 
+const FETCH_MY_HAND_TIMEOUT = 60 * 1000;
+
 const state = {
     myHand: [],
 };
@@ -17,21 +19,31 @@ const mutations = {
 };
 
 const actions = {
-    async fetchMyHand({ commit, rootGetters }) {
+    async fetchMyHand({ commit, dispatch, rootGetters }, { forceFetch = false }) {
         const currentRoundId = rootGetters['currentRound/currentRoundId'];
         if (!currentRoundId) {
             commit('SET_MY_HAND', []);
             return;
         }
 
-        commit('loading/SET_LOADING', true, { root: true });
+        const key = 'myHand';
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_MY_HAND_TIMEOUT, forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('loading/setLoading', true, { root: true });
+        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const data = await roundsService.getMyHand(currentRoundId);
             commit('SET_MY_HAND', data.cards);
+            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
-            commit('error/SET_ERROR', { title: 'Failed to fetch your hand!', error }, { root: true });
+            dispatch('error/setError', { title: 'Failed to fetch your hand!', error }, { root: true });
+            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
         } finally {
-            commit('loading/SET_LOADING', false, { root: true });
+            dispatch('loading/setLoading', false, { root: true });
         }
     },
     appendCardsToMyHand({ commit }, cards) {
