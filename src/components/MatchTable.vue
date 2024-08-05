@@ -116,14 +116,18 @@ export default {
       runOrders: state => state.gameConfig.runOrders,
       myHand: state => state.hand.myHand,
       loading: state => state.loading.loading,
-      match: state => state.matches.match,
+      getMatch: state => state.matches.match,
       players: state => state.players.players,
     }),
     ...mapGetters({
       currentRoundId: 'currentRound/currentRoundId',
       nonSelfPlayers: 'players/nonSelfPlayers',
       selfPlayer: 'players/selfPlayer',
+      getMatchById: 'matches/getMatchById',
     }),
+    match() {
+      return this.getMatchById(this.matchId);
+    },
     allMelds() {
       return this.players.reduce((allMelds, player) => {
         return allMelds.concat(player.melds || []);
@@ -149,7 +153,7 @@ export default {
       return this.canAct() && this.hasPlayedMeld;
     },
     stockPileDisabled() {
-      return !this.canDrawFromStockPile()
+      return !this.canDrawFromStockPile();
     },
     discardButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed

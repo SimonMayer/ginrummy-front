@@ -10,7 +10,7 @@
 
 <script>
 import MatchContent from '@/components/MatchContent.vue';
-import { mapState, mapActions } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'MatchDashboard',
@@ -24,13 +24,16 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      match: state => state.matches.match,
+    ...mapGetters({
+      getMatchById: 'matches/getMatchById',
     }),
+    match() {
+      return this.getMatchById(this.matchId);
+    },
   },
   async created() {
-    await this.fetchMatch({matchId: this.matchId});
-    await this.fetchPlayers({matchId: this.matchId});
+    await this.fetchMatch({ matchId: this.matchId });
+    await this.fetchPlayers({ matchId: this.matchId });
   },
   methods: {
     ...mapActions({

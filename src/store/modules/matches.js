@@ -5,15 +5,18 @@ const FETCH_MATCH_TIMEOUT = 60 * 60 * 1000;
 
 const state = {
     matchList: [],
-    match: null,
+    matches: {},
 };
 
 const mutations = {
     SET_MATCH_LIST(state, matchList) {
         state.matchList = matchList;
     },
-    SET_MATCH(state, match) {
-        state.match = match;
+    SET_MATCH(state, { matchId, match }) {
+        state.matches = {
+            ...state.matches,
+            [matchId]: match
+        };
     },
 };
 
@@ -51,7 +54,7 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const match = await matchesService.getMatchDetails(matchId);
-            commit('SET_MATCH', match);
+            commit('SET_MATCH', { matchId, match });
             dispatch('currentRound/setCurrentRoundId', match.current_round_id, { root: true });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
@@ -65,7 +68,7 @@ const actions = {
 
 const getters = {
     matchList: state => state.matchList,
-    match: state => state.match,
+    getMatchById: (state) => (matchId) => state.matches[matchId],
 };
 
 export default {

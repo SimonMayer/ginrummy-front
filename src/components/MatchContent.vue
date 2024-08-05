@@ -24,7 +24,7 @@ import MatchTable from '@/components/MatchTable.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
 import matchesService from '@/services/matchesService';
 import usersService from '@/services/usersService';
-import { mapState, mapActions } from 'vuex';
+import {mapState, mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'MatchContent',
@@ -47,17 +47,23 @@ export default {
       maxPlayers: state => state.gameConfig.maxPlayers,
       minPlayers: state => state.gameConfig.minPlayers,
       loading: state => state.loading.loading,
-      match: state => state.matches.match,
+      getMatch: state => state.matches.match,
       players: state => state.players.players,
     }),
+    ...mapGetters({
+      getMatchById: 'matches/getMatchById',
+    }),
+    match() {
+      return this.getMatchById(this.matchId);
+    },
     canStartMatch() {
       return this.match && this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
-    }
+    },
   },
   async created() {
     await this.fetchGameConfig({});
-    await this.fetchMatch({matchId: this.matchId});
-    await this.fetchPlayers({matchId: this.matchId});
+    await this.fetchMatch({ matchId: this.matchId });
+    await this.fetchPlayers({ matchId: this.matchId });
   },
   methods: {
     ...mapActions({
