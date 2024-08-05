@@ -25,7 +25,7 @@
 import VisibleCard from '@/components/VisibleCard.vue';
 import NamePlate from "@/components/NamePlate.vue";
 import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'SelfMatchPlayer',
@@ -35,15 +35,20 @@ export default {
   },
   mixins: [visibleCardSelectionMixin],
   props: {
+    matchId: {
+      type: Number,
+      required: true,
+    },
     selectable: Boolean
   },
   computed: {
     ...mapGetters({
-      selfPlayer: 'players/selfPlayer',
+      myHand: 'hand/myHand',
+      getSelfPlayerByMatchId: 'players/getSelfPlayerByMatchId',
     }),
-    ...mapState({
-      myHand: state => state.hand.myHand,
-    }),
+    selfPlayer() {
+      return this.getSelfPlayerByMatchId(this.matchId);
+    },
   }
 };
 </script>

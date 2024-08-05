@@ -26,9 +26,13 @@ export default {
   computed: {
     ...mapGetters({
       getMatchById: 'matches/getMatchById',
+      getPlayersByMatchId: 'players/getPlayersByMatchId',
     }),
     match() {
       return this.getMatchById(this.matchId);
+    },
+    players() {
+      return this.getPlayersByMatchId(this.matchId);
     },
   },
   async created() {

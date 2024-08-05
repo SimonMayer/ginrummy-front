@@ -25,18 +25,22 @@ export default {
     NamePlate
   },
   props: {
+    matchId: {
+      type: Number,
+      required: true,
+    },
     userId: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     ...mapGetters({
-      getPlayerById: 'players/getPlayerById',
+      getPlayerByMatchAndPlayerIds: 'players/getPlayerByMatchAndPlayerIds',
     }),
     player() {
-      return this.getPlayerById(this.userId);
-    }
+      return this.getPlayerByMatchAndPlayerIds({ matchId: this.matchId, playerId: this.userId });
+    },
   }
 };
 </script>

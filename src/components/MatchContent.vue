@@ -79,7 +79,7 @@ export default {
         try {
           await matchesService.startMatch(this.matchId);
           await this.$refs.matchTable.loadAllData(true);
-          this.fetchMatch({matchId: this.matchId, forceFetch: true});
+          this.fetchMatch({ matchId: this.matchId, forceFetch: true });
         } catch (error) {
           this.setError({title: 'Failed to start match!', error: error});
         } finally {
@@ -99,7 +99,7 @@ export default {
       if (this.players.length < this.maxPlayers) {
         try {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
-          await this.fetchPlayers({matchId: this.matchId, forceFetch: true});
+          await this.fetchPlayers({ matchId: this.matchId, forceFetch: true });
         } catch (error) {
           this.setError({title: 'Failed to add player!', error: error});
         }

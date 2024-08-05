@@ -6,6 +6,7 @@
             v-for="player in nonSelfPlayers"
             :key="player.user_id"
             :ref="'player-' + player.user_id"
+            :matchId="matchId"
             :userId="player.user_id"
             class="non-self-player"
         />
@@ -59,6 +60,7 @@
               v-if="selfPlayer"
               :key="selfPlayer.user_id"
               :ref="'player-self'"
+              :matchId="matchId"
               :selectable="isHandSelectable"
               class="self-player"
               @update:selected="forceRefresh()"
@@ -109,24 +111,39 @@ export default {
   },
   computed: {
     ...mapState({
-      currentTurn: state => state.currentTurn.currentTurn,
-      latestActionId: state => state.currentTurn.latestActionId,
       allowMeldsFromRotation: state => state.gameConfig.allowMeldsFromRotation,
       minimumMeldSize: state => state.gameConfig.minimumMeldSize,
       runOrders: state => state.gameConfig.runOrders,
       myHand: state => state.hand.myHand,
       loading: state => state.loading.loading,
       getMatch: state => state.matches.match,
-      players: state => state.players.players,
     }),
     ...mapGetters({
       currentRoundId: 'currentRound/currentRoundId',
-      nonSelfPlayers: 'players/nonSelfPlayers',
-      selfPlayer: 'players/selfPlayer',
+      getCurrentTurnByMatchId: 'currentTurn/getCurrentTurnByMatchId',
+      getLatestActionIdByMatchId: 'currentTurn/getLatestActionIdByMatchId',
       getMatchById: 'matches/getMatchById',
+      getNonSelfPlayersByMatchId: 'players/getNonSelfPlayersByMatchId',
+      getPlayersByMatchId: 'players/getPlayersByMatchId',
+      getSelfPlayerByMatchId: 'players/getSelfPlayerByMatchId',
     }),
+    currentTurn() {
+      return this.getCurrentTurnByMatchId(this.matchId);
+    },
+    latestActionId() {
+      return this.getLatestActionIdByMatchId(this.matchId);
+    },
     match() {
       return this.getMatchById(this.matchId);
+    },
+    players() {
+      return this.getPlayersByMatchId(this.matchId);
+    },
+    nonSelfPlayers() {
+      return this.getNonSelfPlayersByMatchId(this.matchId);
+    },
+    selfPlayer() {
+      return this.getSelfPlayerByMatchId(this.matchId);
     },
     allMelds() {
       return this.players.reduce((allMelds, player) => {
@@ -180,7 +197,6 @@ export default {
     ...mapActions({
       setCurrentRoundId: 'currentRound/setCurrentRoundId',
       appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
-      clearCurrentTurn: 'currentTurn/clearCurrentTurn',
       fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
       setLatestActionId: 'currentTurn/setLatestActionId',
       setError: 'error/setError',
@@ -329,17 +345,17 @@ export default {
       await this.performAction(async () => {
         const roundId = await roundsService.startRound(this.matchId);
         await this.setCurrentRoundId(roundId);
-        await this.fetchCurrentTurn({forceFetch: true});
-        await this.fetchMyHand({forceFetch: true});
+        await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
+        await this.fetchMyHand({ forceFetch: true });
         await this.loadRoundDataForPlayers(this.currentRoundId);
         await this.loadStockPileSize(this.currentRoundId);
         await this.loadDiscardPile(this.currentRoundId);
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
-      await this.fetchMatch({matchId: this.matchId, forceFetch: forceFetch});
-      await this.fetchCurrentTurn({forceFetch: forceFetch});
-      await this.fetchMyHand({forceFetch: forceFetch});
+      await this.fetchMatch({ matchId: this.matchId, forceFetch: forceFetch });
+      await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: forceFetch });
+      await this.fetchMyHand({ forceFetch: forceFetch });
       await this.loadRoundDataForPlayers(this.currentRoundId);
       await this.loadStockPileSize(this.currentRoundId);
       await this.loadDiscardPile(this.currentRoundId);
@@ -357,10 +373,10 @@ export default {
               const newCurrentRoundId = data.current_status.round_id;
               const newCurrentTurnId = data.current_status.turn_id;
 
-              this.setLatestActionId(data.action.action_id);
+              this.setLatestActionId({ matchId: this.matchId, actionId: data.action.action_id });
 
               if (data.turn_id === this.currentTurn.id) {
-                this.appendCurrentTurnAction(data.action);
+                this.appendCurrentTurnAction({ matchId: this.matchId, action: data.action });
               }
 
               if (newCurrentRoundId !== this.currentRoundId) {
@@ -371,15 +387,15 @@ export default {
                   this.loadStockPileSize(data.round_id);
                   this.loadDiscardPile(data.round_id);
                 } else {
-                  this.fetchCurrentTurn({forceFetch: true});
-                  this.fetchMyHand({forceFetch: true});
+                  this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
+                  this.fetchMyHand({ forceFetch: true });
                   this.loadRoundDataForPlayers(this.currentRoundId);
                   this.loadStockPileSize(this.currentRoundId);
                   this.loadDiscardPile(this.currentRoundId);
                 }
 
               } else if (newCurrentTurnId !== this.currentTurn.id) {
-                this.fetchCurrentTurn({forceFetch: true});
+                this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
                 this.loadRoundDataForPlayers(this.currentRoundId);
                 this.loadStockPileSize(this.currentRoundId);
                 this.loadDiscardPile(this.currentRoundId);
