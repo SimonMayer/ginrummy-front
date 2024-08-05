@@ -1,21 +1,24 @@
 const state = {
-    currentRoundId: null,
+    currentRoundIds: {},
 };
 
 const mutations = {
-    SET_CURRENT_ROUND_ID(state, roundId) {
-        state.currentRoundId = roundId;
+    SET_CURRENT_ROUND_ID(state, { matchId, roundId }) {
+        state.currentRoundIds = {
+            ...state.currentRoundIds,
+            [matchId]: roundId,
+        };
     },
 };
 
 const actions = {
-    setCurrentRoundId({ commit }, roundId) {
-        commit('SET_CURRENT_ROUND_ID', roundId);
+    setCurrentRoundId({ commit }, { matchId, roundId }) {
+        commit('SET_CURRENT_ROUND_ID', { matchId, roundId });
     },
 };
 
 const getters = {
-    currentRoundId: state => state.currentRoundId,
+    getCurrentRoundIdByMatchId: state => matchId => state.currentRoundIds[matchId],
 };
 
 export default {

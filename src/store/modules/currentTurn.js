@@ -38,7 +38,7 @@ const mutations = {
 
 const actions = {
     async fetchCurrentTurn({ commit, dispatch, rootGetters }, { matchId, forceFetch = false }) {
-        const currentRoundId = rootGetters['currentRound/currentRoundId'];
+        const currentRoundId = rootGetters['currentRound/getCurrentRoundIdByMatchId'](matchId);
         if (!currentRoundId) {
             commit('CLEAR_CURRENT_TURN', matchId);
             dispatch('players/updatePlayersCurrentTurn', { matchId, currentTurnUserId: null }, { root: true });

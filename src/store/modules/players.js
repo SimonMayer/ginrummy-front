@@ -14,6 +14,9 @@ const mutations = {
         };
     },
     UPDATE_PLAYERS_CURRENT_TURN(state, { matchId, currentTurnUserId }) {
+        if(!state.players[matchId]) {
+            return;
+        }
         state.players[matchId] = state.players[matchId].map(player => ({
             ...player,
             hasCurrentTurn: player.user_id === currentTurnUserId,

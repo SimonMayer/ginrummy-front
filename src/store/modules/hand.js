@@ -3,30 +3,33 @@ import roundsService from '@/services/roundsService';
 const FETCH_MY_HAND_TIMEOUT = 60 * 1000;
 
 const state = {
-    myHand: [],
+    myHands: {},
 };
 
 const mutations = {
-    SET_MY_HAND(state, hand) {
-        state.myHand = hand;
+    SET_MY_HAND(state, { matchId, hand }) {
+        state.myHands = {
+            ...state.myHands,
+            [matchId]: hand,
+        };
     },
-    APPEND_CARDS_TO_MY_HAND(state, cards) {
-        state.myHand.push(...cards);
+    APPEND_CARDS_TO_MY_HAND(state, { matchId, cards }) {
+        state.myHands[matchId].push(...cards);
     },
-    REMOVE_CARDS_FROM_MY_HAND(state, cardIds) {
-        state.myHand = state.myHand.filter(card => !cardIds.includes(card.card_id));
+    REMOVE_CARDS_FROM_MY_HAND(state, { matchId, cardIds }) {
+        state.myHands[matchId] = state.myHands[matchId].filter(card => !cardIds.includes(card.card_id));
     },
 };
 
 const actions = {
-    async fetchMyHand({ commit, dispatch, rootGetters }, { forceFetch = false }) {
-        const currentRoundId = rootGetters['currentRound/currentRoundId'];
+    async fetchMyHand({ commit, dispatch, rootGetters }, { matchId, forceFetch = false }) {
+        const currentRoundId = rootGetters['currentRound/getCurrentRoundIdByMatchId'](matchId);
         if (!currentRoundId) {
-            commit('SET_MY_HAND', []);
+            commit('SET_MY_HAND', { matchId, hand: [] });
             return;
         }
 
-        const key = 'myHand';
+        const key = `myHand_${matchId}`;
         const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_MY_HAND_TIMEOUT, forceFetch }, { root: true });
 
         if (!shouldFetch) {
@@ -37,7 +40,7 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const data = await roundsService.getMyHand(currentRoundId);
-            commit('SET_MY_HAND', data.cards);
+            commit('SET_MY_HAND', { matchId, hand: data.cards });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch your hand!', error }, { root: true });
@@ -46,16 +49,16 @@ const actions = {
             dispatch('loading/setLoading', false, { root: true });
         }
     },
-    appendCardsToMyHand({ commit }, cards) {
-        commit('APPEND_CARDS_TO_MY_HAND', cards);
+    appendCardsToMyHand({ commit }, { matchId, cards }) {
+        commit('APPEND_CARDS_TO_MY_HAND', { matchId, cards });
     },
-    removeCardsFromMyHand({ commit }, cardIds) {
-        commit('REMOVE_CARDS_FROM_MY_HAND', cardIds);
+    removeCardsFromMyHand({ commit }, { matchId, cardIds }) {
+        commit('REMOVE_CARDS_FROM_MY_HAND', { matchId, cardIds });
     },
 };
 
 const getters = {
-    myHand: state => state.myHand,
+    getMyHandByMatchId: state => matchId => state.myHands[matchId] || [],
 };
 
 export default {

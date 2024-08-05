@@ -43,9 +43,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      myHand: 'hand/myHand',
+      getMyHandByMatchId: 'hand/getMyHandByMatchId',
       getSelfPlayerByMatchId: 'players/getSelfPlayerByMatchId',
     }),
+    myHand() {
+      return this.getMyHandByMatchId(this.matchId);
+    },
     selfPlayer() {
       return this.getSelfPlayerByMatchId(this.matchId);
     },
