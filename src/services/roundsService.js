@@ -7,8 +7,8 @@ const roundsService = {
     async getCurrentTurn(roundId) {
         return await apiService.get(`/rounds/${roundId}/current_turn`, 'Failed to fetch current turn!');
     },
-    async getStockPileSize(roundId) {
-        return await apiService.get(`/rounds/${roundId}/stock_pile`, 'Failed to fetch stock pile size!');
+    async getStockPileData(roundId) {
+        return await apiService.get(`/rounds/${roundId}/stock_pile`, 'Failed to fetch stock pile data!');
     },
     async getDiscardPileList(roundId) {
         return await apiService.get(`/rounds/${roundId}/discard_pile`, 'Failed to fetch discard pile list!');

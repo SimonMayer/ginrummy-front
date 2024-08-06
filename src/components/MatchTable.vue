@@ -15,8 +15,7 @@
     <div class="game-section row">
       <div class="game-column pile-container">
         <StockPile
-            v-if="match.stock_pile_size !== undefined"
-            :size="match.stock_pile_size"
+            :matchId="matchId"
             @click="handleStockPileClick"
             :disabled="stockPileDisabled"
         />
@@ -206,6 +205,7 @@ export default {
       setCurrentRoundId: 'currentRound/setCurrentRoundId',
       appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
       fetchDiscardPile: 'currentRound/fetchDiscardPile',
+      fetchStockPileData: 'currentRound/fetchStockPileData',
       removeTopDiscardPileCard: 'currentRound/removeTopDiscardPileCard',
       fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
       setLatestActionId: 'currentTurn/setLatestActionId',
@@ -251,14 +251,6 @@ export default {
         player.score = playerData.score.total_score;
       });
     },
-    async loadStockPileSize(roundId) {
-      if (!roundId) {
-        this.match.stock_pile_size = 52;
-        return;
-      }
-      const stockPileSize = await roundsService.getStockPileSize(roundId);
-      this.match.stock_pile_size = stockPileSize.size || 0;
-    },
     async performAction(action, errorMessage) {
       await this.setLoading(true);
       try {
@@ -283,7 +275,7 @@ export default {
       await this.performAction(async () => {
         let card;
         if (pileType === 'stock') {
-          card = this.match.stock_pile_size > 0
+          card = this.currentRound.stockPileSize > 0
               ? await turnsService.drawFromStockPile(this.matchId)
               : await turnsService.drawFromEmptyStockPile(this.matchId);
         } else if (pileType === 'discard') {
@@ -354,7 +346,6 @@ export default {
         await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
         await this.fetchMyHand({ matchId: this.matchId, forceFetch: true });
         await this.loadRoundDataForPlayers(this.currentRoundId);
-        await this.loadStockPileSize(this.currentRoundId);
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
@@ -362,7 +353,6 @@ export default {
       await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchMyHand({ matchId: this.matchId, forceFetch: forceFetch });
       await this.loadRoundDataForPlayers(this.currentRoundId);
-      await this.loadStockPileSize(this.currentRoundId);
       this.initializeSSE();
     },
     initializeSSE() {
@@ -388,23 +378,21 @@ export default {
 
                 if (this.currentRoundId === null) {
                   this.loadRoundDataForPlayers(data.round_id);
-                  this.loadStockPileSize(data.round_id);
                 } else {
                   this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
                   this.fetchMyHand({ matchId: this.matchId, forceFetch: true });
                   this.loadRoundDataForPlayers(this.currentRoundId);
-                  this.loadStockPileSize(this.currentRoundId);
                 }
 
               } else if (newCurrentTurnId !== this.currentTurn.id) {
                 this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
                 this.loadRoundDataForPlayers(this.currentRoundId);
-                this.loadStockPileSize(this.currentRoundId);
                 this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
+                this.fetchStockPileData({ matchId: this.matchId, forceFetch: true });
 
               } else if (['draw'].includes(data.action.action_type)) {
-                this.loadStockPileSize(this.currentRoundId);
                 this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
+                this.fetchStockPileData({ matchId: this.matchId, forceFetch: true });
 
               } else if (['play_meld', 'extend_meld'].includes(data.action.action_type)) {
                 // currently the only way to reload meld data

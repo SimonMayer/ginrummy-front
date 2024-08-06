@@ -12,6 +12,7 @@
 
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
+import {mapGetters} from "vuex";
 
 export default {
   name: 'StockPile',
@@ -19,15 +20,25 @@ export default {
     HiddenCard,
   },
   props: {
-    size: {
+    matchId: {
       type: Number,
       required: true,
-      validator: value => value >= 0 // Ensure size is a non-negative number
     },
     disabled: {
       type: Boolean,
       default: false,
     },
+  },
+  computed: {
+    ...mapGetters({
+      getStockPileSizeByMatchId: 'currentRound/getStockPileSizeByMatchId',
+    }),
+    size() {
+      return this.getStockPileSizeByMatchId(this.matchId);
+    },
+    isEmpty() {
+      return this.size === 0;
+    }
   },
   methods: {
     handleClick() {
@@ -36,11 +47,6 @@ export default {
       }
     },
   },
-  computed: {
-    isEmpty() {
-      return this.size === 0;
-    }
-  }
 };
 </script>
 
