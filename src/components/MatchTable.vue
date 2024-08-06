@@ -118,7 +118,7 @@ export default {
       getMatch: state => state.matches.match,
     }),
     ...mapGetters({
-      getCurrentRoundIdByMatchId: 'currentRound/getCurrentRoundIdByMatchId',
+      getCurrentRoundByMatchId: 'currentRound/getCurrentRoundByMatchId',
       getCurrentTurnByMatchId: 'currentTurn/getCurrentTurnByMatchId',
       getLatestActionIdByMatchId: 'currentTurn/getLatestActionIdByMatchId',
       getMyHandByMatchId: 'hand/getMyHandByMatchId',
@@ -127,8 +127,11 @@ export default {
       getPlayersByMatchId: 'players/getPlayersByMatchId',
       getSelfPlayerByMatchId: 'players/getSelfPlayerByMatchId',
     }),
+    currentRound() {
+      return this.getCurrentRoundByMatchId(this.matchId);
+    },
     currentRoundId() {
-      return this.getCurrentRoundIdByMatchId(this.matchId);
+      return this.currentRound?.id;
     },
     currentTurn() {
       return this.getCurrentTurnByMatchId(this.matchId);
