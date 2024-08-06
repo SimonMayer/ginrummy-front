@@ -7,6 +7,15 @@ const state = {
     latestActionIds: {},
 };
 
+function createTurn(id, userId, rotationNumber, actions) {
+    return {
+        id: id,
+        actions: actions,
+        userId: userId,
+        rotationNumber: rotationNumber,
+    };
+}
+
 const mutations = {
     SET_CURRENT_TURN(state, { matchId, turn }) {
         state.currentTurns = {
@@ -17,12 +26,7 @@ const mutations = {
     CLEAR_CURRENT_TURN(state, matchId) {
         state.currentTurns = {
             ...state.currentTurns,
-            [matchId]: {
-                actions: [],
-                userId: null,
-                id: null,
-                rotationNumber: null,
-            },
+            [matchId]: createTurn(null, null, null, []),
         };
     },
     APPEND_CURRENT_TURN_ACTION(state, { matchId, action }) {
@@ -56,12 +60,7 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const data = await roundsService.getCurrentTurn(currentRoundId);
-            const turn = {
-                actions: data.actions || [],
-                userId: data.user_id,
-                id: data.turn_id,
-                rotationNumber: data.rotation_number,
-            };
+            const turn = createTurn(data.turn_id, data.user_id, data.rotation_number, data.actions || []);
             commit('SET_CURRENT_TURN', { matchId, turn });
             dispatch('players/updatePlayersCurrentTurn', { matchId, currentTurnUserId: turn.userId }, { root: true });
             commit('SET_LATEST_ACTION_ID', { matchId, actionId: data.latest_action_id });

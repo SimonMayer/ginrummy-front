@@ -6,25 +6,25 @@ const state = {
     currentRounds: {},
 };
 
+function createRound(id) {
+    return {
+        id: id,
+        discardPile: [],
+        stockPileSize: 52,
+    };
+}
+
 const mutations = {
     SET_CURRENT_ROUND(state, { matchId, roundId }) {
         state.currentRounds = {
             ...state.currentRounds,
-            [matchId]: {
-                id: roundId,
-                discardPile: [],
-                stockPileSize: 52,
-            },
+            [matchId]: createRound(roundId),
         };
     },
     CLEAR_CURRENT_ROUND(state, matchId) {
         state.currentRounds = {
             ...state.currentRounds,
-            [matchId]: {
-                id: null,
-                discardPile: [],
-                stockPileSize: 52,
-            },
+            [matchId]: createRound(null),
         };
     },
     SET_DISCARD_PILE(state, { matchId, discardPile }) {
