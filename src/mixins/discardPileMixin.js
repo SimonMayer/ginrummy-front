@@ -1,17 +1,17 @@
 export default {
     methods: {
         getTopDiscardPileCard() {
-            const discardPile = this.match.discard_pile;
+            const discardPile = this.currentRound.discardPile;
             return discardPile ? discardPile[discardPile.length - 1] : null;
         },
         getDiscardPileCardsStartingFromBottomSelectedCard() {
-            const discardPile = this.match.discard_pile;
+            const discardPile = this.currentRound.discardPile;
             const bottomCardIndex = discardPile.findIndex(card => card.card_id === this.getBottomSelectedCardInDiscardPile().card_id);
             return discardPile.slice(bottomCardIndex);
         },
         getSelectableDiscardPileCards() {
             return this.canDrawMultiple()
-                ? this.match.discard_pile
+                ? this.currentRound.discardPile
                 : this.canDrawOne() ? [this.getTopDiscardPileCard()] : [];
         },
         getSelectedDiscardPileCards() {

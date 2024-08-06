@@ -21,10 +21,9 @@
             :disabled="stockPileDisabled"
         />
         <DiscardPile
-            v-if="match.discard_pile"
             :ref="'discard-pile'"
-            :visibleCards="match.discard_pile"
             :selectableCards="getSelectableDiscardPileCards()"
+            :matchId="matchId"
             @update:selected="forceRefresh()"
         />
       </div>
@@ -206,6 +205,8 @@ export default {
     ...mapActions({
       setCurrentRoundId: 'currentRound/setCurrentRoundId',
       appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
+      fetchDiscardPile: 'currentRound/fetchDiscardPile',
+      removeTopDiscardPileCard: 'currentRound/removeTopDiscardPileCard',
       fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
       setLatestActionId: 'currentTurn/setLatestActionId',
       setError: 'error/setError',
@@ -258,10 +259,6 @@ export default {
       const stockPileSize = await roundsService.getStockPileSize(roundId);
       this.match.stock_pile_size = stockPileSize.size || 0;
     },
-    async loadDiscardPile(roundId) {
-      const discardPile = !roundId ? [] : await roundsService.getDiscardPileList(roundId);
-      this.match.discard_pile = discardPile || [];
-    },
     async performAction(action, errorMessage) {
       await this.setLoading(true);
       try {
@@ -291,7 +288,7 @@ export default {
               : await turnsService.drawFromEmptyStockPile(this.matchId);
         } else if (pileType === 'discard') {
           card = await turnsService.drawOneFromDiscardPile(this.matchId);
-          this.match.discard_pile.pop();
+          await this.removeTopDiscardPileCard({ matchId: this.matchId });
         }
         this.unselectDiscardPileCards();
         await this.appendCardsToMyHand({ matchId: this.matchId, cards: [card] });
@@ -358,7 +355,6 @@ export default {
         await this.fetchMyHand({ matchId: this.matchId, forceFetch: true });
         await this.loadRoundDataForPlayers(this.currentRoundId);
         await this.loadStockPileSize(this.currentRoundId);
-        await this.loadDiscardPile(this.currentRoundId);
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
@@ -367,7 +363,6 @@ export default {
       await this.fetchMyHand({ matchId: this.matchId, forceFetch: forceFetch });
       await this.loadRoundDataForPlayers(this.currentRoundId);
       await this.loadStockPileSize(this.currentRoundId);
-      await this.loadDiscardPile(this.currentRoundId);
       this.initializeSSE();
     },
     initializeSSE() {
@@ -394,24 +389,22 @@ export default {
                 if (this.currentRoundId === null) {
                   this.loadRoundDataForPlayers(data.round_id);
                   this.loadStockPileSize(data.round_id);
-                  this.loadDiscardPile(data.round_id);
                 } else {
                   this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
                   this.fetchMyHand({ matchId: this.matchId, forceFetch: true });
                   this.loadRoundDataForPlayers(this.currentRoundId);
                   this.loadStockPileSize(this.currentRoundId);
-                  this.loadDiscardPile(this.currentRoundId);
                 }
 
               } else if (newCurrentTurnId !== this.currentTurn.id) {
                 this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
                 this.loadRoundDataForPlayers(this.currentRoundId);
                 this.loadStockPileSize(this.currentRoundId);
-                this.loadDiscardPile(this.currentRoundId);
+                this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
 
               } else if (['draw'].includes(data.action.action_type)) {
                 this.loadStockPileSize(this.currentRoundId);
-                this.loadDiscardPile(this.currentRoundId);
+                this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
 
               } else if (['play_meld', 'extend_meld'].includes(data.action.action_type)) {
                 // currently the only way to reload meld data

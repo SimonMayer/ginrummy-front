@@ -18,6 +18,7 @@
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
 import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
+import {mapGetters} from "vuex";
 
 export default {
   name: 'DiscardPile',
@@ -26,17 +27,9 @@ export default {
   },
   mixins: [visibleCardSelectionMixin],
   props: {
-    visibleCards: {
-      type: Array,
+    matchId: {
+      type: Number,
       required: true,
-      validator(value) {
-        return value.every(card => (
-            typeof card.card_id === 'number' &&
-            typeof card.rank === 'string' &&
-            typeof card.suit === 'string' &&
-            typeof card.point_value === 'number'
-        ));
-      },
     },
     selectableCards: {
       type: Array,
@@ -44,8 +37,14 @@ export default {
     },
   },
   computed: {
+    ...mapGetters({
+      getDiscardPileByMatchId: 'currentRound/getDiscardPileByMatchId',
+    }),
+    visibleCards() {
+      return this.getDiscardPileByMatchId(this.matchId);
+    },
     isEmpty() {
-      return this.visibleCards.length === 0;
+      return this.visibleCards?.length === 0;
     }
   },
   methods: {
