@@ -10,7 +10,7 @@ export default {
             this.selectedMeld = null;
         },
         handleMeldClick(meldId) {
-            const meld = this.allMelds.find(meld => meld.meld_id === meldId);
+            const meld = this.melds.find(meld => meld.meld_id === meldId);
             this.selectedMeld = !meld || (this.selectedMeldId === meldId) ? null : meld;
         },
         areAllCardsOfSameRank(cards) {

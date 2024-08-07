@@ -29,7 +29,7 @@
       <div class="game-column">
         <div class="melds-container">
           <PlayedMeld
-              v-for="meld in allMelds"
+              v-for="meld in melds"
               :key="meld.meld_id"
               :id="meld.meld_id"
               :type="meld.meld_type"
@@ -103,6 +103,7 @@ export default {
     await this.fetchGameConfig({});
     await this.loadAllData(false);
     await this.fetchMyHand({ matchId: this.matchId });
+    await this.fetchMelds({ matchId: this.matchId });
   },
   beforeUnmount() {
     this.cleanupSSE();
@@ -116,7 +117,10 @@ export default {
       getMatch: state => state.matches.match,
     }),
     ...mapGetters({
-      getCurrentRoundByMatchId: 'currentRound/getCurrentRoundByMatchId',
+      getCurrentRoundIdByMatchId: 'currentRound/getCurrentRoundIdByMatchId',
+      getDiscardPileByMatchId: 'currentRound/getDiscardPileByMatchId',
+      getMeldsByMatchId: 'currentRound/getMeldsByMatchId',
+      getStockPileSizeByMatchId: 'currentRound/getStockPileSizeByMatchId',
       getCurrentTurnByMatchId: 'currentTurn/getCurrentTurnByMatchId',
       getLatestActionIdByMatchId: 'currentTurn/getLatestActionIdByMatchId',
       getMyHandByMatchId: 'hand/getMyHandByMatchId',
@@ -125,11 +129,17 @@ export default {
       getPlayersByMatchId: 'players/getPlayersByMatchId',
       getSelfPlayerByMatchId: 'players/getSelfPlayerByMatchId',
     }),
-    currentRound() {
-      return this.getCurrentRoundByMatchId(this.matchId);
-    },
     currentRoundId() {
-      return this.currentRound?.id;
+      return this.getCurrentRoundIdByMatchId(this.matchId);
+    },
+    discardPile() {
+      return this.getDiscardPileByMatchId(this.matchId);
+    },
+    melds() {
+      return this.getMeldsByMatchId(this.matchId);
+    },
+    stockPileSize() {
+      return this.getStockPileSizeByMatchId(this.matchId);
     },
     currentTurn() {
       return this.getCurrentTurnByMatchId(this.matchId);
@@ -151,11 +161,6 @@ export default {
     },
     selfPlayer() {
       return this.getSelfPlayerByMatchId(this.matchId);
-    },
-    allMelds() {
-      return this.players.reduce((allMelds, player) => {
-        return allMelds.concat(player.melds || []);
-      }, []);
     },
     selectedMeldId() {
       return this.selectedMeld ? this.selectedMeld.meld_id : null;
@@ -205,6 +210,7 @@ export default {
       setCurrentRoundId: 'currentRound/setCurrentRoundId',
       appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
       fetchDiscardPile: 'currentRound/fetchDiscardPile',
+      fetchMelds: 'currentRound/fetchMelds',
       fetchStockPileData: 'currentRound/fetchStockPileData',
       removeTopDiscardPileCard: 'currentRound/removeTopDiscardPileCard',
       fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
@@ -242,6 +248,7 @@ export default {
         });
         return;
       }
+
       const players = await roundsService.getPlayers(roundId);
 
       this.players.forEach(player => {
@@ -275,7 +282,7 @@ export default {
       await this.performAction(async () => {
         let card;
         if (pileType === 'stock') {
-          card = this.currentRound.stockPileSize > 0
+          card = this.stockPileSize > 0
               ? await turnsService.drawFromStockPile(this.matchId)
               : await turnsService.drawFromEmptyStockPile(this.matchId);
         } else if (pileType === 'discard') {
@@ -388,15 +395,13 @@ export default {
                 this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
                 this.loadRoundDataForPlayers(this.currentRoundId);
                 this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
-                this.fetchStockPileData({ matchId: this.matchId, forceFetch: true });
 
               } else if (['draw'].includes(data.action.action_type)) {
                 this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
                 this.fetchStockPileData({ matchId: this.matchId, forceFetch: true });
 
               } else if (['play_meld', 'extend_meld'].includes(data.action.action_type)) {
-                // currently the only way to reload meld data
-                this.loadRoundDataForPlayers(this.currentRoundId);
+                this.fetchMelds({ matchId: this.matchId, forceFetch: true })
               }
             },
             (error) => {

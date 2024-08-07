@@ -9,8 +9,9 @@ const state = {
 function createRound(id) {
     return {
         id: id,
-        discardPile: [],
+        discardPileCardIds: [],
         stockPileSize: 52,
+        meldIds: [],
     };
 }
 
@@ -27,19 +28,24 @@ const mutations = {
             [matchId]: createRound(null),
         };
     },
-    SET_DISCARD_PILE(state, { matchId, discardPile }) {
+    SET_DISCARD_PILE_CARD_IDS(state, { matchId, discardPile }) {
         if (state.currentRounds[matchId]) {
-            state.currentRounds[matchId].discardPile = discardPile;
+            state.currentRounds[matchId].discardPileCardIds = discardPile.map(card => card.card_id);
         }
     },
-    REMOVE_TOP_DISCARD_PILE_CARD(state, { matchId,  }) {
+    REMOVE_TOP_DISCARD_PILE_CARD(state, { matchId }) {
         if (state.currentRounds[matchId]) {
-            state.currentRounds[matchId].discardPile.pop();
+            state.currentRounds[matchId].discardPileCardIds.pop();
         }
     },
     SET_STOCK_PILE_SIZE(state, { matchId, size }) {
         if (state.currentRounds[matchId]) {
             state.currentRounds[matchId].stockPileSize = size;
+        }
+    },
+    SET_MELD_IDS(state, { matchId, meldIds }) {
+        if (state.currentRounds[matchId]) {
+            state.currentRounds[matchId].meldIds = meldIds;
         }
     },
 };
@@ -77,7 +83,8 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const discardPile = await roundsService.getDiscardPileList(roundId);
-            commit('SET_DISCARD_PILE', { matchId, discardPile });
+            dispatch('cards/addCards', discardPile, { root: true });
+            commit('SET_DISCARD_PILE_CARD_IDS', { matchId, discardPile });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch discard pile!', error }, { root: true });
@@ -114,6 +121,37 @@ const actions = {
             dispatch('loading/setLoading', false, { root: true });
         }
     },
+    async fetchMelds({ commit, dispatch }, { matchId, forceFetch = false }) {
+        const currentRound = state.currentRounds[matchId];
+        const roundId = currentRound?.id;
+
+        if (!roundId) {
+            return;
+        }
+
+        const key = `melds_${roundId}`;
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_DISCARD_PILE_TIMEOUT, forceFetch: forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('loading/setLoading', true, { root: true });
+        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
+        try {
+            const melds = await roundsService.getMelds(roundId);
+            melds.forEach(meld => {
+                dispatch('melds/addMeldWithCards', meld, { root: true });
+            });
+            commit('SET_MELD_IDS', { matchId, meldIds: melds.map(meld => meld.meld_id) });
+            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
+        } catch (error) {
+            dispatch('error/setError', { title: 'Failed to fetch melds!', error }, { root: true });
+            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
+        } finally {
+            dispatch('loading/setLoading', false, { root: true });
+        }
+    },
     removeTopDiscardPileCard({ commit }, { matchId }) {
         commit('REMOVE_TOP_DISCARD_PILE_CARD', { matchId });
     },
@@ -122,8 +160,15 @@ const actions = {
 const getters = {
     getCurrentRoundByMatchId: state => matchId => state.currentRounds[matchId],
     getCurrentRoundIdByMatchId: state => matchId => state.currentRounds[matchId]?.id,
-    getDiscardPileByMatchId: state => matchId => state.currentRounds[matchId]?.discardPile,
+    getDiscardPileByMatchId: (state, getters, rootState, rootGetters) => matchId => {
+        const discardPileCardIds = state.currentRounds[matchId]?.discardPileCardIds || [];
+        return discardPileCardIds.map(id => rootGetters['cards/getCardById'](id));
+    },
     getStockPileSizeByMatchId: state => matchId => state.currentRounds[matchId]?.stockPileSize,
+    getMeldsByMatchId: (state, getters, rootState, rootGetters) => matchId => {
+        const meldIds = state.currentRounds[matchId]?.meldIds || [];
+        return meldIds.map(id => rootGetters['melds/getMeldById'](id));
+    },
 };
 
 export default {

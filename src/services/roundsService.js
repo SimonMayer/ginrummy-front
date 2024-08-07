@@ -13,6 +13,9 @@ const roundsService = {
     async getDiscardPileList(roundId) {
         return await apiService.get(`/rounds/${roundId}/discard_pile`, 'Failed to fetch discard pile list!');
     },
+    async getMelds(roundId) {
+        return await apiService.get(`/rounds/${roundId}/melds`, 'Failed to fetch melds!');
+    },
     async getPlayers(roundId) {
         return await apiService.get(`/rounds/${roundId}/players`, 'Failed to fetch players data!');
     },
