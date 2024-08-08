@@ -56,6 +56,8 @@ const actions = {
             const match = await matchesService.getMatchDetails(matchId);
             commit('SET_MATCH', { matchId, match });
             dispatch('matchRoundRegistry/setCurrentRoundId', { matchId: matchId, roundId: match.current_round_id }, { root: true });
+            dispatch('matchRoundRegistry/setLatestRoundId', { matchId: matchId, roundId: match.latest_round_id }, { root: true });
+            dispatch('matchRoundRegistry/setAllRoundIds', { matchId: matchId, roundId: match.all_round_ids }, { root: true });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch match details!', error }, { root: true });

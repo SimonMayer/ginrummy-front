@@ -22,7 +22,7 @@ export default {
   props: {
     roundId: {
       type: Number,
-      required: false,
+      required: true,
     },
     disabled: {
       type: Boolean,

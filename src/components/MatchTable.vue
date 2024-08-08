@@ -7,7 +7,7 @@
             :key="playerMatchData.user_id"
             :ref="'player-' + playerMatchData.user_id"
             :matchId="matchId"
-            :roundId="currentRoundId"
+            :roundId="visibleRoundId"
             :userId="playerMatchData.user_id"
             class="non-self-player"
         />
@@ -16,21 +16,21 @@
     <div class="game-section row">
       <div class="game-column pile-container">
         <StockPile
-            :roundId="currentRoundId"
+            :roundId="visibleRoundId"
             @click="handleStockPileClick"
             :disabled="stockPileDisabled"
         />
         <DiscardPile
             :ref="'discard-pile'"
             :selectableCards="getSelectableDiscardPileCards()"
-            :roundId="currentRoundId"
+            :roundId="visibleRoundId"
             @update:selected="forceRefresh()"
         />
       </div>
       <div class="game-column">
         <div class="melds-container">
           <PlayedMeld
-              v-for="meld in melds"
+              v-for="meld in visibleRoundMelds"
               :key="meld.meld_id"
               :id="meld.meld_id"
               :type="meld.meld_type"
@@ -60,7 +60,7 @@
               :key="selfPlayerMatchData.user_id"
               :ref="'player-self'"
               :matchId="matchId"
-              :roundId="currentRoundId"
+              :roundId="visibleRoundId"
               :selectable="isHandSelectable"
               class="self-player"
               @update:selected="forceRefresh()"
@@ -123,6 +123,7 @@ export default {
       getMyHandByMatchId: 'hand/getMyHandByMatchId',
       getMatchById: 'matches/getMatchById',
       getCurrentRoundIdByMatchId: 'matchRoundRegistry/getCurrentRoundIdByMatchId',
+      getLatestRoundIdByMatchId: 'matchRoundRegistry/getLatestRoundIdByMatchId',
       getNonSelfPlayersMatchDataByMatchId: 'players/getNonSelfPlayersMatchDataByMatchId',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
       getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
@@ -133,13 +134,19 @@ export default {
     currentRoundId() {
       return this.getCurrentRoundIdByMatchId(this.matchId);
     },
-    discardPile() {
+    latestRoundId() {
+      return this.getLatestRoundIdByMatchId(this.matchId);
+    },
+    visibleRoundId() {
+      return this.getLatestRoundIdByMatchId(this.matchId);
+    },
+    currentRoundDiscardPile() {
       return this.getDiscardPileByRoundId(this.currentRoundId);
     },
-    melds() {
-      return this.getMeldsByRoundId(this.currentRoundId);
+    visibleRoundMelds() {
+      return this.getMeldsByRoundId(this.visibleRoundId);
     },
-    stockPileSize() {
+    currentRoundStockPileSize() {
       return this.getStockPileSizeByRoundId(this.currentRoundId);
     },
     currentTurn() {
@@ -160,7 +167,7 @@ export default {
     selfPlayerMatchData() {
       return this.getSelfPlayerMatchDataByMatchId(this.matchId);
     },
-    selfPlayerRoundData() {
+    selfPlayerCurrentRoundData() {
       if (!this.selfPlayerMatchData || !this.currentRoundId) {
         return null;
       }
@@ -176,8 +183,8 @@ export default {
       return this.currentTurn.actions.some(action => action.action_type === 'draw');
     },
     hasPlayedMeld() {
-      const selfPlayerRoundData = this.selfPlayerRoundData
-      return selfPlayerRoundData && selfPlayerRoundData.melds && selfPlayerRoundData.melds.length > 0;
+      const selfPlayerCurrentRoundData = this.selfPlayerCurrentRoundData
+      return selfPlayerCurrentRoundData && selfPlayerCurrentRoundData.melds && selfPlayerCurrentRoundData.melds.length > 0;
     },
     isHandSelectable() {
       return this.canDrawMultiple() || (this.canAct() && this.hasDrawAction);
@@ -270,7 +277,7 @@ export default {
       await this.performAction(async () => {
         let card;
         if (pileType === 'stock') {
-          card = this.stockPileSize > 0
+          card = this.currentRoundStockPileSize > 0
               ? await turnsService.drawFromStockPile(this.matchId)
               : await turnsService.drawFromEmptyStockPile(this.matchId);
         } else if (pileType === 'discard') {
@@ -347,7 +354,7 @@ export default {
       await this.fetchMatch({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchMyHand({ matchId: this.matchId, forceFetch: forceFetch });
-      await this.fetchPlayersRoundData({ roundId: this.currentRoundId, forceFetch: forceFetch });
+      await this.fetchPlayersRoundData({ roundId: this.latestRoundId, forceFetch: forceFetch });
       this.initializeSSE();
     },
     initializeSSE() {
@@ -385,18 +392,17 @@ export default {
                 this.fetchCurrentTurn({matchId: this.matchId, forceFetch: true});
               }
               if (!betweenRounds && (turnChanged || cardsDrawn)) {
-                this.fetchDiscardPile({roundId: this.currentRoundId, forceFetch: true});
+                this.fetchDiscardPile({roundId: this.latestRoundId, forceFetch: true});
               }
               if (!betweenRounds && cardsDrawn) {
-                this.fetchStockPileData({roundId: this.currentRoundId, forceFetch: true});
+                this.fetchStockPileData({roundId: this.latestRoundId, forceFetch: true});
               }
               if (cardsMelded) {
-                this.fetchMelds({roundId: this.currentRoundId, forceFetch: true})
+                this.fetchMelds({roundId: this.latestRoundId, forceFetch: true})
               }
               if (roundChanged || turnChanged || cardsDrawn || cardsMelded) {
-                const roundId = betweenRounds ? data.roundId : this.currentRoundId;
                 const forceFetch = !roundChanged || betweenRounds;
-                this.fetchPlayersRoundData({roundId: roundId, forceFetch: forceFetch});
+                this.fetchPlayersRoundData({roundId: this.latestRoundId, forceFetch: forceFetch});
               }
             },
             (error) => {

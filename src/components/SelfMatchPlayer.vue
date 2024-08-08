@@ -41,7 +41,7 @@ export default {
     },
     roundId: {
       type: Number,
-      required: false,
+      required: true,
     },
     selectable: Boolean
   },
