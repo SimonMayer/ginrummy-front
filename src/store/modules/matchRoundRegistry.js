@@ -40,6 +40,9 @@ const actions = {
     },
     setLatestRoundId({ commit, dispatch }, { matchId, roundId }) {
         commit('SET_LATEST_ROUND_ID', { matchId, roundId });
+        if (!roundId) {
+            return;
+        }
         dispatch('rounds/fetchDiscardPile', { roundId }, { root: true });
         dispatch('rounds/fetchStockPileData', { roundId }, { root: true });
         dispatch('rounds/fetchMelds', { roundId }, { root: true });
