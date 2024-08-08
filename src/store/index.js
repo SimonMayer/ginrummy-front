@@ -1,17 +1,18 @@
 import { createStore } from 'vuex';
-import auth from './modules/auth';
-import cards from './modules/cards';
-import currentRound from './modules/currentRound';
-import currentTurn from './modules/currentTurn';
-import error from './modules/error';
-import fetchStatus from './modules/fetchStatus';
-import gameConfig from './modules/gameConfig';
-import hand from './modules/hand';
-import loading from './modules/loading';
-import matches from './modules/matches';
-import melds from './modules/melds';
-import players from './modules/players';
-import search from './modules/search';
+import auth from '@/store/modules/auth';
+import cards from '@/store/modules/cards';
+import currentRound from '@/store/modules/currentRound';
+import currentTurn from '@/store/modules/currentTurn';
+import error from '@/store/modules/error';
+import fetchStatus from '@/store/modules/fetchStatus';
+import gameConfig from '@/store/modules/gameConfig';
+import hand from '@/store/modules/hand';
+import loading from '@/store/modules/loading';
+import matches from '@/store/modules/matches';
+import melds from '@/store/modules/melds';
+import players from '@/store/modules/players';
+import rounds from "@/store/modules/rounds";
+import search from '@/store/modules/search';
 
 const store = createStore({
     modules: {
@@ -27,6 +28,7 @@ const store = createStore({
         matches,
         melds,
         players,
+        rounds,
         search,
     }
 });

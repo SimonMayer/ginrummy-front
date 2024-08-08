@@ -105,7 +105,6 @@ export default {
     await this.fetchGameConfig({});
     await this.loadAllData(false);
     await this.fetchMyHand({ matchId: this.matchId });
-    await this.fetchMelds({ matchId: this.matchId });
   },
   beforeUnmount() {
     this.cleanupSSE();
@@ -214,9 +213,6 @@ export default {
     ...mapActions({
       setCurrentRoundId: 'currentRound/setCurrentRoundId',
       appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
-      fetchDiscardPile: 'currentRound/fetchDiscardPile',
-      fetchMelds: 'currentRound/fetchMelds',
-      fetchStockPileData: 'currentRound/fetchStockPileData',
       removeTopDiscardPileCard: 'currentRound/removeTopDiscardPileCard',
       fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
       setLatestActionId: 'currentTurn/setLatestActionId',
@@ -228,6 +224,9 @@ export default {
       setLoading: 'loading/setLoading',
       fetchMatch: 'matches/fetchMatch',
       fetchPlayersRoundData: 'players/fetchPlayersRoundData',
+      fetchDiscardPile: 'rounds/fetchDiscardPile',
+      fetchMelds: 'rounds/fetchMelds',
+      fetchStockPileData: 'rounds/fetchStockPileData',
     }),
     forceRefresh() {
       // forces refresh of computed values
@@ -386,16 +385,15 @@ export default {
                 this.fetchCurrentTurn({matchId: this.matchId, forceFetch: true});
               }
               if (!betweenRounds && (turnChanged || cardsDrawn)) {
-                this.fetchDiscardPile({matchId: this.matchId, forceFetch: true});
+                this.fetchDiscardPile({roundId: this.currentRoundId, forceFetch: true});
               }
               if (!betweenRounds && cardsDrawn) {
-                this.fetchStockPileData({matchId: this.matchId, forceFetch: true});
+                this.fetchStockPileData({roundId: this.currentRoundId, forceFetch: true});
               }
               if (cardsMelded) {
-                this.fetchMelds({matchId: this.matchId, forceFetch: true})
+                this.fetchMelds({roundId: this.currentRoundId, forceFetch: true})
               }
               if (roundChanged || turnChanged || cardsDrawn || cardsMelded) {
-                console.log(398, data);
                 const roundId = betweenRounds ? data.roundId : this.currentRoundId;
                 const forceFetch = !roundChanged || betweenRounds;
                 this.fetchPlayersRoundData({roundId: roundId, forceFetch: forceFetch});

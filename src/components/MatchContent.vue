@@ -52,9 +52,13 @@ export default {
     }),
     ...mapGetters({
       getMatchById: 'matches/getMatchById',
+      getPlayersMatchDataByMatchId: 'players/getPlayersMatchDataByMatchId',
     }),
     match() {
       return this.getMatchById(this.matchId);
+    },
+    players() {
+      return this.getPlayersMatchDataByMatchId(this.matchId);
     },
     canStartMatch() {
       return this.match && this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
