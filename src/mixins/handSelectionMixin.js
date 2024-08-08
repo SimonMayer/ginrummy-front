@@ -7,7 +7,7 @@ export default {
             return this.getSelectedHandCardCount() === 1;
         },
         hasAllHandCardsSelected() {
-            return this.getSelectedHandCardCount() === this.myHand.length;
+            return this.getSelectedHandCardCount() === this.currentRoundHandCards.length;
         },
         getSelectedHandCards() {
             return this.getSelectedCards('player-self').map(card => card.cardData);

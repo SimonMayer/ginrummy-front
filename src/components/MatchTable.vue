@@ -104,7 +104,6 @@ export default {
   async created() {
     await this.fetchGameConfig({});
     await this.loadAllData(false);
-    await this.fetchMyHand({ matchId: this.matchId });
   },
   beforeUnmount() {
     this.cleanupSSE();
@@ -120,7 +119,7 @@ export default {
     ...mapGetters({
       getCurrentTurnByMatchId: 'currentTurn/getCurrentTurnByMatchId',
       getLatestActionIdByMatchId: 'currentTurn/getLatestActionIdByMatchId',
-      getMyHandByMatchId: 'hand/getMyHandByMatchId',
+      getCardsByHandId: 'hands/getCardsByHandId',
       getMatchById: 'matches/getMatchById',
       getCurrentRoundIdByMatchId: 'matchRoundRegistry/getCurrentRoundIdByMatchId',
       getLatestRoundIdByMatchId: 'matchRoundRegistry/getLatestRoundIdByMatchId',
@@ -158,8 +157,12 @@ export default {
     match() {
       return this.getMatchById(this.matchId);
     },
-    myHand() {
-      return this.getMyHandByMatchId(this.matchId);
+    currentRoundHandId() {
+      return this.selfPlayerCurrentRoundData?.hand?.hand_id;
+    },
+    currentRoundHandCards() {
+      const handId = this.currentRoundHandId;
+      return handId ? this.getCardsByHandId(handId) : [];
     },
     nonSelfPlayersMatchData() {
       return this.getNonSelfPlayersMatchDataByMatchId(this.matchId);
@@ -225,9 +228,8 @@ export default {
       setLatestActionId: 'currentTurn/setLatestActionId',
       setError: 'error/setError',
       fetchGameConfig: 'gameConfig/fetchGameConfig',
-      appendCardsToMyHand: 'hand/appendCardsToMyHand',
-      fetchMyHand: 'hand/fetchMyHand',
-      removeCardsFromMyHand: 'hand/removeCardsFromMyHand',
+      addCardIdsToHand: 'hands/addCardIdsToHand',
+      removeCardIdsFromHand: 'hands/removeCardIdsFromHand',
       setLoading: 'loading/setLoading',
       fetchMatch: 'matches/fetchMatch',
       fetchPlayersRoundData: 'players/fetchPlayersRoundData',
@@ -275,17 +277,17 @@ export default {
         return;
       }
       await this.performAction(async () => {
-        let card;
+        let cardId;
         if (pileType === 'stock') {
-          card = this.currentRoundStockPileSize > 0
+          cardId = this.currentRoundStockPileSize > 0
               ? await turnsService.drawFromStockPile(this.matchId)
               : await turnsService.drawFromEmptyStockPile(this.matchId);
         } else if (pileType === 'discard') {
-          card = await turnsService.drawOneFromDiscardPile(this.matchId);
+          cardId = await turnsService.drawOneFromDiscardPile(this.matchId);
           await this.removeTopDiscardPileCard({ matchId: this.matchId });
         }
         this.unselectDiscardPileCards();
-        await this.appendCardsToMyHand({ matchId: this.matchId, cards: [card] });
+        await this.addCardIdsToHand({ handId: this.currentRoundHandId, cardIds: [cardId] });
       }, `Failed to draw from ${pileType} pile!`);
     },
     async handleDrawMultipleFromDiscardPileClick() {
@@ -295,7 +297,7 @@ export default {
       await this.performAction(async () => {
         const handCardIds = this.getSelectedHandCards().map(card => card.card_id);
         const discardPileCardIds = this.getSelectedDiscardPileCards().map(card => card.card_id);
-        const newHandCards = await turnsService.drawMultipleFromDiscardPile(
+        const newHandCardIds = await turnsService.drawMultipleFromDiscardPile(
             this.matchId,
             discardPileCardIds,
             handCardIds,
@@ -304,8 +306,8 @@ export default {
         this.unselectDiscardPileCards();
         this.unselectHandCards();
         this.unselectMeld();
-        await this.removeCardsFromMyHand({ matchId: this.matchId, cardIds: handCardIds });
-        await this.appendCardsToMyHand({ matchId: this.matchId, cards: newHandCards });
+        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: handCardIds });
+        await this.addCardIdsToHand({ handId: this.currentRoundHandId, cardIds: newHandCardIds });
       }, `Failed to draw multiple from discard pile!`);
     },
     async handleDiscardClick() {
@@ -316,7 +318,7 @@ export default {
         const cardId = this.getSelectedHandCards()[0].card_id;
         await turnsService.discardCard(this.matchId, cardId);
         this.unselectHandCards();
-        await this.removeCardsFromMyHand({ matchId: this.matchId, cardIds: [cardId] });
+        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: [cardId] });
       }, 'Failed to discard card!');
     },
     async handlePlayMeldClick() {
@@ -327,7 +329,7 @@ export default {
       await this.performAction(async () => {
         const cardIds = this.getSelectedHandCards().map(card => card.card_id);
         await turnsService.playMeld(this.matchId, cardIds, meldType);
-        await this.removeCardsFromMyHand({ matchId: this.matchId, cardIds: cardIds });
+        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: cardIds });
       }, `Failed to play meld!`);
     },
     async handleExtendMeldClick() {
@@ -338,7 +340,7 @@ export default {
         const cardIds = this.getSelectedHandCards().map(card => card.card_id);
         await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
         this.unselectMeld();
-        await this.removeCardsFromMyHand({ matchId: this.matchId, cardIds: cardIds });
+        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: cardIds });
       }, 'Failed to extend meld!');
     },
     async handleStartNewRound() {
@@ -346,14 +348,12 @@ export default {
         const roundId = await roundsService.startRound(this.matchId);
         await this.setCurrentRoundId({ matchId: this.matchId, roundId: roundId });
         await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
-        await this.fetchMyHand({ matchId: this.matchId, forceFetch: true });
         await this.fetchPlayersRoundData({ roundId: this.currentRoundId });
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
       await this.fetchMatch({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: forceFetch });
-      await this.fetchMyHand({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchPlayersRoundData({ roundId: this.latestRoundId, forceFetch: forceFetch });
       this.initializeSSE();
     },
@@ -385,9 +385,6 @@ export default {
               const cardsDrawn = ['draw'].includes(data.action.action_type);
               const cardsMelded = ['play_meld', 'extend_meld'].includes(data.action.action_type);
 
-              if (!betweenRounds && roundChanged) {
-                this.fetchMyHand({matchId: this.matchId, forceFetch: true});
-              }
               if (!betweenRounds && (roundChanged || turnChanged)) {
                 this.fetchCurrentTurn({matchId: this.matchId, forceFetch: true});
               }

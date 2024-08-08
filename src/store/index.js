@@ -5,7 +5,7 @@ import currentTurn from '@/store/modules/currentTurn';
 import error from '@/store/modules/error';
 import fetchStatus from '@/store/modules/fetchStatus';
 import gameConfig from '@/store/modules/gameConfig';
-import hand from '@/store/modules/hand';
+import hands from '@/store/modules/hands';
 import loading from '@/store/modules/loading';
 import matches from '@/store/modules/matches';
 import matchRoundRegistry from '@/store/modules/matchRoundRegistry';
@@ -22,7 +22,7 @@ const store = createStore({
         error,
         fetchStatus,
         gameConfig,
-        hand,
+        hands,
         loading,
         matches,
         matchRoundRegistry,

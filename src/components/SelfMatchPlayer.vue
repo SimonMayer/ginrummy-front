@@ -10,7 +10,7 @@
     <div class="hand">
       <VisibleCard
           ref="visibleCards"
-          v-for="card in myHand"
+          v-for="card in handCards"
           :key="card.card_id"
           :cardProp="card"
           :class="['card', { selectable: selectable, selected: isSelected(card) }]"
@@ -47,12 +47,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getMyHandByMatchId: 'hand/getMyHandByMatchId',
+      getCardsByHandId: 'hands/getCardsByHandId',
       getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
     }),
-    myHand() {
-      return this.getMyHandByMatchId(this.matchId);
+    handCards() {
+      const handId = this.playerRoundData?.hand?.hand_id;
+      return handId ? this.getCardsByHandId(handId) : [];
     },
     playerMatchData() {
       return this.getSelfPlayerMatchDataByMatchId(this.matchId);

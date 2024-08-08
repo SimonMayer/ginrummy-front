@@ -55,7 +55,7 @@ const actions = {
             dispatch('loading/setLoading', false, { root: true });
         }
     },
-    async fetchPlayersRoundData({ dispatch, commit }, { roundId, forceFetch = false }) {
+    async fetchPlayersRoundData({ dispatch, commit, getters }, { roundId, forceFetch = false }) {
         if(!roundId) {
             return;
         }
@@ -71,6 +71,8 @@ const actions = {
         try {
             const playersData = await roundsService.getPlayers(roundId);
             commit('SET_PLAYERS_ROUND_DATA', { roundId, players: playersData });
+            const selfPlayerHandId = getters.getSelfPlayerRoundDataByRoundId(roundId)?.hand?.hand_id;
+            dispatch('hands/fetchHand', { handId: selfPlayerHandId }, { root: true });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch round players!', error }, { root: true });
@@ -99,6 +101,10 @@ const getters = {
     },
     getPlayerRoundDataByRoundAndPlayerIds: state => ({ roundId, playerId }) => {
         return state.playersRoundData[roundId]?.find(player => player.user_id === playerId);
+    },
+    getSelfPlayerRoundDataByRoundId: (state, getters) => (roundId) => {
+        const userId = parseInt(localStorage.getItem('user_id'), 10);
+        return getters.getPlayerRoundDataByRoundAndPlayerIds({ roundId, playerId: userId });
     },
 };
 

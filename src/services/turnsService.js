@@ -1,18 +1,17 @@
 import apiService from '@/services/apiService';
-import cardsService from '@/services/cardsService';
 
 const turnsService = {
     async drawFromStockPile(matchId) {
         const cardData = await apiService.post(`/matches/${matchId}/actions/draw_from_stock_pile`, {}, 'Failed to draw from stock pile!');
-        return await cardsService.getCard(cardData.card_id);
+        return cardData.card_id;
     },
     async drawFromEmptyStockPile(matchId) {
         const cardData = await apiService.post(`/matches/${matchId}/actions/draw_from_empty_stock_pile`, {}, 'Failed to draw from empty stock pile!');
-        return await cardsService.getCard(cardData.card_id);
+        return cardData.card_id;
     },
     async drawOneFromDiscardPile(matchId) {
         const cardData = await apiService.post(`/matches/${matchId}/actions/draw_one_from_discard_pile`, {}, 'Failed to draw from discard pile!');
-        return await cardsService.getCard(cardData.card_id);
+        return cardData.card_id;
     },
     async drawMultipleFromDiscardPile(matchId, discardPileCardIds, handCardIds, meldId = null) {
         const requestBody = {
@@ -30,12 +29,7 @@ const turnsService = {
             'Failed to draw from discard pile!'
         );
 
-        const cards = [];
-        for (const newHandCardId of data.new_hand_card_ids) {
-            const card = await cardsService.getCard(newHandCardId);
-            cards.push(card);
-        }
-        return cards;
+        return data.new_hand_card_ids;
     },
     async discardCard(matchId, cardId) {
         return await apiService.post(`/matches/${matchId}/actions/discard_card`, { card_id: cardId }, 'Failed to discard card!');

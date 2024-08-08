@@ -7,11 +7,11 @@ export default {
             return this.getSelectedHandCardCount() === 1;
         },
         hasAllHandCardsSelected() {
-            return this.getSelectedHandCardCount() === this.myHand.length;
+            return this.getSelectedHandCardCount() === this.currentRoundHandCards.length;
         },
         isCardAvailableForHandAfterDrawMultipleAction() {
             const selectedCardCount = this.getSelectedHandCardCount() + this.getSelectedDiscardPileCardCount();
-            return selectedCardCount < (this.myHand.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
+            return selectedCardCount < (this.currentRoundHandCards.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
         },
         hasNoDiscardPileCardsSelected() {
             return this.getSelectedDiscardPileCardCount() === 0;

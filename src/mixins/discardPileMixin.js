@@ -29,7 +29,7 @@ export default {
         },
         isCardAvailableForHandAfterDrawMultipleAction() {
             const selectedCardCount = this.getSelectedHandCardCount() + this.getSelectedDiscardPileCardCount();
-            return selectedCardCount < (this.myHand.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
+            return selectedCardCount < (this.currentRoundHandCards.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
         },
         hasNoDiscardPileCardsSelected() {
             return this.getSelectedDiscardPileCardCount() === 0;
