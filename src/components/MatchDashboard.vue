@@ -26,23 +26,19 @@ export default {
   computed: {
     ...mapGetters({
       getMatchById: 'matches/getMatchById',
-      getPlayersByMatchId: 'players/getPlayersByMatchId',
     }),
     match() {
       return this.getMatchById(this.matchId);
     },
-    players() {
-      return this.getPlayersByMatchId(this.matchId);
-    },
   },
   async created() {
     await this.fetchMatch({ matchId: this.matchId });
-    await this.fetchPlayers({ matchId: this.matchId });
+    await this.fetchPlayersMatchData({ matchId: this.matchId });
   },
   methods: {
     ...mapActions({
       fetchMatch: 'matches/fetchMatch',
-      fetchPlayers: 'players/fetchPlayers',
+      fetchPlayersMatchData: 'players/fetchPlayersMatchData',
     }),
   },
 };

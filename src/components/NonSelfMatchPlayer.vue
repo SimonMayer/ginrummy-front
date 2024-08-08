@@ -1,14 +1,14 @@
 <template>
-  <div v-if="player" class="player-item non-self-player">
+  <div v-if="playerMatchData" class="player-item non-self-player">
     <div class="hand">
-      <HiddenCard v-for="n in player.handSize" :key="n" class="card" />
+      <HiddenCard v-for="n in handSize" :key="n" class="card" />
     </div>
     <div class="player-details">
-      <div class="username"><NamePlate :name="player.username" /></div>
-      <div class="score">Score: {{ player.score }}</div>
+      <div class="username"><NamePlate :name="username" /></div>
+      <div class="score">Score: {{ score }}</div>
     </div>
     <div class="highlight-container">
-      <div :class="{ 'highlight': player.hasCurrentTurn }"></div>
+      <div :class="{ 'highlight': hasCurrentTurn }"></div>
     </div>
   </div>
 </template>
@@ -29,6 +29,10 @@ export default {
       type: Number,
       required: true,
     },
+    roundId: {
+      type: Number,
+      required: false,
+    },
     userId: {
       type: Number,
       required: true,
@@ -36,10 +40,29 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getPlayerByMatchAndPlayerIds: 'players/getPlayerByMatchAndPlayerIds',
+      getPlayerMatchDataByMatchAndPlayerIds: 'players/getPlayerMatchDataByMatchAndPlayerIds',
+      getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
     }),
-    player() {
-      return this.getPlayerByMatchAndPlayerIds({ matchId: this.matchId, playerId: this.userId });
+    playerMatchData() {
+      return this.getPlayerMatchDataByMatchAndPlayerIds({ matchId: this.matchId, playerId: this.userId });
+    },
+    playerRoundData() {
+      if (!this.roundId) {
+        return null;
+      }
+      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.roundId, playerId: this.userId });
+    },
+    hasCurrentTurn() {
+      return this.playerMatchData.hasCurrentTurn;
+    },
+    username() {
+      return this.playerMatchData.username;
+    },
+    handSize() {
+      return this.playerRoundData?.hand.size || 0;
+    },
+    score() {
+      return this.playerRoundData?.score.total_score || '';
     },
   }
 };

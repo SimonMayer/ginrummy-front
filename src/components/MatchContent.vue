@@ -48,7 +48,7 @@ export default {
       minPlayers: state => state.gameConfig.minPlayers,
       loading: state => state.loading.loading,
       getMatch: state => state.matches.match,
-      players: state => state.players.players,
+      players: state => state.players.playersMatchData,
     }),
     ...mapGetters({
       getMatchById: 'matches/getMatchById',
@@ -63,7 +63,7 @@ export default {
   async created() {
     await this.fetchGameConfig({});
     await this.fetchMatch({ matchId: this.matchId });
-    await this.fetchPlayers({ matchId: this.matchId });
+    await this.fetchPlayersMatchData({ matchId: this.matchId });
   },
   methods: {
     ...mapActions({
@@ -71,7 +71,7 @@ export default {
       fetchGameConfig: 'gameConfig/fetchGameConfig',
       setLoading: 'loading/setLoading',
       fetchMatch: 'matches/fetchMatch',
-      fetchPlayers: 'players/fetchPlayers',
+      fetchPlayersMatchData: 'players/fetchPlayersMatchData',
     }),
     async startMatch() {
       if (!this.loading) {
@@ -99,7 +99,7 @@ export default {
       if (this.players.length < this.maxPlayers) {
         try {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
-          await this.fetchPlayers({ matchId: this.matchId, forceFetch: true });
+          await this.fetchPlayersMatchData({ matchId: this.matchId, forceFetch: true });
         } catch (error) {
           this.setError({title: 'Failed to add player!', error: error});
         }

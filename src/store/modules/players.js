@@ -1,23 +1,32 @@
 import matchesService from '@/services/matchesService';
+import roundsService from '@/services/roundsService';
 
-const FETCH_PLAYERS_TIMEOUT = 24 * 60 * 60 * 1000;
+const FETCH_PLAYERS_MATCH_DATA_TIMEOUT = 24 * 60 * 60 * 1000;
+const FETCH_PLAYERS_ROUND_DATA_TIMEOUT = 5 * 60 * 1000;
 
 const state = {
-    players: {},
+    playersMatchData: {},
+    playersRoundData: {},
 };
 
 const mutations = {
-    SET_PLAYERS(state, { matchId, players }) {
-        state.players = {
-            ...state.players,
+    SET_PLAYERS_MATCH_DATA(state, { matchId, players }) {
+        state.playersMatchData = {
+            ...state.playersMatchData,
             [matchId]: players,
         };
     },
+    SET_PLAYERS_ROUND_DATA(state, { roundId, players }) {
+        state.playersRoundData = {
+            ...state.playersRoundData,
+            [roundId]: players,
+        };
+    },
     UPDATE_PLAYERS_CURRENT_TURN(state, { matchId, currentTurnUserId }) {
-        if(!state.players[matchId]) {
+        if(!state.playersMatchData[matchId]) {
             return;
         }
-        state.players[matchId] = state.players[matchId].map(player => ({
+        state.playersMatchData[matchId] = state.playersMatchData[matchId].map(player => ({
             ...player,
             hasCurrentTurn: player.user_id === currentTurnUserId,
         }));
@@ -25,9 +34,9 @@ const mutations = {
 };
 
 const actions = {
-    async fetchPlayers({ dispatch, commit }, { matchId, forceFetch = false }) {
-        const key = `players_${matchId}`;
-        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_PLAYERS_TIMEOUT, forceFetch }, { root: true });
+    async fetchPlayersMatchData({ dispatch, commit }, { matchId, forceFetch = false }) {
+        const key = `playersMatchData_${matchId}`;
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_PLAYERS_MATCH_DATA_TIMEOUT, forceFetch }, { root: true });
 
         if (!shouldFetch) {
             return;
@@ -37,10 +46,34 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const playersData = await matchesService.getPlayers(matchId);
-            commit('SET_PLAYERS', { matchId, players: playersData });
+            commit('SET_PLAYERS_MATCH_DATA', { matchId, players: playersData });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch match players!', error }, { root: true });
+            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
+        } finally {
+            dispatch('loading/setLoading', false, { root: true });
+        }
+    },
+    async fetchPlayersRoundData({ dispatch, commit }, { roundId, forceFetch = false }) {
+        if(!roundId) {
+            return;
+        }
+        const key = `playersRoundData_${roundId}`;
+        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_PLAYERS_ROUND_DATA_TIMEOUT, forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('loading/setLoading', true, { root: true });
+        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
+        try {
+            const playersData = await roundsService.getPlayers(roundId);
+            commit('SET_PLAYERS_ROUND_DATA', { roundId, players: playersData });
+            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
+        } catch (error) {
+            dispatch('error/setError', { title: 'Failed to fetch round players!', error }, { root: true });
             dispatch('fetchStatus/recordFailedFetch', key, { root: true });
         } finally {
             dispatch('loading/setLoading', false, { root: true });
@@ -52,17 +85,20 @@ const actions = {
 };
 
 const getters = {
-    getPlayersByMatchId: state => matchId => state.players[matchId] || [],
-    getSelfPlayerByMatchId: (state, getters) => matchId => {
+    getPlayersMatchDataByMatchId: state => matchId => state.playersMatchData[matchId] || [],
+    getSelfPlayerMatchDataByMatchId: (state, getters) => matchId => {
         const userId = parseInt(localStorage.getItem('user_id'), 10);
-        return getters.getPlayersByMatchId(matchId).find(player => player.user_id === userId);
+        return getters.getPlayersMatchDataByMatchId(matchId).find(player => player.user_id === userId);
     },
-    getNonSelfPlayersByMatchId: (state, getters) => matchId => {
+    getNonSelfPlayersMatchDataByMatchId: (state, getters) => matchId => {
         const userId = parseInt(localStorage.getItem('user_id'), 10);
-        return getters.getPlayersByMatchId(matchId).filter(player => player.user_id !== userId);
+        return getters.getPlayersMatchDataByMatchId(matchId).filter(player => player.user_id !== userId);
     },
-    getPlayerByMatchAndPlayerIds: state => ({ matchId, playerId }) => {
-        return state.players[matchId]?.find(player => player.user_id === playerId);
+    getPlayerMatchDataByMatchAndPlayerIds: state => ({ matchId, playerId }) => {
+        return state.playersMatchData[matchId]?.find(player => player.user_id === playerId);
+    },
+    getPlayerRoundDataByRoundAndPlayerIds: state => ({ roundId, playerId }) => {
+        return state.playersRoundData[roundId]?.find(player => player.user_id === playerId);
     },
 };
 

@@ -3,11 +3,12 @@
     <div class="game-section full-width">
       <div class="non-self-players-container">
         <NonSelfMatchPlayer
-            v-for="player in nonSelfPlayers"
-            :key="player.user_id"
-            :ref="'player-' + player.user_id"
+            v-for="playerMatchData in nonSelfPlayersMatchData"
+            :key="playerMatchData.user_id"
+            :ref="'player-' + playerMatchData.user_id"
             :matchId="matchId"
-            :userId="player.user_id"
+            :roundId="currentRoundId"
+            :userId="playerMatchData.user_id"
             class="non-self-player"
         />
       </div>
@@ -55,10 +56,11 @@
         </div>
         <div class="self-player-container">
           <SelfMatchPlayer
-              v-if="selfPlayer"
-              :key="selfPlayer.user_id"
+              v-if="selfPlayerMatchData"
+              :key="selfPlayerMatchData.user_id"
               :ref="'player-self'"
               :matchId="matchId"
+              :roundId="currentRoundId"
               :selectable="isHandSelectable"
               class="self-player"
               @update:selected="forceRefresh()"
@@ -125,9 +127,9 @@ export default {
       getLatestActionIdByMatchId: 'currentTurn/getLatestActionIdByMatchId',
       getMyHandByMatchId: 'hand/getMyHandByMatchId',
       getMatchById: 'matches/getMatchById',
-      getNonSelfPlayersByMatchId: 'players/getNonSelfPlayersByMatchId',
-      getPlayersByMatchId: 'players/getPlayersByMatchId',
-      getSelfPlayerByMatchId: 'players/getSelfPlayerByMatchId',
+      getNonSelfPlayersMatchDataByMatchId: 'players/getNonSelfPlayersMatchDataByMatchId',
+      getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
+      getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
     }),
     currentRoundId() {
       return this.getCurrentRoundIdByMatchId(this.matchId);
@@ -153,14 +155,17 @@ export default {
     myHand() {
       return this.getMyHandByMatchId(this.matchId);
     },
-    players() {
-      return this.getPlayersByMatchId(this.matchId);
+    nonSelfPlayersMatchData() {
+      return this.getNonSelfPlayersMatchDataByMatchId(this.matchId);
     },
-    nonSelfPlayers() {
-      return this.getNonSelfPlayersByMatchId(this.matchId);
+    selfPlayerMatchData() {
+      return this.getSelfPlayerMatchDataByMatchId(this.matchId);
     },
-    selfPlayer() {
-      return this.getSelfPlayerByMatchId(this.matchId);
+    selfPlayerRoundData() {
+      if (!this.selfPlayerMatchData || !this.currentRoundId) {
+        return null;
+      }
+      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.currentRoundId, playerId: this.selfPlayerMatchData.user_id });
     },
     selectedMeldId() {
       return this.selectedMeld ? this.selectedMeld.meld_id : null;
@@ -172,8 +177,8 @@ export default {
       return this.currentTurn.actions.some(action => action.action_type === 'draw');
     },
     hasPlayedMeld() {
-      const selfPlayer = this.players.find(player => player.user_id === this.signedInUserId);
-      return selfPlayer && selfPlayer.melds && selfPlayer.melds.length > 0;
+      const selfPlayerRoundData = this.selfPlayerRoundData
+      return selfPlayerRoundData && selfPlayerRoundData.melds && selfPlayerRoundData.melds.length > 0;
     },
     isHandSelectable() {
       return this.canDrawMultiple() || (this.canAct() && this.hasDrawAction);
@@ -222,6 +227,7 @@ export default {
       removeCardsFromMyHand: 'hand/removeCardsFromMyHand',
       setLoading: 'loading/setLoading',
       fetchMatch: 'matches/fetchMatch',
+      fetchPlayersRoundData: 'players/fetchPlayersRoundData',
     }),
     forceRefresh() {
       // forces refresh of computed values
@@ -240,23 +246,6 @@ export default {
       if (ref) {
         ref.unselectAllCards();
       }
-    },
-    async loadRoundDataForPlayers(roundId) {
-      if (!roundId) {
-        this.players.forEach(player => {
-          player.melds = [];
-        });
-        return;
-      }
-
-      const players = await roundsService.getPlayers(roundId);
-
-      this.players.forEach(player => {
-        const playerData = players.find(p => p.user_id === player.user_id);
-        player.handSize = playerData ? playerData.hand.size : 0;
-        player.melds = playerData.melds;
-        player.score = playerData.score.total_score;
-      });
     },
     async performAction(action, errorMessage) {
       await this.setLoading(true);
@@ -352,14 +341,14 @@ export default {
         await this.setCurrentRoundId({ matchId: this.matchId, roundId: roundId });
         await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
         await this.fetchMyHand({ matchId: this.matchId, forceFetch: true });
-        await this.loadRoundDataForPlayers(this.currentRoundId);
+        await this.fetchPlayersRoundData({ roundId: this.currentRoundId });
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
       await this.fetchMatch({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchMyHand({ matchId: this.matchId, forceFetch: forceFetch });
-      await this.loadRoundDataForPlayers(this.currentRoundId);
+      await this.fetchPlayersRoundData({ roundId: this.currentRoundId, forceFetch: forceFetch });
       this.initializeSSE();
     },
     initializeSSE() {
@@ -374,34 +363,42 @@ export default {
               const newCurrentRoundId = data.current_status.round_id;
               const newCurrentTurnId = data.current_status.turn_id;
 
-              this.setLatestActionId({ matchId: this.matchId, actionId: data.action.action_id });
+              if (data.action.action_id > this.latestActionId) {
+                this.setLatestActionId({ matchId: this.matchId, actionId: data.action.action_id });
+              }
 
               if (data.turn_id === this.currentTurn.id) {
                 this.appendCurrentTurnAction({ matchId: this.matchId, action: data.action });
               }
 
-              if (newCurrentRoundId !== this.currentRoundId) {
-                this.setCurrentRoundId({ matchId: this.matchId, roundId: newCurrentRoundId });
+              const roundChanged = newCurrentRoundId !== this.currentRoundId;
+              this.setCurrentRoundId({ matchId: this.matchId, roundId: newCurrentRoundId });
 
-                if (this.currentRoundId === null) {
-                  this.loadRoundDataForPlayers(data.round_id);
-                } else {
-                  this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
-                  this.fetchMyHand({ matchId: this.matchId, forceFetch: true });
-                  this.loadRoundDataForPlayers(this.currentRoundId);
-                }
+              const betweenRounds = this.currentRoundId === null;
+              const turnChanged = newCurrentTurnId !== this.currentTurn.id;
+              const cardsDrawn = ['draw'].includes(data.action.action_type);
+              const cardsMelded = ['play_meld', 'extend_meld'].includes(data.action.action_type);
 
-              } else if (newCurrentTurnId !== this.currentTurn.id) {
-                this.fetchCurrentTurn({ matchId: this.matchId, forceFetch: true });
-                this.loadRoundDataForPlayers(this.currentRoundId);
-                this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
-
-              } else if (['draw'].includes(data.action.action_type)) {
-                this.fetchDiscardPile({ matchId: this.matchId, forceFetch: true });
-                this.fetchStockPileData({ matchId: this.matchId, forceFetch: true });
-
-              } else if (['play_meld', 'extend_meld'].includes(data.action.action_type)) {
-                this.fetchMelds({ matchId: this.matchId, forceFetch: true })
+              if (!betweenRounds && roundChanged) {
+                this.fetchMyHand({matchId: this.matchId, forceFetch: true});
+              }
+              if (!betweenRounds && (roundChanged || turnChanged)) {
+                this.fetchCurrentTurn({matchId: this.matchId, forceFetch: true});
+              }
+              if (!betweenRounds && (turnChanged || cardsDrawn)) {
+                this.fetchDiscardPile({matchId: this.matchId, forceFetch: true});
+              }
+              if (!betweenRounds && cardsDrawn) {
+                this.fetchStockPileData({matchId: this.matchId, forceFetch: true});
+              }
+              if (cardsMelded) {
+                this.fetchMelds({matchId: this.matchId, forceFetch: true})
+              }
+              if (roundChanged || turnChanged || cardsDrawn || cardsMelded) {
+                console.log(398, data);
+                const roundId = betweenRounds ? data.roundId : this.currentRoundId;
+                const forceFetch = !roundChanged || betweenRounds;
+                this.fetchPlayersRoundData({roundId: roundId, forceFetch: forceFetch});
               }
             },
             (error) => {
