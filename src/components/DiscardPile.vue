@@ -27,9 +27,9 @@ export default {
   },
   mixins: [visibleCardSelectionMixin],
   props: {
-    matchId: {
+    roundId: {
       type: Number,
-      required: true,
+      required: false,
     },
     selectableCards: {
       type: Array,
@@ -38,10 +38,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getDiscardPileByMatchId: 'currentRound/getDiscardPileByMatchId',
+      getDiscardPileByRoundId: 'rounds/getDiscardPileByRoundId',
     }),
     visibleCards() {
-      return this.getDiscardPileByMatchId(this.matchId);
+      return this.getDiscardPileByRoundId(this.roundId);
     },
     isEmpty() {
       return this.visibleCards?.length === 0;

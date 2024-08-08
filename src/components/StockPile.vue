@@ -20,9 +20,9 @@ export default {
     HiddenCard,
   },
   props: {
-    matchId: {
+    roundId: {
       type: Number,
-      required: true,
+      required: false,
     },
     disabled: {
       type: Boolean,
@@ -31,10 +31,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getStockPileSizeByMatchId: 'currentRound/getStockPileSizeByMatchId',
+      getStockPileSizeByRoundId: 'rounds/getStockPileSizeByRoundId',
     }),
     size() {
-      return this.getStockPileSizeByMatchId(this.matchId);
+      return this.getStockPileSizeByRoundId(this.roundId);
     },
     isEmpty() {
       return this.size === 0;

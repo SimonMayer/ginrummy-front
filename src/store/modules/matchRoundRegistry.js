@@ -26,18 +26,6 @@ const actions = {
 
 const getters = {
     getCurrentRoundIdByMatchId: (state) => (matchId) => state.currentRoundIds[matchId],
-    getDiscardPileByMatchId: (state, getters, rootState, rootGetters) => (matchId) => {
-        const roundId = getters.getCurrentRoundIdByMatchId(matchId);
-        return rootGetters['rounds/getDiscardPileByRoundId'](roundId);
-    },
-    getStockPileSizeByMatchId: (state, getters, rootState, rootGetters) => (matchId) => {
-        const roundId = getters.getCurrentRoundIdByMatchId(matchId);
-        return rootGetters['rounds/getStockPileSizeByRoundId'](roundId);
-    },
-    getMeldsByMatchId: (state, getters, rootState, rootGetters) => (matchId) => {
-        const roundId = getters.getCurrentRoundIdByMatchId(matchId);
-        return rootGetters['rounds/getMeldsByRoundId'](roundId);
-    },
 };
 
 export default {

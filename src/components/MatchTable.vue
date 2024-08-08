@@ -16,14 +16,14 @@
     <div class="game-section row">
       <div class="game-column pile-container">
         <StockPile
-            :matchId="matchId"
+            :roundId="currentRoundId"
             @click="handleStockPileClick"
             :disabled="stockPileDisabled"
         />
         <DiscardPile
             :ref="'discard-pile'"
             :selectableCards="getSelectableDiscardPileCards()"
-            :matchId="matchId"
+            :roundId="currentRoundId"
             @update:selected="forceRefresh()"
         />
       </div>
@@ -118,29 +118,29 @@ export default {
       getMatch: state => state.matches.match,
     }),
     ...mapGetters({
-      getCurrentRoundIdByMatchId: 'currentRound/getCurrentRoundIdByMatchId',
-      getDiscardPileByMatchId: 'currentRound/getDiscardPileByMatchId',
-      getMeldsByMatchId: 'currentRound/getMeldsByMatchId',
-      getStockPileSizeByMatchId: 'currentRound/getStockPileSizeByMatchId',
       getCurrentTurnByMatchId: 'currentTurn/getCurrentTurnByMatchId',
       getLatestActionIdByMatchId: 'currentTurn/getLatestActionIdByMatchId',
       getMyHandByMatchId: 'hand/getMyHandByMatchId',
       getMatchById: 'matches/getMatchById',
+      getCurrentRoundIdByMatchId: 'matchRoundRegistry/getCurrentRoundIdByMatchId',
       getNonSelfPlayersMatchDataByMatchId: 'players/getNonSelfPlayersMatchDataByMatchId',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
       getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
+      getDiscardPileByRoundId: 'rounds/getDiscardPileByRoundId',
+      getMeldsByRoundId: 'rounds/getMeldsByRoundId',
+      getStockPileSizeByRoundId: 'rounds/getStockPileSizeByRoundId',
     }),
     currentRoundId() {
       return this.getCurrentRoundIdByMatchId(this.matchId);
     },
     discardPile() {
-      return this.getDiscardPileByMatchId(this.matchId);
+      return this.getDiscardPileByRoundId(this.currentRoundId);
     },
     melds() {
-      return this.getMeldsByMatchId(this.matchId);
+      return this.getMeldsByRoundId(this.currentRoundId);
     },
     stockPileSize() {
-      return this.getStockPileSizeByMatchId(this.matchId);
+      return this.getStockPileSizeByRoundId(this.currentRoundId);
     },
     currentTurn() {
       return this.getCurrentTurnByMatchId(this.matchId);
@@ -211,9 +211,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      setCurrentRoundId: 'currentRound/setCurrentRoundId',
+      setCurrentRoundId: 'matchRoundRegistry/setCurrentRoundId',
       appendCurrentTurnAction: 'currentTurn/appendCurrentTurnAction',
-      removeTopDiscardPileCard: 'currentRound/removeTopDiscardPileCard',
+      removeTopDiscardPileCard: 'matchRoundRegistry/removeTopDiscardPileCard',
       fetchCurrentTurn: 'currentTurn/fetchCurrentTurn',
       setLatestActionId: 'currentTurn/setLatestActionId',
       setError: 'error/setError',

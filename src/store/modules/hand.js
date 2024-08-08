@@ -23,7 +23,7 @@ const mutations = {
 
 const actions = {
     async fetchMyHand({ commit, dispatch, rootGetters }, { matchId, forceFetch = false }) {
-        const currentRoundId = rootGetters['currentRound/getCurrentRoundIdByMatchId'](matchId);
+        const currentRoundId = rootGetters['matchRoundRegistry/getCurrentRoundIdByMatchId'](matchId);
         if (!currentRoundId) {
             commit('SET_MY_HAND', { matchId, hand: [] });
             return;
