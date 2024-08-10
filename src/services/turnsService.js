@@ -1,6 +1,9 @@
 import apiService from '@/services/apiService';
 
 const turnsService = {
+    async getTurn(turnId) {
+        return await apiService.get(`/turns/${turnId}`, 'Failed to fetch turn!');
+    },
     async drawFromStockPile(matchId) {
         const cardData = await apiService.post(`/matches/${matchId}/actions/draw_from_stock_pile`, {}, 'Failed to draw from stock pile!');
         return cardData.card_id;

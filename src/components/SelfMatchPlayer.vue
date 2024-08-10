@@ -50,6 +50,7 @@ export default {
       getCardsByHandId: 'hands/getCardsByHandId',
       getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
+      isCurrentTurnForPlayer: 'players/isCurrentTurnForPlayer',
     }),
     handCards() {
       const handId = this.playerRoundData?.hand?.hand_id;
@@ -65,7 +66,7 @@ export default {
       return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.roundId, playerId: this.playerMatchData.user_id });
     },
     hasCurrentTurn() {
-      return this.playerMatchData.hasCurrentTurn;
+      return this.isCurrentTurnForPlayer({ roundId: this.roundId, playerId: this.playerMatchData.user_id });
     },
     username() {
       return this.playerMatchData.username;

@@ -42,6 +42,7 @@ export default {
     ...mapGetters({
       getPlayerMatchDataByMatchAndPlayerIds: 'players/getPlayerMatchDataByMatchAndPlayerIds',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
+      isCurrentTurnForPlayer: 'players/isCurrentTurnForPlayer',
     }),
     playerMatchData() {
       return this.getPlayerMatchDataByMatchAndPlayerIds({ matchId: this.matchId, playerId: this.userId });
@@ -53,7 +54,7 @@ export default {
       return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.roundId, playerId: this.userId });
     },
     hasCurrentTurn() {
-      return this.playerMatchData.hasCurrentTurn;
+      return this.isCurrentTurnForPlayer({ roundId: this.roundId, playerId: this.userId });
     },
     username() {
       return this.playerMatchData.username;

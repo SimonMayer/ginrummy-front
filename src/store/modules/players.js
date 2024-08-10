@@ -22,15 +22,6 @@ const mutations = {
             [roundId]: players,
         };
     },
-    UPDATE_PLAYERS_CURRENT_TURN(state, { matchId, currentTurnUserId }) {
-        if(!state.playersMatchData[matchId]) {
-            return;
-        }
-        state.playersMatchData[matchId] = state.playersMatchData[matchId].map(player => ({
-            ...player,
-            hasCurrentTurn: player.user_id === currentTurnUserId,
-        }));
-    },
 };
 
 const actions = {
@@ -81,9 +72,6 @@ const actions = {
             dispatch('loading/setLoading', false, { root: true });
         }
     },
-    updatePlayersCurrentTurn({ commit }, { matchId, currentTurnUserId }) {
-        commit('UPDATE_PLAYERS_CURRENT_TURN', { matchId, currentTurnUserId });
-    },
 };
 
 const getters = {
@@ -105,6 +93,15 @@ const getters = {
     getSelfPlayerRoundDataByRoundId: (state, getters) => (roundId) => {
         const userId = parseInt(localStorage.getItem('user_id'), 10);
         return getters.getPlayerRoundDataByRoundAndPlayerIds({ roundId, playerId: userId });
+    },
+    isCurrentTurnForPlayer: (state, getters, rootState, rootGetters) => ({ roundId, playerId }) => {
+        const currentTurnId = rootGetters['roundTurnRegistry/getCurrentTurnIdByRoundId'](roundId);
+        if (!currentTurnId) {
+            return false;
+        }
+
+        const turn = rootGetters['turns/getTurnById'](currentTurnId);
+        return turn && turn.userId === playerId;
     },
 };
 
