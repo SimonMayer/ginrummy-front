@@ -65,13 +65,8 @@ export default {
     flex-direction: column;
     width: 300px;
 
-    input {
-      font-size: 16px;
-    }
-
     button {
       padding: var(--base-padding);
-      font-size: 16px;
     }
   }
 }
