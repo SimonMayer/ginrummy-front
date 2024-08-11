@@ -3,11 +3,9 @@
 }
 
 .player-item {
-  background-color: rgba(var(--secondary-color-rgb), 0.2);
   color: var(--text-color);
   padding: var(--base-padding);
   margin: var(--base-margin) 0;
-  border: 1px solid var(--secondary-color);
   border-radius: var(--border-radius);
 
   .highlight-container {
@@ -48,15 +46,13 @@
     margin: var(--base-margin) 0;
 
     .username {
-      flex: 1;
+      flex: 2;
       text-align: left;
       width: 160px;
     }
 
     .score {
       flex: 1;
-      text-align: right;
-      width: 80px
     }
   }
 }

@@ -22,10 +22,10 @@ const mutations = {
 };
 
 const actions = {
-    setSearchTerm({ commit, dispatch, state }, { key, term }) {
+    async setSearchTerm({ commit, dispatch, state }, { key, term }) {
         commit('SET_SEARCH_TERM', { key, term });
         if (term.length >= 3) {
-            dispatch('performSearch', { key, term, searchFunction: state.searchFunctions[key] });
+            await dispatch('performSearch', { key, term, searchFunction: state.searchFunctions[key] });
         } else {
             commit('SET_SEARCH_RESULTS', { key, results: [] });
         }

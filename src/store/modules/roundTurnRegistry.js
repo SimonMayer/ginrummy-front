@@ -33,8 +33,8 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const data = await roundsService.getCurrentTurn(roundId);
-            dispatch('setCurrentTurnId', { roundId: roundId, 'turnId': data.turn_id })
-            dispatch('matchActionRegistry/setLatestActionId', { matchId, actionId: data.latest_action_id }, { root:true })
+            await dispatch('setCurrentTurnId', { roundId: roundId, 'turnId': data.turn_id })
+            await dispatch('matchActionRegistry/setLatestActionId', { matchId, actionId: data.latest_action_id }, { root:true })
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch current turn!', error }, { root: true });

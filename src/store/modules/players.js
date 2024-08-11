@@ -63,7 +63,7 @@ const actions = {
             const playersData = await roundsService.getPlayers(roundId);
             commit('SET_PLAYERS_ROUND_DATA', { roundId, players: playersData });
             const selfPlayerHandId = getters.getSelfPlayerRoundDataByRoundId(roundId)?.hand?.hand_id;
-            dispatch('hands/fetchHand', { handId: selfPlayerHandId }, { root: true });
+            await dispatch('hands/fetchHand', { handId: selfPlayerHandId }, { root: true });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch round players!', error }, { root: true });

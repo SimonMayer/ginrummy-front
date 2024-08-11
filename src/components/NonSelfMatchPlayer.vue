@@ -4,8 +4,12 @@
       <HiddenCard v-for="n in handSize" :key="n" class="card" />
     </div>
     <div class="player-details">
-      <div class="username"><NamePlate :name="username" /></div>
-      <div class="score">Score: {{ score }}</div>
+      <div class="username">
+        <NamePlate :name="username" />
+      </div>
+      <div class="score">
+        <ScoreBoard :totalScore="totalScore" :roundScore="roundScore" />
+      </div>
     </div>
     <div class="highlight-container">
       <div :class="{ 'highlight': hasCurrentTurn }"></div>
@@ -16,11 +20,13 @@
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
 import NamePlate from '@/components/NamePlate.vue';
+import ScoreBoard from "@/components/ScoreBoard.vue";
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'NonSelfMatchPlayer',
   components: {
+    ScoreBoard,
     HiddenCard,
     NamePlate
   },
@@ -62,8 +68,13 @@ export default {
     handSize() {
       return this.playerRoundData?.hand.size || 0;
     },
-    score() {
-      return this.playerRoundData?.score.total_score || '';
+    totalScore() {
+      const score = this.playerRoundData?.score.total_score;
+      return Number.isInteger(score) ? score : null;
+    },
+    roundScore() {
+      const score = this.playerRoundData?.score.points_this_round;
+      return Number.isInteger(score) ? score : null;
     },
   }
 };

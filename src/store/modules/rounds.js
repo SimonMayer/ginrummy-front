@@ -60,7 +60,7 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const discardPile = await roundsService.getDiscardPileList(roundId);
-            dispatch('cards/addCards', discardPile, { root: true });
+            await dispatch('cards/addCards', discardPile, { root: true });
             commit('SET_DISCARD_PILE_CARD_IDS', { roundId, discardPile });
             dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
         } catch (error) {
@@ -111,7 +111,7 @@ const actions = {
         dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
         try {
             const melds = await roundsService.getMelds(roundId);
-            melds.forEach(meld => {
+            await melds.forEach(meld => {
                 dispatch('melds/addMeldWithCards', meld, { root: true });
             });
             commit('SET_MELD_IDS', { roundId, meldIds: melds.map(meld => meld.meld_id) });

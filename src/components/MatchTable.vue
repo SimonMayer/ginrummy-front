@@ -379,7 +379,7 @@ export default {
               this.setCurrentRoundId({ matchId: this.matchId, roundId: newCurrentRoundId });
 
               const betweenRounds = this.currentRoundId === null;
-              const turnChanged = newCurrentTurnId !== this.currentTurn.id;
+              const turnChanged = newCurrentTurnId !== this.currentTurn?.id;
               const cardsDrawn = ['draw'].includes(data.action.action_type);
               const cardsMelded = ['play_meld', 'extend_meld'].includes(data.action.action_type);
 

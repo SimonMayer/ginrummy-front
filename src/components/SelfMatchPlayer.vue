@@ -1,11 +1,15 @@
 <template>
   <div v-if="playerMatchData" class="player-item self-player">
-    <div v-if="hasCurrentTurn" class="highlight-container">
-      <div class="highlight"></div>
-    </div>
     <div class="player-details">
-      <div class="username"><NamePlate :name="username" /></div>
-      <div class="score">Score: {{ score }}</div>
+      <div class="username">
+        <div class="highlight-container">
+          <div v-if="hasCurrentTurn" class="highlight"></div>
+        </div>
+        <NamePlate :name="username" />
+      </div>
+      <div class="score">
+        <ScoreBoard :totalScore="totalScore" :roundScore="roundScore" />
+      </div>
     </div>
     <div class="hand">
       <VisibleCard
@@ -22,8 +26,9 @@
 </template>
 
 <script>
-import VisibleCard from '@/components/VisibleCard.vue';
 import NamePlate from "@/components/NamePlate.vue";
+import ScoreBoard from "@/components/ScoreBoard.vue";
+import VisibleCard from '@/components/VisibleCard.vue';
 import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
 import { mapGetters } from 'vuex';
 
@@ -31,6 +36,7 @@ export default {
   name: 'SelfMatchPlayer',
   components: {
     NamePlate,
+    ScoreBoard,
     VisibleCard
   },
   mixins: [visibleCardSelectionMixin],
@@ -71,8 +77,13 @@ export default {
     username() {
       return this.playerMatchData.username;
     },
-    score() {
-      return this.playerRoundData?.score.total_score || '';
+    totalScore() {
+      const score = this.playerRoundData?.score.total_score;
+      return Number.isInteger(score) ? score : null;
+    },
+    roundScore() {
+      const score = this.playerRoundData?.score.points_this_round;
+      return Number.isInteger(score) ? score : null;
     },
   }
 };
