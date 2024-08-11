@@ -111,10 +111,10 @@ export default {
     width: var(--card-width);
     height: var(--card-height);
     background-color: rgba(var(--secondary-color-rgb), 0.8);
-    border: calc(var(--card-border-width) * 5) dashed var(--disabled-color);
+    border: calc(var(--card-border-width) * 5) dashed var(--muted-color);
     border-radius: var(--card-border-radius);
     font-size: calc(var(--card-base-size) * 18);
-    color: var(--disabled-color);
+    color: var(--muted-color);
 
     div {
       transform: rotate(-90deg);

@@ -68,7 +68,7 @@ export default {
     .face {
       position: absolute;
       backface-visibility: hidden;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--box-shadow-3-medium);
 
       &.front {
         transform: translateZ(30px);
