@@ -101,6 +101,15 @@ const getters = {
         const cardIds = state.hands[handId]?.cardIds || [];
         return cardIds.map(id => rootGetters['cards/getCardById'](id));
     },
+    getSelectedCardIdsByHandId: (state, getters, rootState, rootGetters) => (handId) => {
+        const handCardIds = state.hands[handId]?.cardIds || [];
+        const selectedCardIds = rootGetters['selections/getSelectedCardIds'];
+
+        return handCardIds.filter(cardId => selectedCardIds.includes(cardId));
+    },
+    getSelectedCardsByHandId: (state, getters, rootState, rootGetters) => (handId) => {
+        return getters.getSelectedCardIdsByHandId(handId).map(cardId => rootGetters['cards/getCardById'](cardId));
+    },
 };
 
 export default {

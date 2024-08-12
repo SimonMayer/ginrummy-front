@@ -235,6 +235,7 @@ export default {
       fetchDiscardPile: 'rounds/fetchDiscardPile',
       fetchMelds: 'rounds/fetchMelds',
       fetchStockPileData: 'rounds/fetchStockPileData',
+      unselectAllCards: 'selections/unselectAllCards',
       appendActionToTurn: 'turns/appendActionToTurn',
     }),
     forceRefresh() {
@@ -244,15 +245,6 @@ export default {
     cleanupSSE() {
       if (this.sseService) {
         this.sseService.disconnect();
-      }
-    },
-    getSelectedCards(refName) {
-      return this.$refs[refName] ? this.$refs[refName].getSelectedCards() : [];
-    },
-    unselectCardsByRef(refName) {
-      const ref = this.$refs[refName];
-      if (ref) {
-        ref.unselectAllCards();
       }
     },
     async performAction(action, errorMessage) {
@@ -286,8 +278,8 @@ export default {
           cardId = await turnsService.drawOneFromDiscardPile(this.matchId);
           await this.removeTopDiscardPileCard({ matchId: this.matchId });
         }
-        this.unselectDiscardPileCards();
         await this.addCardIdsToHand({ handId: this.currentRoundHandId, cardIds: [cardId] });
+        await this.unselectAllCards();
       }, `Failed to draw from ${pileType} pile!`);
     },
     async handleDrawMultipleFromDiscardPileClick() {
@@ -295,19 +287,17 @@ export default {
         return;
       }
       await this.performAction(async () => {
-        const handCardIds = this.getSelectedHandCards().map(card => card.card_id);
-        const discardPileCardIds = this.getSelectedDiscardPileCards().map(card => card.card_id);
+        const handCardIds = this.selectedHandCardIds;
         const newHandCardIds = await turnsService.drawMultipleFromDiscardPile(
             this.matchId,
-            discardPileCardIds,
+            this.selectedDiscardPileCardIds,
             handCardIds,
             this.selectedMeldId
         );
-        this.unselectDiscardPileCards();
-        this.unselectHandCards();
         this.unselectMeld();
         await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: handCardIds });
         await this.addCardIdsToHand({ handId: this.currentRoundHandId, cardIds: newHandCardIds });
+        await this.unselectAllCards();
       }, `Failed to draw multiple from discard pile!`);
     },
     async handleDiscardClick() {
@@ -315,10 +305,10 @@ export default {
         return;
       }
       await this.performAction(async () => {
-        const cardId = this.getSelectedHandCards()[0].card_id;
+        const cardId = this.selectedHandCardIds[0];
         await turnsService.discardCard(this.matchId, cardId);
-        this.unselectHandCards();
         await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: [cardId] });
+        await this.unselectAllCards();
       }, 'Failed to discard card!');
     },
     async handlePlayMeldClick() {
@@ -327,9 +317,10 @@ export default {
       }
       const meldType = this.canPlaySet() ? 'set' : 'run';
       await this.performAction(async () => {
-        const cardIds = this.getSelectedHandCards().map(card => card.card_id);
+        const cardIds = this.selectedHandCardIds;
         await turnsService.playMeld(this.matchId, cardIds, meldType);
         await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: cardIds });
+        await this.unselectAllCards();
       }, `Failed to play meld!`);
     },
     async handleExtendMeldClick() {
@@ -337,10 +328,11 @@ export default {
         return;
       }
       await this.performAction(async () => {
-        const cardIds = this.getSelectedHandCards().map(card => card.card_id);
+        const cardIds = this.selectedHandCardIds;
         await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
-        this.unselectMeld();
         await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: cardIds });
+        this.unselectMeld();
+        await this.unselectAllCards();
       }, 'Failed to extend meld!');
     },
     async handleStartNewRound() {

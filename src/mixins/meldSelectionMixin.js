@@ -1,7 +1,7 @@
 export default {
     methods: {
         getAllSelectedCards() {
-            return [...this.getSelectedMeldCards(), ...this.getSelectedHandCards(), ...this.getSelectedDiscardPileCards()];
+            return [...this.getSelectedMeldCards(), ...this.selectedHandCards, ...this.selectedDiscardPileCards];
         },
         getSelectedMeldCards() {
             return this.selectedMeld ? this.selectedMeld.cards : [];
@@ -27,7 +27,7 @@ export default {
             });
         },
         doSelectedHandCardsMakeValidRun() {
-            return this.doCardsMakeValidRun(this.getSelectedHandCards());
+            return this.doCardsMakeValidRun(this.selectedHandCards);
         },
         isEnoughCardsForMeld(cards) {
             return cards.length >= this.minimumMeldSize;
@@ -46,8 +46,8 @@ export default {
             if (!this.selectedMeld || this.hasNoHandCardsSelected() || this.hasAllHandCardsSelected()) {
                 return false;
             }
-            const allCards = [...this.getSelectedMeldCards(), ...this.getSelectedHandCards()];
+            const allCards = [...this.getSelectedMeldCards(), ...this.selectedHandCards];
             return this.areAllCardsOfSameRank(allCards) || this.doCardsMakeValidRun(allCards);
-        }
+        },
     }
 };

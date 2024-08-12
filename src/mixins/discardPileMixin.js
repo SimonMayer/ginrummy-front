@@ -1,4 +1,21 @@
+import {mapGetters} from "vuex";
+
 export default {
+    computed: {
+        ...mapGetters({
+            getSelectedDiscardPileCardIdsByRoundId: 'rounds/getSelectedDiscardPileCardIdsByRoundId',
+            getSelectedDiscardPileCardsByRoundId: 'rounds/getSelectedDiscardPileCardsByRoundId',
+        }),
+        selectedDiscardPileCards() {
+            return this.currentRoundId ? this.getSelectedDiscardPileCardsByRoundId(this.currentRoundId) : [];
+        },
+        selectedDiscardPileCardIds() {
+            return this.currentRoundId ? this.getSelectedDiscardPileCardIdsByRoundId(this.currentRoundId) : [];
+        },
+        selectedDiscardPileCardCount() {
+            return this.selectedDiscardPileCardIds.length
+        },
+    },
     methods: {
         getTopDiscardPileCard() {
             const discardPile = this.currentRoundDiscardPile;
@@ -14,34 +31,20 @@ export default {
                 ? this.currentRoundDiscardPile
                 : this.canDrawOne() ? [this.getTopDiscardPileCard()] : [];
         },
-        getSelectedDiscardPileCards() {
-            return this.getSelectedCards('discard-pile').map(card => card.cardData);
-        },
-        getSelectedDiscardPileCardCount() {
-            return this.getSelectedDiscardPileCards().length;
-        },
         getBottomSelectedCardInDiscardPile() {
-            const selectedDiscardPileCards = this.getSelectedDiscardPileCards();
-            return selectedDiscardPileCards ? selectedDiscardPileCards[0] : null;
-        },
-        unselectDiscardPileCards() {
-            this.unselectCardsByRef('discard-pile');
-        },
-        isCardAvailableForHandAfterDrawMultipleAction() {
-            const selectedCardCount = this.getSelectedHandCardCount() + this.getSelectedDiscardPileCardCount();
-            return selectedCardCount < (this.currentRoundHandCards.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
+            return this.selectedDiscardPileCards ? this.selectedDiscardPileCards[0] : null;
         },
         hasNoDiscardPileCardsSelected() {
-            return this.getSelectedDiscardPileCardCount() === 0;
+            return this.selectedDiscardPileCardCount === 0;
         },
         hasOneDiscardPileCardSelected() {
-            return this.getSelectedDiscardPileCardCount() === 1;
+            return this.selectedDiscardPileCardCount === 1;
         },
         isOnlyTopDiscardPileCardSelected() {
-            return this.hasOneDiscardPileCardSelected() && this.getTopDiscardPileCard().card_id === this.getSelectedDiscardPileCards()[0]?.card_id;
+            return this.hasOneDiscardPileCardSelected() && this.getTopDiscardPileCard().card_id === this.selectedDiscardPileCardIds[0];
         },
         isAnyDiscardPileCardSelected() {
-            return this.getSelectedDiscardPileCardCount() > 0;
+            return this.selectedDiscardPileCardCount > 0;
         },
         isBottomSelectedDiscardPileCardAtTheTop() {
             return this.getBottomSelectedCardInDiscardPile().card_id === this.getTopDiscardPileCard().card_id;

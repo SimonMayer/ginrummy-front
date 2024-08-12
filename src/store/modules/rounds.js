@@ -136,6 +136,16 @@ const getters = {
         const discardPileCardIds = state.rounds[roundId]?.discardPileCardIds || [];
         return discardPileCardIds.map(id => rootGetters['cards/getCardById'](id));
     },
+    getSelectedDiscardPileCardIdsByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
+        const discardPileCardIds = state.rounds[roundId]?.discardPileCardIds || [];
+        const selectedCardIds = rootGetters['selections/getSelectedCardIds'];
+
+        return discardPileCardIds.filter(cardId => selectedCardIds.includes(cardId))
+    },
+    getSelectedDiscardPileCardsByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
+        return getters.getSelectedDiscardPileCardIdsByRoundId(roundId)
+            .map(cardId => rootGetters['cards/getCardById'](cardId));
+    },
     getStockPileSizeByRoundId: (state) => (roundId) => state.rounds[roundId]?.stockPileSize,
     getMeldsByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
         const meldIds = state.rounds[roundId]?.meldIds || [];

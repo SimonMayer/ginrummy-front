@@ -1,22 +1,30 @@
+import {mapGetters} from "vuex";
+
 export default {
+    computed: {
+        ...mapGetters({
+            getSelectedCardIdsByHandId: 'hands/getSelectedCardIdsByHandId',
+            getSelectedCardsByHandId: 'hands/getSelectedCardsByHandId',
+        }),
+        selectedHandCards() {
+            return this.currentRoundHandId ? this.getSelectedCardsByHandId(this.currentRoundHandId) : [];
+        },
+        selectedHandCardIds() {
+            return this.currentRoundHandId ? this.getSelectedCardIdsByHandId(this.currentRoundHandId) : [];
+        },
+        selectedHandCardCount() {
+            return this.selectedHandCardIds.length
+        },
+    },
     methods: {
         hasNoHandCardsSelected() {
-            return this.getSelectedHandCardCount() === 0;
+            return this.selectedHandCardCount === 0;
         },
         hasOneHandCardSelected() {
-            return this.getSelectedHandCardCount() === 1;
+            return this.selectedHandCardCount === 1;
         },
         hasAllHandCardsSelected() {
-            return this.getSelectedHandCardCount() === this.currentRoundHandCards.length;
+            return this.selectedHandCardCount === this.currentRoundHandCards.length;
         },
-        getSelectedHandCards() {
-            return this.getSelectedCards('player-self').map(card => card.cardData);
-        },
-        getSelectedHandCardCount() {
-            return this.getSelectedHandCards().length;
-        },
-        unselectHandCards() {
-            this.unselectCardsByRef('player-self');
-        }
     }
 };

@@ -5,9 +5,8 @@
         v-for="card in visibleCards"
         :key="card.card_id"
         :cardProp="card"
-        :class="{ selectable: isCardSelectable(card), selected: isSelected(card) }"
+        :class="{ selectable: isCardSelectable(card) }"
         :selectable="isCardSelectable(card)"
-        @update:selected="handleSelected"
     />
     <div v-if="isEmpty" class="empty-placeholder">
       <div>Discarded cards will appear here</div>
@@ -17,7 +16,6 @@
 
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
-import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
 import {mapGetters} from "vuex";
 
 export default {
@@ -25,7 +23,6 @@ export default {
   components: {
     VisibleCard,
   },
-  mixins: [visibleCardSelectionMixin],
   props: {
     roundId: {
       type: Number,

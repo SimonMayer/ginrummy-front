@@ -14,6 +14,7 @@ import players from '@/store/modules/players';
 import rounds from "@/store/modules/rounds";
 import roundTurnRegistry from '@/store/modules/roundTurnRegistry';
 import search from '@/store/modules/search';
+import selections from '@/store/modules/selections';
 import turns from '@/store/modules/turns';
 
 const store = createStore({
@@ -33,6 +34,7 @@ const store = createStore({
         rounds,
         roundTurnRegistry,
         search,
+        selections,
         turns,
     }
 });

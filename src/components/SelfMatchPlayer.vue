@@ -17,9 +17,8 @@
           v-for="card in handCards"
           :key="card.card_id"
           :cardProp="card"
-          :class="['card', { selectable: selectable, selected: isSelected(card) }]"
+          :class="['card', { selectable: selectable }]"
           :selectable="selectable"
-          @update:selected="handleSelected"
       />
     </div>
   </div>
@@ -29,7 +28,6 @@
 import NamePlate from "@/components/NamePlate.vue";
 import ScoreBoard from "@/components/ScoreBoard.vue";
 import VisibleCard from '@/components/VisibleCard.vue';
-import visibleCardSelectionMixin from '@/mixins/visibleCardSelectionMixin';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -39,7 +37,6 @@ export default {
     ScoreBoard,
     VisibleCard
   },
-  mixins: [visibleCardSelectionMixin],
   props: {
     matchId: {
       type: Number,
@@ -85,7 +82,7 @@ export default {
       const score = this.playerRoundData?.score.points_this_round;
       return Number.isInteger(score) ? score : null;
     },
-  }
+  },
 };
 </script>
 

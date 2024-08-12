@@ -18,6 +18,7 @@ import CardCorner from '@/components/CardCorner.vue';
 import CardPattern from '@/components/CardPattern.vue';
 import {getSuitEmoji, getDisplayRank, getSuitRepeat} from '@/utils/cardUtils';
 import cardsService from '@/services/cardsService';
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: 'VisibleCard',
@@ -42,10 +43,6 @@ export default {
         );
       }
     },
-    selected: {
-      type: Boolean,
-      default: false
-    },
     selectable: {
       type: Boolean,
       default: false
@@ -54,10 +51,18 @@ export default {
   data() {
     return {
       cardData: null,
-      isSelected: this.selected
     };
   },
   computed: {
+    ...mapGetters({
+      isCardSelected: 'selections/isCardSelected',
+    }),
+    id() {
+      return this.cardData?.card_id;
+    },
+    isSelected() {
+      return this.isCardSelected(this.id);
+    },
     suitEmoji() {
       return getSuitEmoji(this.cardData.suit);
     },
@@ -75,6 +80,10 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      toggleSelectedCard: 'selections/toggleSelectedCard',
+      removeSelectedCard: 'selections/removeSelectedCard',
+    }),
     handleClick() {
       if (this.selectable) {
         this.toggleSelection();
@@ -84,16 +93,9 @@ export default {
       this.$emit('update:selected', this.cardData.card_id, this.isSelected);
     },
     toggleSelection() {
-      this.isSelected = !this.isSelected;
+      this.toggleSelectedCard(this.id);
       this.emitUpdateSelected();
     },
-    unselect() {
-      this.isSelected = false;
-      this.emitUpdateSelected();
-    },
-    isCardSelected() {
-      return this.isSelected;
-    }
   },
   async created() {
     if (typeof this.cardProp === 'number') {
