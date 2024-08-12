@@ -17,17 +17,15 @@
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
 import {mapGetters} from "vuex";
+import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
   name: 'DiscardPile',
   components: {
     VisibleCard,
   },
+  mixins: [matchPhaseMixin],
   props: {
-    roundId: {
-      type: Number,
-      required: true,
-    },
     selectableCards: {
       type: Array,
       default: () => [],
@@ -38,7 +36,7 @@ export default {
       getDiscardPileByRoundId: 'rounds/getDiscardPileByRoundId',
     }),
     visibleCards() {
-      return this.getDiscardPileByRoundId(this.roundId);
+      return this.getDiscardPileByRoundId(this.visibleRoundId);
     },
     isEmpty() {
       return this.visibleCards?.length === 0;

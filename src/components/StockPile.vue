@@ -13,17 +13,15 @@
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
 import {mapGetters} from "vuex";
+import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
   name: 'StockPile',
   components: {
     HiddenCard,
   },
+  mixins: [matchPhaseMixin],
   props: {
-    roundId: {
-      type: Number,
-      required: true,
-    },
     disabled: {
       type: Boolean,
       default: false,
@@ -34,7 +32,7 @@ export default {
       getStockPileSizeByRoundId: 'rounds/getStockPileSizeByRoundId',
     }),
     size() {
-      return this.getStockPileSizeByRoundId(this.roundId);
+      return this.getStockPileSizeByRoundId(this.visibleRoundId);
     },
     isEmpty() {
       return this.size === 0;

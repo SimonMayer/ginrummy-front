@@ -2,7 +2,6 @@
   <div class="match-content" v-if="match">
     <MatchTable
         ref="matchTable"
-        :matchId="matchId"
         :signedInUserId="signedInUserId"
     />
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
@@ -25,6 +24,7 @@ import ItemSearch from '@/components/ItemSearch.vue';
 import matchesService from '@/services/matchesService';
 import usersService from '@/services/usersService';
 import {mapState, mapActions, mapGetters} from 'vuex';
+import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
   name: 'MatchContent',
@@ -32,11 +32,8 @@ export default {
     MatchTable,
     ItemSearch,
   },
+  mixins: [matchPhaseMixin],
   props: {
-    matchId: {
-      type: Number,
-      required: true
-    },
     signedInUserId: {
       type: Number,
       required: true
@@ -51,12 +48,8 @@ export default {
       players: state => state.players.playersMatchData,
     }),
     ...mapGetters({
-      getMatchById: 'matches/getMatchById',
       getPlayersMatchDataByMatchId: 'players/getPlayersMatchDataByMatchId',
     }),
-    match() {
-      return this.getMatchById(this.matchId);
-    },
     players() {
       return this.getPlayersMatchDataByMatchId(this.matchId);
     },

@@ -22,6 +22,7 @@ import HiddenCard from '@/components/HiddenCard.vue';
 import NamePlate from '@/components/NamePlate.vue';
 import ScoreBoard from "@/components/ScoreBoard.vue";
 import { mapGetters } from 'vuex';
+import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
   name: 'NonSelfMatchPlayer',
@@ -30,15 +31,8 @@ export default {
     HiddenCard,
     NamePlate
   },
+  mixins: [matchPhaseMixin],
   props: {
-    matchId: {
-      type: Number,
-      required: true,
-    },
-    roundId: {
-      type: Number,
-      required: true,
-    },
     userId: {
       type: Number,
       required: true,
@@ -54,13 +48,13 @@ export default {
       return this.getPlayerMatchDataByMatchAndPlayerIds({ matchId: this.matchId, playerId: this.userId });
     },
     playerRoundData() {
-      if (!this.roundId) {
+      if (!this.visibleRoundId) {
         return null;
       }
-      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.roundId, playerId: this.userId });
+      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.visibleRoundId, playerId: this.userId });
     },
     hasCurrentTurn() {
-      return this.isCurrentTurnForPlayer({ roundId: this.roundId, playerId: this.userId });
+      return this.isCurrentTurnForPlayer({ roundId: this.visibleRoundId, playerId: this.userId });
     },
     username() {
       return this.playerMatchData.username;

@@ -6,8 +6,6 @@
             v-for="playerMatchData in nonSelfPlayersMatchData"
             :key="playerMatchData.user_id"
             :ref="'player-' + playerMatchData.user_id"
-            :matchId="matchId"
-            :roundId="visibleRoundId"
             :userId="playerMatchData.user_id"
             class="non-self-player"
         />
@@ -17,7 +15,6 @@
       <div class="game-column pile-container">
         <StockPile
             v-if="visibleRoundId"
-            :roundId="visibleRoundId"
             @click="handleStockPileClick"
             :disabled="stockPileDisabled"
         />
@@ -25,7 +22,6 @@
             v-if="visibleRoundId"
             :ref="'discard-pile'"
             :selectableCards="getSelectableDiscardPileCards()"
-            :roundId="visibleRoundId"
             @update:selected="forceRefresh()"
         />
       </div>
@@ -61,8 +57,6 @@
               v-if="visibleRoundId && selfPlayerMatchData"
               :key="selfPlayerMatchData.user_id"
               :ref="'player-self'"
-              :matchId="matchId"
-              :roundId="visibleRoundId"
               :selectable="isHandSelectable"
               class="self-player"
               @update:selected="forceRefresh()"
@@ -87,13 +81,25 @@ import handSelectionMixin from '@/mixins/handSelectionMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
 import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
 import { mapActions, mapState, mapGetters } from "vuex";
+import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
   name: 'MatchTable',
-  components: { PlayedMeld, StockPile, DiscardPile, SelfMatchPlayer, NonSelfMatchPlayer },
-  mixins: [canActionsMixin, handSelectionMixin, discardPileMixin, meldSelectionMixin],
+  components: {
+    PlayedMeld,
+    StockPile,
+    DiscardPile,
+    SelfMatchPlayer,
+    NonSelfMatchPlayer,
+  },
+  mixins: [
+    canActionsMixin,
+    discardPileMixin,
+    handSelectionMixin,
+    matchPhaseMixin,
+    meldSelectionMixin,
+  ],
   props: {
-    matchId: { type: Number, required: true },
     signedInUserId: { type: Number, required: true },
   },
   data() {
@@ -122,8 +128,6 @@ export default {
       getCardsByHandId: 'hands/getCardsByHandId',
       getLatestActionIdByMatchId: 'matchActionRegistry/getLatestActionIdByMatchId',
       getMatchById: 'matches/getMatchById',
-      getCurrentRoundIdByMatchId: 'matchRoundRegistry/getCurrentRoundIdByMatchId',
-      getLatestRoundIdByMatchId: 'matchRoundRegistry/getLatestRoundIdByMatchId',
       getNonSelfPlayersMatchDataByMatchId: 'players/getNonSelfPlayersMatchDataByMatchId',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
       getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
@@ -132,15 +136,6 @@ export default {
       getStockPileSizeByRoundId: 'rounds/getStockPileSizeByRoundId',
       getCurrentTurnByRoundId: 'roundTurnRegistry/getCurrentTurnByRoundId',
     }),
-    currentRoundId() {
-      return this.getCurrentRoundIdByMatchId(this.matchId);
-    },
-    latestRoundId() {
-      return this.getLatestRoundIdByMatchId(this.matchId);
-    },
-    visibleRoundId() {
-      return this.getLatestRoundIdByMatchId(this.matchId);
-    },
     currentRoundDiscardPile() {
       return this.getDiscardPileByRoundId(this.currentRoundId);
     },
@@ -155,9 +150,6 @@ export default {
     },
     latestActionId() {
       return this.getLatestActionIdByMatchId(this.matchId);
-    },
-    match() {
-      return this.getMatchById(this.matchId);
     },
     currentRoundHandId() {
       return this.selfPlayerCurrentRoundData?.hand?.hand_id;

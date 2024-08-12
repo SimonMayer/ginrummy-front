@@ -29,6 +29,7 @@ import NamePlate from "@/components/NamePlate.vue";
 import ScoreBoard from "@/components/ScoreBoard.vue";
 import VisibleCard from '@/components/VisibleCard.vue';
 import { mapGetters } from 'vuex';
+import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
   name: 'SelfMatchPlayer',
@@ -37,15 +38,8 @@ export default {
     ScoreBoard,
     VisibleCard
   },
+  mixins: [matchPhaseMixin],
   props: {
-    matchId: {
-      type: Number,
-      required: true,
-    },
-    roundId: {
-      type: Number,
-      required: true,
-    },
     selectable: Boolean
   },
   computed: {
@@ -63,13 +57,13 @@ export default {
       return this.getSelfPlayerMatchDataByMatchId(this.matchId);
     },
     playerRoundData() {
-      if (!this.roundId) {
+      if (!this.visibleRoundId) {
         return null;
       }
-      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.roundId, playerId: this.playerMatchData.user_id });
+      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.visibleRoundId, playerId: this.playerMatchData.user_id });
     },
     hasCurrentTurn() {
-      return this.isCurrentTurnForPlayer({ roundId: this.roundId, playerId: this.playerMatchData.user_id });
+      return this.isCurrentTurnForPlayer({ roundId: this.visibleRoundId, playerId: this.playerMatchData.user_id });
     },
     username() {
       return this.playerMatchData.username;

@@ -1,43 +1,34 @@
 <template>
   <div class="match-dashboard">
-    <MatchContent
-        :match="match"
-        :matchId="matchId"
-        :signedInUserId="signedInUserId"
-    />
+    <MatchContent :signedInUserId="signedInUserId" />
   </div>
 </template>
 
 <script>
 import MatchContent from '@/components/MatchContent.vue';
-import {mapActions, mapGetters} from 'vuex';
+import {mapActions} from 'vuex';
+import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
   name: 'MatchDashboard',
   components: {
     MatchContent,
   },
+  mixins: [matchPhaseMixin],
   data() {
     return {
-      matchId: parseInt(this.$route.params.id, 10),
-      signedInUserId: parseInt(localStorage.getItem('user_id'), 10),
+      signedInUserId: parseInt(localStorage.getItem('user_id'), 10), // todo move sign in and storage to auth store
     };
   },
-  computed: {
-    ...mapGetters({
-      getMatchById: 'matches/getMatchById',
-    }),
-    match() {
-      return this.getMatchById(this.matchId);
-    },
-  },
   async created() {
+    await this.initializeMatchId(this.$route);
     await this.fetchMatch({ matchId: this.matchId });
     await this.fetchPlayersMatchData({ matchId: this.matchId });
   },
   methods: {
     ...mapActions({
       fetchMatch: 'matches/fetchMatch',
+      initializeMatchId: 'matchPhaseTracker/initializeMatchId',
       fetchPlayersMatchData: 'players/fetchPlayersMatchData',
     }),
   },

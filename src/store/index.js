@@ -8,6 +8,7 @@ import hands from '@/store/modules/hands';
 import loading from '@/store/modules/loading';
 import matches from '@/store/modules/matches';
 import matchActionRegistry from '@/store/modules/matchActionRegistry';
+import matchPhaseTracker from '@/store/modules/matchPhaseTracker';
 import matchRoundRegistry from '@/store/modules/matchRoundRegistry';
 import melds from '@/store/modules/melds';
 import players from '@/store/modules/players';
@@ -28,6 +29,7 @@ const store = createStore({
         loading,
         matches,
         matchActionRegistry,
+        matchPhaseTracker,
         matchRoundRegistry,
         melds,
         players,
