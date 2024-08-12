@@ -1,7 +1,7 @@
 <template>
   <div class="match-table" v-if="match && match.start_time">
     <div class="game-section full-width">
-      <div class="non-self-players-container">
+      <div v-if="visibleRoundId" class="non-self-players-container">
         <NonSelfMatchPlayer
             v-for="playerMatchData in nonSelfPlayersMatchData"
             :key="playerMatchData.user_id"
@@ -16,11 +16,13 @@
     <div class="game-section row">
       <div class="game-column pile-container">
         <StockPile
+            v-if="visibleRoundId"
             :roundId="visibleRoundId"
             @click="handleStockPileClick"
             :disabled="stockPileDisabled"
         />
         <DiscardPile
+            v-if="visibleRoundId"
             :ref="'discard-pile'"
             :selectableCards="getSelectableDiscardPileCards()"
             :roundId="visibleRoundId"
@@ -56,7 +58,7 @@
         </div>
         <div class="self-player-container">
           <SelfMatchPlayer
-              v-if="selfPlayerMatchData"
+              v-if="visibleRoundId && selfPlayerMatchData"
               :key="selfPlayerMatchData.user_id"
               :ref="'player-self'"
               :matchId="matchId"
@@ -228,7 +230,7 @@ export default {
       setLoading: 'loading/setLoading',
       setLatestActionId: 'matchActionRegistry/setLatestActionId',
       fetchMatch: 'matches/fetchMatch',
-      removeTopDiscardPileCard: 'matchRoundRegistry/removeTopDiscardPileCard',
+      removeTopDiscardPileCard: 'rounds/removeTopDiscardPileCard',
       fetchCurrentTurn: 'roundTurnRegistry/fetchCurrentTurn',
       setCurrentRoundId: 'matchRoundRegistry/setCurrentRoundId',
       fetchPlayersRoundData: 'players/fetchPlayersRoundData',
