@@ -36,24 +36,21 @@ const mutations = {
 
 const actions = {
     async fetchHand({ dispatch }, { handId, forceFetch = false }) {
-        const key = `hands_${handId}`;
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_HAND_TIMEOUT, forceFetch }, { root: true });
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch hand!',
+                forceFetch,
+                key: `hands_${handId}`,
+                fetchFunction: () => handsService.getHand(handId),
+                onSuccess: async (hand) => {
+                    await dispatch('addHandWithCards', hand);
+                },
+                timeout: FETCH_HAND_TIMEOUT,
+            },
+            { root: true }
+        );
 
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const hand = await handsService.getHand(handId);
-            dispatch('addHandWithCards', hand);
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch hand!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
     },
     addHandWithCards({ commit, dispatch }, hand) {
         const cardIds = hand.cards.map(card => card.card_id);

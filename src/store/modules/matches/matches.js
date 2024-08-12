@@ -17,28 +17,23 @@ const mutations = {
 
 const actions = {
     async fetchMatch({ dispatch, commit }, { matchId, forceFetch = false }) {
-        const key = `match_${matchId}`;
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_MATCH_TIMEOUT, forceFetch }, { root: true });
-
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const match = await matchesService.getMatchDetails(matchId);
-            commit('SET_MATCH', { matchId, match });
-            await dispatch('registry/matchRound/setCurrentRoundId', { matchId: matchId, roundId: match.current_round_id }, { root: true });
-            await dispatch('registry/matchRound/setLatestRoundId', { matchId: matchId, roundId: match.latest_round_id }, { root: true });
-            await dispatch('registry/matchRound/setAllRoundIds', { matchId: matchId, roundId: match.all_round_ids }, { root: true });
-            dispatch('trackers/fetch/recordSuccess', key, { root: true });
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch match details!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch match details!',
+                forceFetch,
+                key: `match_${matchId}`,
+                fetchFunction: () => matchesService.getMatchDetails(matchId),
+                onSuccess: async (match) => {
+                    commit('SET_MATCH', { matchId, match });
+                    await dispatch('registry/matchRound/setCurrentRoundId', { matchId: matchId, roundId: match.current_round_id }, { root: true });
+                    await dispatch('registry/matchRound/setLatestRoundId', { matchId: matchId, roundId: match.latest_round_id }, { root: true });
+                    await dispatch('registry/matchRound/setAllRoundIds', { matchId: matchId, roundId: match.all_round_ids }, { root: true });
+                },
+                timeout: FETCH_MATCH_TIMEOUT,
+            },
+            { root: true }
+        );
     },
 };
 

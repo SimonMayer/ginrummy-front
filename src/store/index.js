@@ -24,6 +24,7 @@ import matchPhase   from '@/store/modules/trackers/matchPhase';
 
 import auth         from '@/store/modules/auth';
 import error        from '@/store/modules/error';
+import fetchHandler from '@/store/modules/fetchHandler';
 import gameConfig   from '@/store/modules/gameConfig';
 import hands        from '@/store/modules/hands';
 import search       from '@/store/modules/search';
@@ -40,6 +41,7 @@ const store = createStore({
             },
         },
         error,
+        fetchHandler,
         gameConfig,
         hands,
         matches: {

@@ -71,28 +71,23 @@ const actions = {
         }
     },
     async fetchMelds({ commit, dispatch }, { roundId, forceFetch = false }) {
-        const key = `melds_${roundId}`;
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_MELDS_TIMEOUT, forceFetch: forceFetch }, { root: true });
-
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const melds = await roundsService.getMelds(roundId);
-            await melds.forEach(meld => {
-                dispatch('addMeldWithCards', meld);
-            });
-            commit('SET_MELD_IDS', { roundId, meldIds: melds.map(meld => meld.meld_id) });
-            dispatch('trackers/fetch/recordSuccess', key, { root: true });
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch melds!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch melds!',
+                forceFetch,
+                key: `melds_${roundId}`,
+                fetchFunction: () => roundsService.getMelds(roundId),
+                onSuccess: async (melds) => {
+                    await melds.forEach(meld => {
+                        dispatch('addMeldWithCards', meld);
+                    });
+                    commit('SET_MELD_IDS', { roundId, meldIds: melds.map(meld => meld.meld_id) });
+                },
+                timeout: FETCH_MELDS_TIMEOUT,
+            },
+            { root: true }
+        );
     },
 };
 

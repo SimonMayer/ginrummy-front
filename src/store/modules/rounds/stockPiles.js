@@ -14,25 +14,20 @@ const mutations = {
 
 const actions = {
     async fetchStockPileData({ commit, dispatch }, { roundId, forceFetch = false }) {
-        const key = `stockPileSize_${roundId}`;
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_STOCK_PILE_TIMEOUT, forceFetch }, { root: true });
-
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const stockPileData = await roundsService.getStockPileData(roundId);
-            commit('SET_STOCK_PILE_SIZE', { roundId, size: stockPileData.size });
-            dispatch('trackers/fetch/recordSuccess', key, { root: true });
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch stock pile data!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch stock pile data!',
+                forceFetch,
+                key: `stockPileSize_${roundId}`,
+                fetchFunction: () => roundsService.getStockPileData(roundId),
+                onSuccess: async (stockPileData) => {
+                    commit('SET_STOCK_PILE_SIZE', { roundId, size: stockPileData.size });
+                },
+                timeout: FETCH_STOCK_PILE_TIMEOUT,
+            },
+            { root: true }
+        );
     },
     removeTopDiscardPileCard({ commit }, roundId) {
         commit('REMOVE_TOP_DISCARD_PILE_CARD', roundId);

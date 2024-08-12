@@ -43,26 +43,22 @@ const mutations = {
 
 const actions = {
     async fetchTurn({ commit, dispatch }, { turnId, forceFetch = false }) {
-        const key = `turn_${turnId}`;
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_TURN_TIMEOUT, forceFetch }, { root: true });
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch turn!',
+                forceFetch,
+                key: `turn_${turnId}`,
+                fetchFunction: () => turnsService.getTurn(turnId),
+                onSuccess: async (data) => {
+                    const turn = createTurn(data.turn_id, data.user_id, data.rotation_number, data.actions || []);
+                    commit('ADD_TURN', turn);
+                },
+                timeout: FETCH_TURN_TIMEOUT,
+            },
+            { root: true }
+        );
 
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const data = await turnsService.getTurn(turnId);
-            const turn = createTurn(data.turn_id, data.user_id, data.rotation_number, data.actions || []);
-            commit('ADD_TURN', turn);
-            dispatch('trackers/fetch/recordSuccess', key, { root: true });
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch turn!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
     },
     appendActionToTurn({ commit }, { turnId, action }) {
         commit('APPEND_ACTION_TO_TURN', { turnId, action });

@@ -19,26 +19,21 @@ const mutations = {
 
 const actions = {
     async fetchDiscardPile({ commit, dispatch }, { roundId, forceFetch = false }) {
-        const key = `discardPile_${roundId}`;
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_DISCARD_PILE_TIMEOUT, forceFetch }, { root: true });
-
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const discardPile = await roundsService.getDiscardPileList(roundId);
-            await dispatch('cards/cards/addCards', discardPile, { root: true });
-            commit('SET_DISCARD_PILE_CARD_IDS', { roundId, discardPile });
-            dispatch('trackers/fetch/recordSuccess', key, { root: true });
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch discard pile!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch discard pile!',
+                forceFetch,
+                key: `discardPile_${roundId}`,
+                fetchFunction: () => roundsService.getDiscardPileList(roundId),
+                onSuccess: async (discardPile) => {
+                    await dispatch('cards/cards/addCards', discardPile, { root: true });
+                    commit('SET_DISCARD_PILE_CARD_IDS', { roundId, discardPile });
+                },
+                timeout: FETCH_DISCARD_PILE_TIMEOUT,
+            },
+            { root: true }
+        );
     },
     removeTopDiscardPileCard({ commit }, roundId) {
         commit('REMOVE_TOP_DISCARD_PILE_CARD', roundId);

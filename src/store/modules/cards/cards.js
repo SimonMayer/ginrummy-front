@@ -25,24 +25,20 @@ const mutations = {
 
 const actions = {
     async fetchCard({ dispatch }, { cardId, forceFetch = false }) {
-        const key = generateKey(cardId);
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_CARD_TIMEOUT, forceFetch }, { root: true });
-
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const card = await cardsService.getCard(cardId);
-            dispatch('addCard', card);
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch card!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch card!',
+                forceFetch,
+                key: generateKey(cardId),
+                fetchFunction: () => cardsService.getCard(cardId),
+                onSuccess: async (card) => {
+                    dispatch('addCard', card);
+                },
+                timeout: FETCH_CARD_TIMEOUT,
+            },
+            { root: true }
+        );
     },
     addCards({ dispatch }, cards) {
         cards.forEach(card => {

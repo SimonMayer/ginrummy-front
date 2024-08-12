@@ -14,25 +14,21 @@ const mutations = {
 
 const actions = {
     async fetchMatchList({ dispatch, commit }, { forceFetch = false }) {
-        const key = 'matchList';
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_MATCH_LIST_TIMEOUT, forceFetch }, { root: true });
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch match list!',
+                forceFetch,
+                key: 'matchList',
+                fetchFunction: () => matchesService.getMatchList(),
+                onSuccess: async (matchList) => {
+                    commit('SET_MATCH_LIST', matchList);
+                },
+                timeout: FETCH_MATCH_LIST_TIMEOUT,
+            },
+            { root: true }
+        );
 
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const matchList = await matchesService.getMatchList();
-            commit('SET_MATCH_LIST', matchList);
-            dispatch('trackers/fetch/recordSuccess', key, { root: true });
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch match list!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
     },
 };
 

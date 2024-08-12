@@ -22,31 +22,26 @@ const mutations = {
 
 const actions = {
     async fetchGameConfig({ commit, dispatch }, { forceFetch = false }) {
-        const key = 'gameConfig';
-        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_GAME_CONFIG_TIMEOUT, forceFetch }, { root: true });
-
-        if (!shouldFetch) {
-            return;
-        }
-
-        dispatch('trackers/loading/setLoading', true, { root: true });
-        dispatch('trackers/fetch/recordAttempt', key, { root: true });
-        try {
-            const configData = await configService.getGameConfig();
-            commit('SET_GAME_CONFIG', {
-                allowMeldsFromRotation: configData.allowMeldsFromRotation,
-                minimumMeldSize: configData.minimumMeldSize,
-                runOrders: configData.runOrders,
-                minPlayers: configData.players.minimumAllowed,
-                maxPlayers: configData.players.maximumAllowed,
-            });
-            dispatch('trackers/fetch/recordSuccess', key, { root: true });
-        } catch (error) {
-            dispatch('error/setError', { title: 'Failed to fetch game configuration!', error }, { root: true });
-            dispatch('trackers/fetch/recordFail', key, { root: true });
-        } finally {
-            dispatch('trackers/loading/setLoading', false, { root: true });
-        }
+        await dispatch(
+            'fetchHandler/handleFetch',
+            {
+                errorTitle: 'Failed to fetch game configuration!',
+                forceFetch,
+                key: 'gameConfig',
+                fetchFunction: () => configService.getGameConfig(),
+                onSuccess: async (configData) => {
+                    commit('SET_GAME_CONFIG', {
+                        allowMeldsFromRotation: configData.allowMeldsFromRotation,
+                        minimumMeldSize: configData.minimumMeldSize,
+                        runOrders: configData.runOrders,
+                        minPlayers: configData.players.minimumAllowed,
+                        maxPlayers: configData.players.maximumAllowed,
+                    });
+                },
+                timeout: FETCH_GAME_CONFIG_TIMEOUT,
+            },
+            { root: true }
+        );
     },
 };
 
