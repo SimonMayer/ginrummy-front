@@ -15,14 +15,14 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 import { formatDateTime } from '@/utils/dateFormatter';
 
 export default {
   name: 'MatchList',
   computed: {
-    ...mapState({
-      matchList: state => state.matches.matchList,
+    ...mapGetters({
+      matchList: 'matches/list/matchList',
     }),
     sortedMatchList() {
       return this.matchList.slice().sort((a, b) => new Date(b.create_time) - new Date(a.create_time));
@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchMatchList: 'matches/fetchMatchList',
+      fetchMatchList: 'matches/list/fetchMatchList',
     }),
     formatDateTime
   }

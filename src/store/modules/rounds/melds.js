@@ -1,4 +1,9 @@
+import roundsService from "@/services/roundsService";
+
+const FETCH_MELDS_TIMEOUT = 5 * 60 * 1000;
+
 const state = {
+    meldIds: {},
     melds: {}
 };
 
@@ -19,6 +24,9 @@ const mutations = {
             meld.cardIds.push(cardId);
         }
     },
+    SET_MELD_IDS(state, { roundId, meldIds }) {
+        state.meldIds[roundId] = meldIds;
+    },
 };
 
 const actions = {
@@ -37,7 +45,7 @@ const actions = {
 
         commit('ADD_MELD', newMeld);
         for (const card of meld.cards) {
-            dispatch('cards/addCard', card, { root: true });
+            dispatch('cards/cards/addCard', card, { root: true });
         }
     },
     async addMeldWithCardIds({ commit, dispatch }, meld) {
@@ -48,7 +56,7 @@ const actions = {
 
         commit('ADD_MELD', meld);
         for (const cardId of meld.cardIds) {
-            await dispatch('cards/fetchCard', { cardId }, { root: true });
+            await dispatch('cards/cards/fetchCard', { cardId }, { root: true });
         }
     },
     addCardToMeld({ commit, dispatch, state }, { meldId, card }) {
@@ -59,7 +67,31 @@ const actions = {
         }
         if (!meld.cardIds.includes(card.card_id)) {
             commit('ADD_CARD_TO_MELD', { meldId, cardId: card.card_id });
-            dispatch('cards/addCard', card, { root: true });
+            dispatch('cards/cards/addCard', card, { root: true });
+        }
+    },
+    async fetchMelds({ commit, dispatch }, { roundId, forceFetch = false }) {
+        const key = `melds_${roundId}`;
+        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_MELDS_TIMEOUT, forceFetch: forceFetch }, { root: true });
+
+        if (!shouldFetch) {
+            return;
+        }
+
+        dispatch('trackers/loading/setLoading', true, { root: true });
+        dispatch('trackers/fetch/recordAttempt', key, { root: true });
+        try {
+            const melds = await roundsService.getMelds(roundId);
+            await melds.forEach(meld => {
+                dispatch('addMeldWithCards', meld);
+            });
+            commit('SET_MELD_IDS', { roundId, meldIds: melds.map(meld => meld.meld_id) });
+            dispatch('trackers/fetch/recordSuccess', key, { root: true });
+        } catch (error) {
+            dispatch('error/setError', { title: 'Failed to fetch melds!', error }, { root: true });
+            dispatch('trackers/fetch/recordFail', key, { root: true });
+        } finally {
+            dispatch('trackers/loading/setLoading', false, { root: true });
         }
     },
 };
@@ -72,8 +104,12 @@ const getters = {
         }
         return {
             ...meld,
-            cards: meld.cardIds.map(id => rootGetters['cards/getCardById'](id)),
+            cards: meld.cardIds.map(id => rootGetters['cards/cards/getCardById'](id)),
         };
+    },
+    getMeldsByRoundId: (state, getters) => (roundId) => {
+        const meldIds = state.meldIds[roundId] || [];
+        return meldIds.map(id => getters['getMeldById'](id));
     },
 };
 

@@ -27,9 +27,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchMatch: 'matches/fetchMatch',
-      initializeMatchId: 'matchPhaseTracker/initializeMatchId',
-      fetchPlayersMatchData: 'players/fetchPlayersMatchData',
+      fetchMatch: 'matches/matches/fetchMatch',
+      initializeMatchId: 'trackers/matchPhase/initializeMatchId',
+      fetchPlayersMatchData: 'players/match/fetchPlayersMatchData',
     }),
   },
 };

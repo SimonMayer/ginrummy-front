@@ -14,7 +14,7 @@ export default {
   methods: {
     ...mapActions({
       setError: 'error/setError',
-      setLoading: 'loading/setLoading',
+      setLoading: 'trackers/loading/setLoading',
     }),
     async createMatch() {
       this.setLoading(true);

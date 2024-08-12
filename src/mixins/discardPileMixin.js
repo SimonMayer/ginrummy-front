@@ -3,8 +3,8 @@ import {mapGetters} from "vuex";
 export default {
     computed: {
         ...mapGetters({
-            getSelectedDiscardPileCardIdsByRoundId: 'rounds/getSelectedDiscardPileCardIdsByRoundId',
-            getSelectedDiscardPileCardsByRoundId: 'rounds/getSelectedDiscardPileCardsByRoundId',
+            getSelectedDiscardPileCardIdsByRoundId: 'rounds/discardPiles/getSelectedDiscardPileCardIdsByRoundId',
+            getSelectedDiscardPileCardsByRoundId: 'rounds/discardPiles/getSelectedDiscardPileCardsByRoundId',
         }),
         selectedDiscardPileCards() {
             return this.currentRoundId ? this.getSelectedDiscardPileCardsByRoundId(this.currentRoundId) : [];

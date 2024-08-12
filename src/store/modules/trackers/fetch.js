@@ -17,13 +17,13 @@ const mutations = {
 };
 
 const actions = {
-    recordFetchAttempt({ commit }, key) {
+    recordAttempt({ commit }, key) {
         commit('RECORD_FETCH_ATTEMPT', key);
     },
-    recordSuccessfulFetch({ commit }, key) {
+    recordSuccess({ commit }, key) {
         commit('RECORD_SUCCESSFUL_FETCH', key);
     },
-    recordFailedFetch({ commit }, key) {
+    recordFail({ commit }, key) {
         commit('RECORD_FAILED_FETCH', key);
     },
     shouldFetch({ state }, { key, timeout, forceFetch }) {

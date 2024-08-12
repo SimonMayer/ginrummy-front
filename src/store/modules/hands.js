@@ -37,22 +37,22 @@ const mutations = {
 const actions = {
     async fetchHand({ dispatch }, { handId, forceFetch = false }) {
         const key = `hands_${handId}`;
-        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_HAND_TIMEOUT, forceFetch }, { root: true });
+        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_HAND_TIMEOUT, forceFetch }, { root: true });
 
         if (!shouldFetch) {
             return;
         }
 
-        dispatch('loading/setLoading', true, { root: true });
-        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
+        dispatch('trackers/loading/setLoading', true, { root: true });
+        dispatch('trackers/fetch/recordAttempt', key, { root: true });
         try {
             const hand = await handsService.getHand(handId);
             dispatch('addHandWithCards', hand);
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch hand!', error }, { root: true });
-            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
+            dispatch('trackers/fetch/recordFail', key, { root: true });
         } finally {
-            dispatch('loading/setLoading', false, { root: true });
+            dispatch('trackers/loading/setLoading', false, { root: true });
         }
     },
     addHandWithCards({ commit, dispatch }, hand) {
@@ -71,7 +71,7 @@ const actions = {
 
         commit('ADD_HAND', newHand);
         for (const card of hand.cards) {
-            dispatch('cards/addCard', card, { root: true });
+            dispatch('cards/cards/addCard', card, { root: true });
         }
     },
     async addHandWithCardIds({ commit, dispatch }, hand) {
@@ -82,12 +82,12 @@ const actions = {
         commit('ADD_HAND', hand);
 
         for (const cardId of hand.cardIds) {
-            await dispatch('cards/fetchCard', { cardId }, { root: true });
+            await dispatch('cards/cards/fetchCard', { cardId }, { root: true });
         }
     },
     async addCardIdsToHand({ commit, dispatch }, { handId, cardIds }) {
         for (const cardId of cardIds) {
-            await dispatch('cards/fetchCard', { cardId }, { root: true });
+            await dispatch('cards/cards/fetchCard', { cardId }, { root: true });
             commit('ADD_CARD_ID_TO_HAND', { handId, cardId });
         }
     },
@@ -99,16 +99,16 @@ const actions = {
 const getters = {
     getCardsByHandId: (state, getters, rootState, rootGetters) => (handId) => {
         const cardIds = state.hands[handId]?.cardIds || [];
-        return cardIds.map(id => rootGetters['cards/getCardById'](id));
+        return cardIds.map(id => rootGetters['cards/cards/getCardById'](id));
     },
     getSelectedCardIdsByHandId: (state, getters, rootState, rootGetters) => (handId) => {
         const handCardIds = state.hands[handId]?.cardIds || [];
-        const selectedCardIds = rootGetters['selections/getSelectedCardIds'];
+        const selectedCardIds = rootGetters['cards/selections/getSelectedCardIds'];
 
         return handCardIds.filter(cardId => selectedCardIds.includes(cardId));
     },
     getSelectedCardsByHandId: (state, getters, rootState, rootGetters) => (handId) => {
-        return getters.getSelectedCardIdsByHandId(handId).map(cardId => rootGetters['cards/getCardById'](cardId));
+        return getters.getSelectedCardIdsByHandId(handId).map(cardId => rootGetters['cards/cards/getCardById'](cardId));
     },
 };
 

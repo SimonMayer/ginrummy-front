@@ -23,14 +23,14 @@ const mutations = {
 const actions = {
     async fetchGameConfig({ commit, dispatch }, { forceFetch = false }) {
         const key = 'gameConfig';
-        const shouldFetch = await dispatch('fetchStatus/shouldFetch', { key, timeout: FETCH_GAME_CONFIG_TIMEOUT, forceFetch }, { root: true });
+        const shouldFetch = await dispatch('trackers/fetch/shouldFetch', { key, timeout: FETCH_GAME_CONFIG_TIMEOUT, forceFetch }, { root: true });
 
         if (!shouldFetch) {
             return;
         }
 
-        dispatch('loading/setLoading', true, { root: true });
-        dispatch('fetchStatus/recordFetchAttempt', key, { root: true });
+        dispatch('trackers/loading/setLoading', true, { root: true });
+        dispatch('trackers/fetch/recordAttempt', key, { root: true });
         try {
             const configData = await configService.getGameConfig();
             commit('SET_GAME_CONFIG', {
@@ -40,12 +40,12 @@ const actions = {
                 minPlayers: configData.players.minimumAllowed,
                 maxPlayers: configData.players.maximumAllowed,
             });
-            dispatch('fetchStatus/recordSuccessfulFetch', key, { root: true });
+            dispatch('trackers/fetch/recordSuccess', key, { root: true });
         } catch (error) {
             dispatch('error/setError', { title: 'Failed to fetch game configuration!', error }, { root: true });
-            dispatch('fetchStatus/recordFailedFetch', key, { root: true });
+            dispatch('trackers/fetch/recordFail', key, { root: true });
         } finally {
-            dispatch('loading/setLoading', false, { root: true });
+            dispatch('trackers/loading/setLoading', false, { root: true });
         }
     },
 };

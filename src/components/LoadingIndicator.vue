@@ -7,13 +7,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import {mapGetters} from 'vuex';
 
 export default {
   name: 'LoadingIndicator',
   computed: {
-    ...mapState({
-      loading: state => state.loading.loading,
+    ...mapGetters({
+      loading: 'trackers/loading/loading',
     }),
   },
 };

@@ -25,7 +25,7 @@ export default {
     ...mapActions({
       setAuthenticated: 'auth/setAuthenticated',
       setError: 'error/setError',
-      setLoading: 'loading/setLoading',
+      setLoading: 'trackers/loading/setLoading',
     }),
     async signIn() {
       this.setLoading(true);

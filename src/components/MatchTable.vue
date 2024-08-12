@@ -80,7 +80,7 @@ import canActionsMixin from '@/mixins/canActionsMixin.js';
 import handSelectionMixin from '@/mixins/handSelectionMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
 import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
-import { mapActions, mapState, mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
@@ -117,25 +117,29 @@ export default {
     this.cleanupSSE();
   },
   computed: {
-    ...mapState({
-      allowMeldsFromRotation: state => state.gameConfig.allowMeldsFromRotation,
-      minimumMeldSize: state => state.gameConfig.minimumMeldSize,
-      runOrders: state => state.gameConfig.runOrders,
-      loading: state => state.loading.loading,
-      getMatch: state => state.matches.match,
-    }),
     ...mapGetters({
+      gameConfig: 'gameConfig/gameConfig',
       getCardsByHandId: 'hands/getCardsByHandId',
-      getLatestActionIdByMatchId: 'matchActionRegistry/getLatestActionIdByMatchId',
-      getMatchById: 'matches/getMatchById',
-      getNonSelfPlayersMatchDataByMatchId: 'players/getNonSelfPlayersMatchDataByMatchId',
-      getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
-      getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
-      getDiscardPileByRoundId: 'rounds/getDiscardPileByRoundId',
-      getMeldsByRoundId: 'rounds/getMeldsByRoundId',
-      getStockPileSizeByRoundId: 'rounds/getStockPileSizeByRoundId',
-      getCurrentTurnByRoundId: 'roundTurnRegistry/getCurrentTurnByRoundId',
+      getMatchById: 'matches/matches/getMatchById',
+      getNonSelfPlayersMatchDataByMatchId: 'players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
+      getSelfPlayerMatchDataByMatchId: 'players/self/getSelfPlayerMatchDataByMatchId',
+      getPlayerRoundDataByRoundAndPlayerIds: 'players/round/getPlayerRoundDataByRoundAndPlayerIds',
+      getLatestActionIdByMatchId: 'registry/matchAction/getLatestActionIdByMatchId',
+      getCurrentTurnByRoundId: 'registry/roundTurn/getCurrentTurnByRoundId',
+      getDiscardPileByRoundId: 'rounds/discardPiles/getDiscardPileByRoundId',
+      getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
+      getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
+      loading: 'trackers/loading/loading',
     }),
+    allowMeldsFromRotation() {
+      return this.gameConfig.allowMeldsFromRotation;
+    },
+    minimumMeldSize() {
+      return this.gameConfig.minimumMeldSize;
+    },
+    runOrders() {
+      return this.gameConfig.runOrders;
+    },
     currentRoundDiscardPile() {
       return this.getDiscardPileByRoundId(this.currentRoundId);
     },
@@ -215,21 +219,21 @@ export default {
   },
   methods: {
     ...mapActions({
+      unselectAllCards: 'cards/selections/unselectAllCards',
       setError: 'error/setError',
       fetchGameConfig: 'gameConfig/fetchGameConfig',
       addCardIdsToHand: 'hands/addCardIdsToHand',
       removeCardIdsFromHand: 'hands/removeCardIdsFromHand',
-      setLoading: 'loading/setLoading',
-      setLatestActionId: 'matchActionRegistry/setLatestActionId',
-      fetchMatch: 'matches/fetchMatch',
-      removeTopDiscardPileCard: 'rounds/removeTopDiscardPileCard',
-      fetchCurrentTurn: 'roundTurnRegistry/fetchCurrentTurn',
-      setCurrentRoundId: 'matchRoundRegistry/setCurrentRoundId',
-      fetchPlayersRoundData: 'players/fetchPlayersRoundData',
-      fetchDiscardPile: 'rounds/fetchDiscardPile',
-      fetchMelds: 'rounds/fetchMelds',
-      fetchStockPileData: 'rounds/fetchStockPileData',
-      unselectAllCards: 'selections/unselectAllCards',
+      fetchMatch: 'matches/matches/fetchMatch',
+      fetchPlayersRoundData: 'players/round/fetchPlayersRoundData',
+      setLatestActionId: 'registry/matchAction/setLatestActionId',
+      setCurrentRoundId: 'registry/matchRound/setCurrentRoundId',
+      fetchCurrentTurn: 'registry/roundTurn/fetchCurrentTurn',
+      fetchDiscardPile: 'rounds/discardPiles/fetchDiscardPile',
+      removeTopDiscardPileCard: 'rounds/discardPiles/removeTopDiscardPileCard',
+      fetchMelds: 'rounds/melds/fetchMelds',
+      fetchStockPileData: 'rounds/stockPiles/fetchStockPileData',
+      setLoading: 'trackers/loading/setLoading',
       appendActionToTurn: 'turns/appendActionToTurn',
     }),
     forceRefresh() {

@@ -9,14 +9,14 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'ErrorBox',
   computed: {
-    ...mapState({
-      error: state => state.error.error,
-      errorTitle: state => state.error.errorTitle,
+    ...mapGetters({
+      error: 'error/error',
+      errorTitle: 'error/errorTitle',
     }),
     hasError() {
       return !!this.error;

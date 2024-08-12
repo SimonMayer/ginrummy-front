@@ -43,7 +43,7 @@ const getters = {
         return state.selectedCardIds;
     },
     getSelectedCards: (state, getters, rootState, rootGetters) => {
-        return state.selectedCardIds.map(id => rootGetters['cards/getCardById'](id));
+        return state.selectedCardIds.map(id => rootGetters['cards/cards/getCardById'](id));
     },
 };
 

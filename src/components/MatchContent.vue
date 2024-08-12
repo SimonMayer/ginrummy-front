@@ -23,7 +23,7 @@ import MatchTable from '@/components/MatchTable.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
 import matchesService from '@/services/matchesService';
 import usersService from '@/services/usersService';
-import {mapState, mapActions, mapGetters} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 import matchPhaseMixin from "@/mixins/matchPhaseMixin";
 
 export default {
@@ -40,16 +40,17 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      maxPlayers: state => state.gameConfig.maxPlayers,
-      minPlayers: state => state.gameConfig.minPlayers,
-      loading: state => state.loading.loading,
-      getMatch: state => state.matches.match,
-      players: state => state.players.playersMatchData,
-    }),
     ...mapGetters({
-      getPlayersMatchDataByMatchId: 'players/getPlayersMatchDataByMatchId',
+      getPlayersMatchDataByMatchId: 'players/match/getPlayersMatchDataByMatchId',
+      gameConfig: 'gameConfig/gameConfig',
+      loading: 'trackers/loading/loading',
     }),
+    maxPlayers() {
+      return this.gameConfig.maxPlayers;
+    },
+    minPlayers() {
+      return this.gameConfig.minPlayers;
+    },
     players() {
       return this.getPlayersMatchDataByMatchId(this.matchId);
     },
@@ -66,9 +67,9 @@ export default {
     ...mapActions({
       setError: 'error/setError',
       fetchGameConfig: 'gameConfig/fetchGameConfig',
-      setLoading: 'loading/setLoading',
-      fetchMatch: 'matches/fetchMatch',
-      fetchPlayersMatchData: 'players/fetchPlayersMatchData',
+      fetchMatch: 'matches/matches/fetchMatch',
+      fetchPlayersMatchData: 'players/match/fetchPlayersMatchData',
+      setLoading: 'trackers/loading/setLoading',
     }),
     async startMatch() {
       if (!this.loading) {

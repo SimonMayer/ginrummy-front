@@ -45,9 +45,9 @@ export default {
   computed: {
     ...mapGetters({
       getCardsByHandId: 'hands/getCardsByHandId',
-      getSelfPlayerMatchDataByMatchId: 'players/getSelfPlayerMatchDataByMatchId',
-      getPlayerRoundDataByRoundAndPlayerIds: 'players/getPlayerRoundDataByRoundAndPlayerIds',
-      isCurrentTurnForPlayer: 'players/isCurrentTurnForPlayer',
+      getSelfPlayerMatchDataByMatchId: 'players/self/getSelfPlayerMatchDataByMatchId',
+      getPlayerRoundDataByRoundAndPlayerIds: 'players/round/getPlayerRoundDataByRoundAndPlayerIds',
+      isCurrentTurnForPlayer: 'players/round/isCurrentTurnForPlayer',
     }),
     handCards() {
       const handId = this.playerRoundData?.hand?.hand_id;

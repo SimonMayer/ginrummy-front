@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'NavigationMenu',
   computed: {
-    ...mapState({
-      isAuthenticated: state => state.auth.isAuthenticated,
+    ...mapGetters({
+      isAuthenticated: 'auth/isAuthenticated',
     }),
   },
   methods: {

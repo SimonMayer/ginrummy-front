@@ -1,42 +1,88 @@
 import { createStore } from 'vuex';
-import auth from '@/store/modules/auth';
-import cards from '@/store/modules/cards';
-import error from '@/store/modules/error';
-import fetchStatus from '@/store/modules/fetchStatus';
-import gameConfig from '@/store/modules/gameConfig';
-import hands from '@/store/modules/hands';
-import loading from '@/store/modules/loading';
-import matches from '@/store/modules/matches';
-import matchActionRegistry from '@/store/modules/matchActionRegistry';
-import matchPhaseTracker from '@/store/modules/matchPhaseTracker';
-import matchRoundRegistry from '@/store/modules/matchRoundRegistry';
-import melds from '@/store/modules/melds';
-import players from '@/store/modules/players';
-import rounds from "@/store/modules/rounds";
-import roundTurnRegistry from '@/store/modules/roundTurnRegistry';
-import search from '@/store/modules/search';
-import selections from '@/store/modules/selections';
-import turns from '@/store/modules/turns';
+import cards        from '@/store/modules/cards/cards';
+import selections   from '@/store/modules/cards/selections';
+
+import list         from '@/store/modules/matches/list';
+import matches      from '@/store/modules/matches/matches';
+
+import match        from '@/store/modules/players/match';
+import round        from '@/store/modules/players/round';
+import nonSelf      from '@/store/modules/players/nonSelf';
+import self         from '@/store/modules/players/self';
+
+import discardPiles from '@/store/modules/rounds/discardPiles';
+import melds        from '@/store/modules/rounds/melds';
+import stockPiles   from '@/store/modules/rounds/stockPiles';
+
+import matchAction  from '@/store/modules/registry/matchAction';
+import matchRound   from '@/store/modules/registry/matchRound';
+import roundTurn    from '@/store/modules/registry/roundTurn';
+
+import fetch        from '@/store/modules/trackers/fetch';
+import loading      from '@/store/modules/trackers/loading';
+import matchPhase   from '@/store/modules/trackers/matchPhase';
+
+import auth         from '@/store/modules/auth';
+import error        from '@/store/modules/error';
+import gameConfig   from '@/store/modules/gameConfig';
+import hands        from '@/store/modules/hands';
+import search       from '@/store/modules/search';
+import turns        from '@/store/modules/turns';
 
 const store = createStore({
     modules: {
         auth,
-        cards,
+        cards: {
+            namespaced: true,
+            modules: {
+                cards,
+                selections,
+            },
+        },
         error,
-        fetchStatus,
         gameConfig,
         hands,
-        loading,
-        matches,
-        matchActionRegistry,
-        matchPhaseTracker,
-        matchRoundRegistry,
-        melds,
-        players,
-        rounds,
-        roundTurnRegistry,
+        matches: {
+            namespaced: true,
+            modules: {
+                list,
+                matches,
+            },
+        },
+        players: {
+            namespaced: true,
+            modules: {
+                round,
+                match,
+                nonSelf,
+                self,
+            },
+        },
+        registry: {
+            namespaced: true,
+            modules: {
+                matchAction,
+                matchRound,
+                roundTurn,
+            },
+        },
+        rounds: {
+            namespaced: true,
+            modules: {
+                discardPiles,
+                melds,
+                stockPiles,
+            },
+        },
         search,
-        selections,
+        trackers: {
+            namespaced: true,
+            modules: {
+                fetch,
+                matchPhase,
+                loading,
+            },
+        },
         turns,
     }
 });

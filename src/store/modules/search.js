@@ -31,7 +31,7 @@ const actions = {
         }
     },
     async performSearch({ commit, dispatch }, { key, term, searchFunction }) {
-        dispatch('loading/setLoading', true, { root: true });
+        dispatch('trackers/loading/setLoading', true, { root: true });
         commit('SET_SEARCH_TERM', { key, term });
         try {
             const results = await searchFunction(term);
@@ -39,7 +39,7 @@ const actions = {
         } catch (error) {
             dispatch('error/setError', { title: 'Search failed!', error }, { root: true });
         } finally {
-            dispatch('loading/setLoading', false, { root: true });
+            dispatch('trackers/loading/setLoading', false, { root: true });
         }
     },
     registerSearchFunction({ commit }, { key, searchFunction }) {

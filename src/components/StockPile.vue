@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getStockPileSizeByRoundId: 'rounds/getStockPileSizeByRoundId',
+      getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
     }),
     size() {
       return this.getStockPileSizeByRoundId(this.visibleRoundId);
