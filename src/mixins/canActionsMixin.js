@@ -1,14 +1,18 @@
+import {mapGetters} from "vuex";
+
 export default {
+    computed: {
+        ...mapGetters({
+            canAct: 'permissions/core/canAct',
+        }),
+    },
     methods: {
         isCardAvailableForHandAfterDrawMultipleAction() {
             const selectedCardCount = this.selectedHandCardCount + this.selectedDiscardPileCardCount;
             return selectedCardCount < (this.currentRoundHandCards.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
         },
-        canAct() {
-            return this.isCurrentUserTurn && !this.loading;
-        },
         canDraw() {
-            return this.canAct() && !this.hasDrawAction;
+            return this.canAct && !this.hasDrawAction;
         },
         canDrawOne() {
             return this.canDraw() && this.hasNoHandCardsSelected() && !this.selectedMeld;
@@ -31,7 +35,7 @@ export default {
                 this.doSelectedCardsFormValidMeld();
         },
         canPlayMeld() {
-            return this.canAct() &&
+            return this.canAct &&
                 this.hasDrawAction &&
                 !this.selectedMeld &&
                 this.isRotationThatAllowsMelds() &&
@@ -45,7 +49,7 @@ export default {
             return this.canPlayMeld() && this.areAllCardsOfSameRank(this.selectedHandCards);
         },
         canExtendMeld() {
-            return this.canAct() &&
+            return this.canAct &&
                 this.hasDrawAction &&
                 this.hasPlayedMeld &&
                 this.selectedMeld &&
@@ -55,7 +59,7 @@ export default {
                 this.isValidMeldExtension();
         },
         canDiscard() {
-            return this.canAct() && this.hasDrawAction && !this.selectedMeld && this.hasOneHandCardSelected();
+            return this.canAct && this.hasDrawAction && !this.selectedMeld && this.hasOneHandCardSelected();
         }
     }
 };

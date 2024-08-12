@@ -5,6 +5,8 @@ import selections   from '@/store/modules/cards/selections';
 import list         from '@/store/modules/matches/list';
 import matches      from '@/store/modules/matches/matches';
 
+import core         from '@/store/modules/permissions/core';
+
 import match        from '@/store/modules/players/match';
 import round        from '@/store/modules/players/round';
 import nonSelf      from '@/store/modules/players/nonSelf';
@@ -49,6 +51,12 @@ const store = createStore({
             modules: {
                 list,
                 matches,
+            },
+        },
+        permissions: {
+            namespaced: true,
+            modules: {
+                core,
             },
         },
         players: {

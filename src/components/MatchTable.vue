@@ -188,10 +188,10 @@ export default {
       return selfPlayerCurrentRoundData && selfPlayerCurrentRoundData.melds && selfPlayerCurrentRoundData.melds.length > 0;
     },
     isHandSelectable() {
-      return this.canDrawMultiple() || (this.canAct() && this.hasDrawAction);
+      return this.canDrawMultiple() || (this.canAct && this.hasDrawAction);
     },
     isMeldSelectable() {
-      return this.canAct() && this.hasPlayedMeld;
+      return this.canAct && this.hasPlayedMeld;
     },
     stockPileDisabled() {
       return !this.canDrawFromStockPile();
