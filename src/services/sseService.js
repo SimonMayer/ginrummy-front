@@ -3,8 +3,9 @@ import store from '@/store';
 const BASE_URL = process.env.VUE_APP_BASE_URL;
 
 class SSEService {
-    constructor(endpoint, maxRetries = 3, retryDelay = 1000) {
+    constructor(endpoint, params = {}, maxRetries = 3, retryDelay = 1000) {
         this.endpoint = endpoint;
+        this.params = params;
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
         this.eventSource = null;
@@ -16,7 +17,12 @@ class SSEService {
     async setUrl() {
         const token = await store.getters['auth/tokens/sseAccessToken'];
         const url = new URL(`${BASE_URL}${this.endpoint}`);
+
+        for (const [key, value] of Object.entries(this.params)) {
+            url.searchParams.set(key, value);
+        }
         url.searchParams.set('token', token);
+
         this.url = url.toString();
     }
 

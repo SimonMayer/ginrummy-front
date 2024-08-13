@@ -343,10 +343,11 @@ export default {
     },
     initializeSSE() {
       const latestActionId = this.latestActionId === null ? '' : this.latestActionId;
-      const endpoint = `/matches/${this.matchId}/events?latest_action_id=${latestActionId}`;
+      const endpoint = `/matches/${this.matchId}/events`;
+      const params = {latest_action_id: latestActionId};
 
       try {
-        this.sseService = new SSEService(endpoint);
+        this.sseService = new SSEService(endpoint, params);
 
         this.sseService.connect(
             (data) => {
