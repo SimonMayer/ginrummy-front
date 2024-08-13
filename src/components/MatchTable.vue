@@ -147,9 +147,6 @@ export default {
     currentTurn() {
       return this.getCurrentTurnByRoundId(this.currentRoundId);
     },
-    latestActionId() {
-      return this.getLatestActionIdByMatchId(this.matchId);
-    },
     currentRoundHandId() {
       return this.selfPlayerCurrentRoundData?.hand?.hand_id;
     },
