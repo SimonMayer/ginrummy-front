@@ -225,7 +225,7 @@ export default {
       initializeSse: 'sse/connection/initializeSse',
       cleanupSse: 'sse/connection/cleanupSse',
       setLoading: 'trackers/loading/setLoading',
-      appendActionToTurn: 'turns/appendActionToTurn',
+      appendActionToTurn: 'turns/turns/appendActionToTurn',
     }),
     forceRefresh() {
       // forces refresh of computed values

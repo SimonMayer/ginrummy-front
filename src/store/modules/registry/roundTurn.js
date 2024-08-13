@@ -38,7 +38,7 @@ const actions = {
         );
     },
     setCurrentTurnId({ commit, dispatch }, { roundId, turnId }) {
-        dispatch('turns/fetchTurn', { turnId }, { root: true });
+        dispatch('turns/turns/fetchTurn', { turnId }, { root: true });
         commit('SET_CURRENT_TURN_ID', { roundId, turnId });
     },
 };
@@ -50,7 +50,7 @@ const getters = {
         if (!turnId) {
             return null;
         }
-        return rootGetters['turns/getTurnById'](turnId);
+        return rootGetters['turns/turns/getTurnById'](turnId);
     },
 };
 

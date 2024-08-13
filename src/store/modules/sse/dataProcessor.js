@@ -11,7 +11,7 @@ const actions = {
             }, {root: true});
         }
 
-        await dispatch('turns/appendActionToTurn', {turnId: data.turn_id, action: data.action}, {root: true});
+        await dispatch('turns/turns/appendActionToTurn', {turnId: data.turn_id, action: data.action}, {root: true});
 
         const roundChanged = newCurrentRoundId !== rootGetters['registry/matchRound/getCurrentRoundIdByMatchId'](matchId);
         await dispatch('registry/matchRound/setCurrentRoundId', {matchId, roundId: newCurrentRoundId}, {root: true});

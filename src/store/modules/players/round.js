@@ -49,7 +49,7 @@ const getters = {
             return false;
         }
 
-        const turn = rootGetters['turns/getTurnById'](currentTurnId);
+        const turn = rootGetters['turns/turns/getTurnById'](currentTurnId);
         return turn && turn.userId === playerId;
     },
 };

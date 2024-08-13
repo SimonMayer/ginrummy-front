@@ -15,28 +15,11 @@ function createTurn(id, userId, rotationNumber, actions) {
     };
 }
 
-function isValidAction(action) {
-    const validActionTypes = ['round_start', 'draw', 'play_meld', 'extend_meld', 'discard', 'round_end'];
-
-    return (
-        typeof action.action_id === 'number' &&
-        validActionTypes.includes(action.action_type) &&
-        typeof action.public_details === 'string'
-    );
-}
-
-function isDuplicateAction(action, existingActions) {
-    return existingActions.some(existingAction => existingAction.action_id === action.action_id);
-}
-
 const mutations = {
     ADD_TURN(state, turn) {
         state.turns = { ...state.turns, [turn.id]: turn };
     },
     APPEND_ACTION_TO_TURN(state, { turnId, action }) {
-        if (!state.turns[turnId] || isDuplicateAction(action, state.turns[turnId].actions) || !isValidAction(action)) {
-            return;
-        }
         state.turns[turnId].actions.push(action);
     },
 };
@@ -60,13 +43,21 @@ const actions = {
         );
 
     },
-    appendActionToTurn({ commit }, { turnId, action }) {
+    async appendActionToTurn({ commit, dispatch, getters }, { turnId, action }) {
+        if (!getters.getTurnById(turnId)) {
+            return;
+        }
+
+        const isAppendableAction = await dispatch('turns/actions/isAppendableAction', {turnId, action}, {root:true})
+        if (!isAppendableAction) {
+            return;
+        }
         commit('APPEND_ACTION_TO_TURN', { turnId, action });
     },
 };
 
 const getters = {
-    getTurnById: state => turnId => state.turns[turnId] || {},
+    getTurnById: state => turnId => state.turns[turnId] || null,
 };
 
 export default {

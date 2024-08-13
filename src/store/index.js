@@ -31,12 +31,14 @@ import fetch from '@/store/modules/trackers/fetch';
 import loading from '@/store/modules/trackers/loading';
 import matchPhase from '@/store/modules/trackers/matchPhase';
 
+import actions from '@/store/modules/turns/actions';
+import turns from '@/store/modules/turns/turns';
+
 import error from '@/store/modules/error';
 import fetchHandler from '@/store/modules/fetchHandler';
 import gameConfig from '@/store/modules/gameConfig';
 import hands from '@/store/modules/hands';
 import search from '@/store/modules/search';
-import turns from '@/store/modules/turns';
 
 const store = createStore({
     modules: {
@@ -113,7 +115,13 @@ const store = createStore({
                 loading,
             },
         },
-        turns,
+        turns: {
+            namespaced: true,
+            modules: {
+                actions,
+                turns,
+            },
+        },
     },
 });
 
