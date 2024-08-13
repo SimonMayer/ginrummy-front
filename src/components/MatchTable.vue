@@ -251,7 +251,7 @@ export default {
       await this.handleDrawOneFromPileClick('discard');
     },
     async handleDrawOneFromPileClick(pileType) {
-      if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile()) || !this.canDraw()) {
+      if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile()) || !this.canDraw) {
         return;
       }
       await this.performAction(async () => {
