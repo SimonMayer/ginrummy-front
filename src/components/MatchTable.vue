@@ -74,7 +74,6 @@ import DiscardPile from '@/components/DiscardPile.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
 import roundsService from '@/services/roundsService';
-import SSEService from '@/services/sseService';
 import turnsService from '@/services/turnsService';
 import canActionsMixin from '@/mixins/canActionsMixin.js';
 import handSelectionMixin from '@/mixins/handSelectionMixin.js';
@@ -102,7 +101,6 @@ export default {
   data() {
     return {
       refreshValues: 0,
-      sseService: null,
       selectedMeld: null,
     };
   },
@@ -111,7 +109,7 @@ export default {
     await this.loadAllData(false);
   },
   beforeUnmount() {
-    this.cleanupSSE();
+    this.cleanupSSE(this.matchId);
   },
   computed: {
     ...mapGetters({
@@ -227,17 +225,14 @@ export default {
       removeTopDiscardPileCard: 'rounds/discardPiles/removeTopDiscardPileCard',
       fetchMelds: 'rounds/melds/fetchMelds',
       fetchStockPileData: 'rounds/stockPiles/fetchStockPileData',
+      initializeSSE: 'sse/connection/initializeSSE',
+      cleanupSSE: 'sse/connection/cleanupSSE',
       setLoading: 'trackers/loading/setLoading',
       appendActionToTurn: 'turns/appendActionToTurn',
     }),
     forceRefresh() {
       // forces refresh of computed values
       this.refreshValues++;
-    },
-    cleanupSSE() {
-      if (this.sseService) {
-        this.sseService.disconnect();
-      }
     },
     async performAction(action, errorMessage) {
       await this.setLoading(true);
@@ -339,60 +334,8 @@ export default {
       await this.fetchMatch({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchCurrentTurn({ matchId: this.matchId, roundId: this.currentRoundId, forceFetch: forceFetch });
       await this.fetchPlayersRoundData({ roundId: this.latestRoundId, forceFetch: forceFetch });
-      this.initializeSSE();
+      await this.initializeSSE(this.matchId);
     },
-    initializeSSE() {
-      const latestActionId = this.latestActionId === null ? '' : this.latestActionId;
-      const endpoint = `/matches/${this.matchId}/events`;
-      const params = {latest_action_id: latestActionId};
-
-      try {
-        this.sseService = new SSEService(endpoint, params);
-
-        this.sseService.connect(
-            (data) => {
-              const newCurrentRoundId = data.current_status.round_id;
-              const newCurrentTurnId = data.current_status.turn_id;
-
-              if (data.action.action_id > this.latestActionId) {
-                this.setLatestActionId({ matchId: this.matchId, actionId: data.action.action_id });
-              }
-
-              this.appendActionToTurn({ turnId: data.turn_id, action: data.action });
-
-              const roundChanged = newCurrentRoundId !== this.currentRoundId;
-              this.setCurrentRoundId({ matchId: this.matchId, roundId: newCurrentRoundId });
-
-              const betweenRounds = this.currentRoundId === null;
-              const turnChanged = newCurrentTurnId !== this.currentTurn?.id;
-              const cardsDrawn = ['draw'].includes(data.action.action_type);
-              const cardsMelded = ['play_meld', 'extend_meld'].includes(data.action.action_type);
-
-              if (!betweenRounds && (roundChanged || turnChanged)) {
-                this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId, forceFetch: true});
-              }
-              if (!betweenRounds && (turnChanged || cardsDrawn)) {
-                this.fetchDiscardPile({roundId: this.latestRoundId, forceFetch: true});
-              }
-              if (!betweenRounds && cardsDrawn) {
-                this.fetchStockPileData({roundId: this.latestRoundId, forceFetch: true});
-              }
-              if (cardsMelded) {
-                this.fetchMelds({roundId: this.latestRoundId, forceFetch: true})
-              }
-              if (roundChanged || turnChanged || cardsDrawn || cardsMelded) {
-                const forceFetch = !roundChanged || betweenRounds;
-                this.fetchPlayersRoundData({roundId: this.latestRoundId, forceFetch: forceFetch});
-              }
-            },
-            (error) => {
-              console.error('SSE error:', error);
-            }
-        );
-      } catch (error) {
-        console.error('Failed to initialize SSE:', error);
-      }
-    }
   },
 };
 </script>

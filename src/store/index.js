@@ -1,39 +1,42 @@
-import { createStore } from 'vuex';
+import {createStore} from 'vuex';
 import interactions from '@/store/modules/auth/interactions';
-import tokens       from '@/store/modules/auth/tokens';
-import user         from '@/store/modules/auth/user';
+import tokens from '@/store/modules/auth/tokens';
+import user from '@/store/modules/auth/user';
 
-import cards        from '@/store/modules/cards/cards';
-import selections   from '@/store/modules/cards/selections';
+import cards from '@/store/modules/cards/cards';
+import selections from '@/store/modules/cards/selections';
 
-import list         from '@/store/modules/matches/list';
-import matches      from '@/store/modules/matches/matches';
+import list from '@/store/modules/matches/list';
+import matches from '@/store/modules/matches/matches';
 
-import core         from '@/store/modules/permissions/core';
+import core from '@/store/modules/permissions/core';
 
-import match        from '@/store/modules/players/match';
-import round        from '@/store/modules/players/round';
-import nonSelf      from '@/store/modules/players/nonSelf';
-import self         from '@/store/modules/players/self';
+import match from '@/store/modules/players/match';
+import round from '@/store/modules/players/round';
+import nonSelf from '@/store/modules/players/nonSelf';
+import self from '@/store/modules/players/self';
 
 import discardPiles from '@/store/modules/rounds/discardPiles';
-import melds        from '@/store/modules/rounds/melds';
-import stockPiles   from '@/store/modules/rounds/stockPiles';
+import melds from '@/store/modules/rounds/melds';
+import stockPiles from '@/store/modules/rounds/stockPiles';
 
-import matchAction  from '@/store/modules/registry/matchAction';
-import matchRound   from '@/store/modules/registry/matchRound';
-import roundTurn    from '@/store/modules/registry/roundTurn';
+import matchAction from '@/store/modules/registry/matchAction';
+import matchRound from '@/store/modules/registry/matchRound';
+import roundTurn from '@/store/modules/registry/roundTurn';
 
-import fetch        from '@/store/modules/trackers/fetch';
-import loading      from '@/store/modules/trackers/loading';
-import matchPhase   from '@/store/modules/trackers/matchPhase';
+import connection from '@/store/modules/sse/connection';
+import dataProcessor from '@/store/modules/sse/dataProcessor';
 
-import error        from '@/store/modules/error';
+import fetch from '@/store/modules/trackers/fetch';
+import loading from '@/store/modules/trackers/loading';
+import matchPhase from '@/store/modules/trackers/matchPhase';
+
+import error from '@/store/modules/error';
 import fetchHandler from '@/store/modules/fetchHandler';
-import gameConfig   from '@/store/modules/gameConfig';
-import hands        from '@/store/modules/hands';
-import search       from '@/store/modules/search';
-import turns        from '@/store/modules/turns';
+import gameConfig from '@/store/modules/gameConfig';
+import hands from '@/store/modules/hands';
+import search from '@/store/modules/search';
+import turns from '@/store/modules/turns';
 
 const store = createStore({
     modules: {
@@ -95,6 +98,13 @@ const store = createStore({
             },
         },
         search,
+        sse: {
+            namespaced: true,
+            modules: {
+                connection,
+                dataProcessor,
+            },
+        },
         trackers: {
             namespaced: true,
             modules: {
@@ -104,7 +114,7 @@ const store = createStore({
             },
         },
         turns,
-    }
+    },
 });
 
 export default store;
