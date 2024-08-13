@@ -94,8 +94,11 @@ const actions = {
 };
 
 const getters = {
+    getCardIdsByHandId: (state) => (handId) => {
+        return state.hands[handId]?.cardIds || [];
+    },
     getCardsByHandId: (state, getters, rootState, rootGetters) => (handId) => {
-        const cardIds = state.hands[handId]?.cardIds || [];
+        const cardIds = getters.getCardIdsByHandId(handId);
         return cardIds.map(id => rootGetters['cards/cards/getCardById'](id));
     },
     getSelectedCardIdsByHandId: (state, getters, rootState, rootGetters) => (handId) => {

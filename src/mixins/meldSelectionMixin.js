@@ -43,7 +43,7 @@ export default {
                 (this.areAllCardsOfSameRank(allSelectedCards) || this.doCardsMakeValidRun(allSelectedCards));
         },
         isValidMeldExtension() {
-            if (!this.selectedMeld || this.hasNoHandCardsSelected() || this.hasAllHandCardsSelected()) {
+            if (!this.selectedMeld || this.hasNoHandCardsSelected || this.hasAllHandCardsSelected) {
                 return false;
             }
             const allCards = [...this.getSelectedMeldCards(), ...this.selectedHandCards];

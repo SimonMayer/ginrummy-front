@@ -76,7 +76,6 @@ import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
 import roundsService from '@/services/roundsService';
 import turnsService from '@/services/turnsService';
 import canActionsMixin from '@/mixins/canActionsMixin.js';
-import handSelectionMixin from '@/mixins/handSelectionMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
 import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
 import { mapActions, mapGetters } from "vuex";
@@ -94,7 +93,6 @@ export default {
   mixins: [
     canActionsMixin,
     discardPileMixin,
-    handSelectionMixin,
     matchPhaseMixin,
     meldSelectionMixin,
   ],
@@ -125,8 +123,14 @@ export default {
       getDiscardPileByRoundId: 'rounds/discardPiles/getDiscardPileByRoundId',
       getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
       getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
-      loading: 'trackers/loading/loading',
       hasDrawActionInCurrentTurn: 'trackers/derived/draw/hasDrawActionInCurrentTurn',
+      hasAllHandCardsSelected: 'trackers/derived/selected/hasAllHandCardsSelected',
+      hasNoHandCardsSelected: 'trackers/derived/selected/hasNoHandCardsSelected',
+      hasOneHandCardSelected: 'trackers/derived/selected/hasOneHandCardSelected',
+      selectedHandCardCount: 'trackers/derived/selected/selectedHandCardCount',
+      selectedHandCardIds: 'trackers/derived/selected/selectedHandCardIds',
+      selectedHandCards: 'trackers/derived/selected/selectedHandCards',
+      loading: 'trackers/loading/loading',
     }),
     allowMeldsFromRotation() {
       return this.gameConfig.allowMeldsFromRotation;
@@ -148,9 +152,6 @@ export default {
     },
     currentTurn() {
       return this.getCurrentTurnByRoundId(this.currentRoundId);
-    },
-    currentTurnId() {
-      return this.getCurrentTurnIdByRoundId(this.currentRoundId);
     },
     currentRoundHandId() {
       return this.selfPlayerCurrentRoundData?.hand?.hand_id;

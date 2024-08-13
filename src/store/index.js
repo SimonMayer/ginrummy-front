@@ -26,7 +26,9 @@ import sseConnection from '@/store/modules/sse/connection';
 import sseDataProcessor from '@/store/modules/sse/dataProcessor';
 
 import trackersDerivedDraw from '@/store/modules/trackers/derived/draw';
+import trackersDerivedHand from '@/store/modules/trackers/derived/hand';
 import trackersDerivedRounds from '@/store/modules/trackers/derived/rounds';
+import trackersDerivedSelected from '@/store/modules/trackers/derived/selected';
 import trackersDerivedTurns from '@/store/modules/trackers/derived/turns';
 import trackersPermissionsCore from '@/store/modules/trackers/permissions/core';
 import trackersPermissionsDraw from '@/store/modules/trackers/permissions/draw';
@@ -111,7 +113,9 @@ const store = createStore({
                     namespaced: true,
                     modules: {
                         draw: trackersDerivedDraw,
+                        hand: trackersDerivedHand,
                         rounds: trackersDerivedRounds,
+                        selected: trackersDerivedSelected,
                         turns: trackersDerivedTurns,
                     },
                 },
