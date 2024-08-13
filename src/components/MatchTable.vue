@@ -120,11 +120,13 @@ export default {
       getSelfPlayerMatchDataByMatchId: 'players/self/getSelfPlayerMatchDataByMatchId',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/round/getPlayerRoundDataByRoundAndPlayerIds',
       getLatestActionIdByMatchId: 'registry/matchAction/getLatestActionIdByMatchId',
+      getCurrentTurnIdByRoundId: 'registry/roundTurn/getCurrentTurnIdByRoundId',
       getCurrentTurnByRoundId: 'registry/roundTurn/getCurrentTurnByRoundId',
       getDiscardPileByRoundId: 'rounds/discardPiles/getDiscardPileByRoundId',
       getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
       getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
       loading: 'trackers/loading/loading',
+      hasDrawAction: 'turns/actions/hasDrawAction',
     }),
     allowMeldsFromRotation() {
       return this.gameConfig.allowMeldsFromRotation;
@@ -146,6 +148,9 @@ export default {
     },
     currentTurn() {
       return this.getCurrentTurnByRoundId(this.currentRoundId);
+    },
+    currentTurnId() {
+      return this.getCurrentTurnIdByRoundId(this.currentRoundId);
     },
     currentRoundHandId() {
       return this.selfPlayerCurrentRoundData?.hand?.hand_id;
@@ -169,15 +174,15 @@ export default {
     selectedMeldId() {
       return this.selectedMeld ? this.selectedMeld.meld_id : null;
     },
-    hasDrawAction() {
-      return this.currentTurn.actions.some(action => action.action_type === 'draw');
+    hasDrawActionInCurrentTurn() {
+      return this.hasDrawAction(this.currentTurnId)
     },
     hasPlayedMeld() {
       const selfPlayerCurrentRoundData = this.selfPlayerCurrentRoundData
       return selfPlayerCurrentRoundData && selfPlayerCurrentRoundData.melds && selfPlayerCurrentRoundData.melds.length > 0;
     },
     isHandSelectable() {
-      return this.canDrawMultiple() || (this.canAct && this.hasDrawAction);
+      return this.canDrawMultiple() || (this.canAct && this.hasDrawActionInCurrentTurn);
     },
     isMeldSelectable() {
       return this.canAct && this.hasPlayedMeld;

@@ -12,7 +12,7 @@ export default {
             return selectedCardCount < (this.currentRoundHandCards.length + this.getDiscardPileCardsStartingFromBottomSelectedCard().length);
         },
         canDraw() {
-            return this.canAct && !this.hasDrawAction;
+            return this.canAct && !this.hasDrawActionInCurrentTurn;
         },
         canDrawOne() {
             return this.canDraw() && this.hasNoHandCardsSelected() && !this.selectedMeld;
@@ -36,7 +36,7 @@ export default {
         },
         canPlayMeld() {
             return this.canAct &&
-                this.hasDrawAction &&
+                this.hasDrawActionInCurrentTurn &&
                 !this.selectedMeld &&
                 this.isRotationThatAllowsMelds() &&
                 this.isEnoughCardsForMeld(this.selectedHandCards) &&
@@ -50,7 +50,7 @@ export default {
         },
         canExtendMeld() {
             return this.canAct &&
-                this.hasDrawAction &&
+                this.hasDrawActionInCurrentTurn &&
                 this.hasPlayedMeld &&
                 this.selectedMeld &&
                 this.isRotationThatAllowsMelds() &&
@@ -59,7 +59,7 @@ export default {
                 this.isValidMeldExtension();
         },
         canDiscard() {
-            return this.canAct && this.hasDrawAction && !this.selectedMeld && this.hasOneHandCardSelected();
+            return this.canAct && this.hasDrawActionInCurrentTurn && !this.selectedMeld && this.hasOneHandCardSelected();
         }
     }
 };

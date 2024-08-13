@@ -24,6 +24,10 @@ const getters = {
         const turn = rootGetters['turns/turns/getTurnById'](turnId);
         return turn.actions;
     },
+    hasDrawAction: (state, getters) => (turnId) => {
+        const actions = getters.getActionsByTurnId(turnId);
+        return actions.some(action => action.action_type === 'draw');
+    },
 };
 
 export default {
