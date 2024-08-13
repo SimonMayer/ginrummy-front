@@ -2,7 +2,7 @@ import store from '@/store';
 
 const BASE_URL = process.env.VUE_APP_BASE_URL;
 
-class SSEService {
+class SseService {
     constructor(endpoint, params = {}, maxRetries = 3, retryDelay = 1000) {
         this.endpoint = endpoint;
         this.params = params;
@@ -82,4 +82,4 @@ class SSEService {
     }
 }
 
-export default SSEService;
+export default SseService;

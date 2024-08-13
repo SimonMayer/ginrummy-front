@@ -1,5 +1,5 @@
 const actions = {
-    async processSSEData({dispatch, rootGetters}, {data, matchId}) {
+    async processSseData({dispatch, rootGetters}, {data, matchId}) {
         const newCurrentRoundId = data.current_status.round_id;
         const newCurrentTurnId = data.current_status.turn_id;
 

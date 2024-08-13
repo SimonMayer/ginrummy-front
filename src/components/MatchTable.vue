@@ -109,7 +109,7 @@ export default {
     await this.loadAllData(false);
   },
   beforeUnmount() {
-    this.cleanupSSE(this.matchId);
+    this.cleanupSse(this.matchId);
   },
   computed: {
     ...mapGetters({
@@ -225,8 +225,8 @@ export default {
       removeTopDiscardPileCard: 'rounds/discardPiles/removeTopDiscardPileCard',
       fetchMelds: 'rounds/melds/fetchMelds',
       fetchStockPileData: 'rounds/stockPiles/fetchStockPileData',
-      initializeSSE: 'sse/connection/initializeSSE',
-      cleanupSSE: 'sse/connection/cleanupSSE',
+      initializeSse: 'sse/connection/initializeSse',
+      cleanupSse: 'sse/connection/cleanupSse',
       setLoading: 'trackers/loading/setLoading',
       appendActionToTurn: 'turns/appendActionToTurn',
     }),
@@ -334,7 +334,7 @@ export default {
       await this.fetchMatch({ matchId: this.matchId, forceFetch: forceFetch });
       await this.fetchCurrentTurn({ matchId: this.matchId, roundId: this.currentRoundId, forceFetch: forceFetch });
       await this.fetchPlayersRoundData({ roundId: this.latestRoundId, forceFetch: forceFetch });
-      await this.initializeSSE(this.matchId);
+      await this.initializeSse(this.matchId);
     },
   },
 };

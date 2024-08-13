@@ -1,4 +1,4 @@
-import SSEService from '@/services/sseService';
+import SseService from '@/services/sseService';
 
 const state = {
     sseServices: {},
@@ -17,18 +17,18 @@ const mutations = {
 };
 
 const actions = {
-    async initializeSSE({commit, dispatch, rootGetters}, matchId) {
+    async initializeSse({commit, dispatch, rootGetters}, matchId) {
         const latestActionId = rootGetters['registry/matchAction/getLatestActionIdByMatchId'](matchId) || '';
         const endpoint = `/matches/${matchId}/events`;
         const params = {latest_action_id: latestActionId};
 
         try {
-            const sseService = new SSEService(endpoint, params);
+            const sseService = new SseService(endpoint, params);
             commit('SET_SSE_SERVICE', {matchId, sseService});
 
             sseService.connect(
                 async (data) => {
-                    dispatch('sse/dataProcessor/processSSEData', {data, matchId}, {root: true});
+                    dispatch('sse/dataProcessor/processSseData', {data, matchId}, {root: true});
                 },
                 (error) => {
                     console.error('SSE error:', error);
@@ -39,7 +39,7 @@ const actions = {
         }
     },
 
-    async cleanupSSE({commit, state}, matchId) {
+    async cleanupSse({commit, state}, matchId) {
         const sseService = state.sseServices[matchId];
         if (sseService) {
             sseService.disconnect();
@@ -47,7 +47,7 @@ const actions = {
         }
     },
 
-    async cleanupAllSSE({commit, state}) {
+    async cleanupAllSse({commit, state}) {
         Object.values(state.sseServices).forEach(sseService => {
             if (sseService) {
                 sseService.disconnect();
