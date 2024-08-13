@@ -5,13 +5,16 @@
     --secondary-color-rgb: 51, 30, 56;
     --tertiary-color: #0AD3FF;
     --accent-color: #91CB3E;
-    --muted-color: #B0BEC5;
+    --muted-light-color: #B0BEC5;
+    --muted-mid-color: #607D8B;
+    --muted-dark-color: #455A64;
     --text-color: #FFFFFF;
     --error-color: #9B1D20;
     --error-accent-color: #DA2C38;
     --button-hover-color: var(--tertiary-color);
     --button-active-color: var(--accent-color);
-    --button-disabled-background-color: #FFFFFF;
+    --button-disabled-background-color: var(--muted-light-color);
+    --button-disabled-text-color: var(--muted-mid-color);
     --input-background-color: #F9F9F9;
     --font-family: 'Roboto', sans-serif;
     --font-size: 16px;

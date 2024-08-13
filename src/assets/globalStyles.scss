@@ -31,8 +31,8 @@ button {
 
 button:disabled {
     background-color: var(--button-disabled-background-color);
-    border-color: var(--muted-color);
-    color: var(--muted-color);
+    border-color: var(--button-disabled-background-color);
+    color: var(--button-disabled-text-color);
     box-shadow: var(--box-shadow-1-very-light);
 }
 

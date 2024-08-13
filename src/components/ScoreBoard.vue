@@ -36,7 +36,7 @@ export default {
 
   .label {
     font-size: var(--font-size-small);
-    color: var(--muted-color);
+    color: var(--muted-light-color);
     margin-bottom: calc(var(--base-margin) * 0.2);
   }
 
