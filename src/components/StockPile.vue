@@ -72,10 +72,10 @@ export default {
   @for $i from 1 through 52 {
     .stock-card-item:nth-child(#{$i}) {
       @if $i % 24 == 0 {
-        transform: rotate(-1.8deg);
+        transform: rotate(-1deg);
       }
       @else if $i % 11 == 0 {
-        transform: rotate(-1.1deg);
+        transform: rotate(1.1deg);
       }
       @else if $i % 7 == 0 {
         transform: rotate(-0.5deg);
@@ -90,9 +90,14 @@ export default {
         transform: rotate(-0.3deg);
       }
 
+      $xOffsetWeight: ($i * $i) % 97;
+      $yOffsetWeight: ($i * $i) % 89;
+      transform-origin: calc($xOffsetWeight * 1%) calc($yOffsetWeight * 1.1%);
+
       @if $i != 1 {
-        margin-left: calc(var(--card-width) * -1.01);
+        margin-left: calc(var(--card-width) * -1.015);
       }
+      margin-top: calc(var(--card-height) * 0.005 * $i);
     }
   }
 
