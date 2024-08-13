@@ -1,41 +1,40 @@
 import {createStore} from 'vuex';
-import interactions from '@/store/modules/auth/interactions';
-import tokens from '@/store/modules/auth/tokens';
-import user from '@/store/modules/auth/user';
+import authInteractions from '@/store/modules/auth/interactions';
+import authTokens from '@/store/modules/auth/tokens';
+import authUser from '@/store/modules/auth/user';
 
-import cards from '@/store/modules/cards/cards';
-import selections from '@/store/modules/cards/selections';
+import cardsCards from '@/store/modules/cards/cards';
+import cardsSelections from '@/store/modules/cards/selections';
 
-import list from '@/store/modules/matches/list';
-import matches from '@/store/modules/matches/matches';
+import matchesList from '@/store/modules/matches/list';
+import matchesMatches from '@/store/modules/matches/matches';
 
-import match from '@/store/modules/players/match';
-import round from '@/store/modules/players/round';
-import nonSelf from '@/store/modules/players/nonSelf';
-import self from '@/store/modules/players/self';
+import playersMatch from '@/store/modules/players/match';
+import playersRound from '@/store/modules/players/round';
+import playersNonSelf from '@/store/modules/players/nonSelf';
+import playersSelf from '@/store/modules/players/self';
 
-import discardPiles from '@/store/modules/rounds/discardPiles';
-import melds from '@/store/modules/rounds/melds';
-import stockPiles from '@/store/modules/rounds/stockPiles';
+import registryMatchAction from '@/store/modules/registry/matchAction';
+import registryMatchRound from '@/store/modules/registry/matchRound';
+import registryRoundTurn from '@/store/modules/registry/roundTurn';
 
-import matchAction from '@/store/modules/registry/matchAction';
-import matchRound from '@/store/modules/registry/matchRound';
-import roundTurn from '@/store/modules/registry/roundTurn';
+import roundsDiscardPiles from '@/store/modules/rounds/discardPiles';
+import roundsMelds from '@/store/modules/rounds/melds';
+import roundsStockPiles from '@/store/modules/rounds/stockPiles';
 
-import connection from '@/store/modules/sse/connection';
-import dataProcessor from '@/store/modules/sse/dataProcessor';
+import sseConnection from '@/store/modules/sse/connection';
+import sseDataProcessor from '@/store/modules/sse/dataProcessor';
 
-import draw from '@/store/modules/trackers/derived/draw';
-import derivedRounds from '@/store/modules/trackers/derived/rounds';
-import derivedTurns from '@/store/modules/trackers/derived/turns';
-import core from '@/store/modules/trackers/permissions/core';
+import trackersDerivedDraw from '@/store/modules/trackers/derived/draw';
+import trackersDerivedRounds from '@/store/modules/trackers/derived/rounds';
+import trackersDerivedTurns from '@/store/modules/trackers/derived/turns';
+import trackersPermissionsCore from '@/store/modules/trackers/permissions/core';
+import trackersFetch from '@/store/modules/trackers/fetch';
+import trackersLoading from '@/store/modules/trackers/loading';
+import trackersMatchPhase from '@/store/modules/trackers/matchPhase';
 
-import fetch from '@/store/modules/trackers/fetch';
-import loading from '@/store/modules/trackers/loading';
-import matchPhase from '@/store/modules/trackers/matchPhase';
-
-import actions from '@/store/modules/turns/actions';
-import turns from '@/store/modules/turns/turns';
+import turnsActions from '@/store/modules/turns/actions';
+import turnsTurns from '@/store/modules/turns/turns';
 
 import error from '@/store/modules/error';
 import fetchHandler from '@/store/modules/fetchHandler';
@@ -48,16 +47,16 @@ const store = createStore({
         auth: {
             namespaced: true,
             modules: {
-                interactions,
-                user,
-                tokens,
+                interactions: authInteractions,
+                user: authUser,
+                tokens: authTokens,
             },
         },
         cards: {
             namespaced: true,
             modules: {
-                cards,
-                selections,
+                cards: cardsCards,
+                selections: cardsSelections,
             },
         },
         error,
@@ -67,41 +66,41 @@ const store = createStore({
         matches: {
             namespaced: true,
             modules: {
-                list,
-                matches,
+                list: matchesList,
+                matches: matchesMatches,
             },
         },
         players: {
             namespaced: true,
             modules: {
-                round,
-                match,
-                nonSelf,
-                self,
+                match: playersMatch,
+                round: playersRound,
+                nonSelf: playersNonSelf,
+                self: playersSelf,
             },
         },
         registry: {
             namespaced: true,
             modules: {
-                matchAction,
-                matchRound,
-                roundTurn,
+                matchAction: registryMatchAction,
+                matchRound: registryMatchRound,
+                roundTurn: registryRoundTurn,
             },
         },
         rounds: {
             namespaced: true,
             modules: {
-                discardPiles,
-                melds,
-                stockPiles,
+                discardPiles: roundsDiscardPiles,
+                melds: roundsMelds,
+                stockPiles: roundsStockPiles,
             },
         },
         search,
         sse: {
             namespaced: true,
             modules: {
-                connection,
-                dataProcessor,
+                connection: sseConnection,
+                dataProcessor: sseDataProcessor,
             },
         },
         trackers: {
@@ -110,18 +109,18 @@ const store = createStore({
                 derived: {
                     namespaced: true,
                     modules: {
-                        draw: draw,
-                        rounds: derivedRounds,
-                        turns: derivedTurns,
+                        draw: trackersDerivedDraw,
+                        rounds: trackersDerivedRounds,
+                        turns: trackersDerivedTurns,
                     },
                 },
-                fetch,
-                loading,
-                matchPhase,
+                fetch: trackersFetch,
+                loading: trackersLoading,
+                matchPhase: trackersMatchPhase,
                 permissions: {
                     namespaced: true,
                     modules: {
-                        core,
+                        core: trackersPermissionsCore,
                     },
                 },
             },
@@ -129,8 +128,8 @@ const store = createStore({
         turns: {
             namespaced: true,
             modules: {
-                actions,
-                turns,
+                actions: turnsActions,
+                turns: turnsTurns,
             },
         },
     },
