@@ -3,7 +3,7 @@ import {mapGetters} from "vuex";
 export default {
     computed: {
         ...mapGetters({
-            canAct: 'permissions/core/canAct',
+            canAct: 'trackers/permissions/core/canAct',
         }),
     },
     methods: {

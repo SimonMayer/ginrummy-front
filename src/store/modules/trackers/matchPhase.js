@@ -17,19 +17,6 @@ const actions = {
 
 const getters = {
     getMatchId: (state) => state.matchId,
-    getCurrentRoundId(state, getters, rootState, rootGetters) {
-        return state.matchId ? rootGetters['registry/matchRound/getCurrentRoundIdByMatchId'](state.matchId) : null;
-    },
-    getLatestRoundId(state, getters, rootState, rootGetters) {
-        return state.matchId ? rootGetters['registry/matchRound/getLatestRoundIdByMatchId'](state.matchId) : null;
-    },
-    getVisibleRoundId(state, getters, rootState, rootGetters) {
-        // quite likely to eventually be set as its own property. For now, just latest round ID
-        return state.matchId ? rootGetters['registry/matchRound/getLatestRoundIdByMatchId'](state.matchId) : null;
-    },
-    isVisibleRoundCurrent(state, getters) {
-        return getters.getVisibleRoundId === getters.getCurrentRoundId;
-    },
 };
 
 export default {

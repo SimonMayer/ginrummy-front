@@ -126,7 +126,7 @@ export default {
       getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
       getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
       loading: 'trackers/loading/loading',
-      hasDrawAction: 'turns/actions/hasDrawAction',
+      hasDrawActionInCurrentTurn: 'trackers/derived/draw/hasDrawActionInCurrentTurn',
     }),
     allowMeldsFromRotation() {
       return this.gameConfig.allowMeldsFromRotation;
@@ -173,9 +173,6 @@ export default {
     },
     selectedMeldId() {
       return this.selectedMeld ? this.selectedMeld.meld_id : null;
-    },
-    hasDrawActionInCurrentTurn() {
-      return this.hasDrawAction(this.currentTurnId)
     },
     hasPlayedMeld() {
       const selfPlayerCurrentRoundData = this.selfPlayerCurrentRoundData
