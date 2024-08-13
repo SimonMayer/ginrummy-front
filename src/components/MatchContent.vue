@@ -2,7 +2,6 @@
   <div class="match-content" v-if="match">
     <MatchTable
         ref="matchTable"
-        :signedInUserId="signedInUserId"
     />
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
     <ItemSearch
@@ -33,12 +32,6 @@ export default {
     ItemSearch,
   },
   mixins: [matchPhaseMixin],
-  props: {
-    signedInUserId: {
-      type: Number,
-      required: true
-    }
-  },
   computed: {
     ...mapGetters({
       getPlayersMatchDataByMatchId: 'players/match/getPlayersMatchDataByMatchId',

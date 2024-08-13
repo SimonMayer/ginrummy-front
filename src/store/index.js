@@ -1,4 +1,8 @@
 import { createStore } from 'vuex';
+import interactions from '@/store/modules/auth/interactions';
+import tokens       from '@/store/modules/auth/tokens';
+import user         from '@/store/modules/auth/user';
+
 import cards        from '@/store/modules/cards/cards';
 import selections   from '@/store/modules/cards/selections';
 
@@ -24,7 +28,6 @@ import fetch        from '@/store/modules/trackers/fetch';
 import loading      from '@/store/modules/trackers/loading';
 import matchPhase   from '@/store/modules/trackers/matchPhase';
 
-import auth         from '@/store/modules/auth';
 import error        from '@/store/modules/error';
 import fetchHandler from '@/store/modules/fetchHandler';
 import gameConfig   from '@/store/modules/gameConfig';
@@ -34,7 +37,14 @@ import turns        from '@/store/modules/turns';
 
 const store = createStore({
     modules: {
-        auth,
+        auth: {
+            namespaced: true,
+            modules: {
+                interactions,
+                user,
+                tokens,
+            },
+        },
         cards: {
             namespaced: true,
             modules: {

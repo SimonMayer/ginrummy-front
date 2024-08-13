@@ -1,12 +1,16 @@
-import router from '@/router';
+import {setLocalStorage, getLocalStorage} from "@/utils/localStorage";
 
 const state = {
-    isAuthenticated: !!localStorage.getItem('rest_access_token'),
+    isAuthenticated: !!getLocalStorage('rest_access_token'),
+    userId: getLocalStorage('user_id'),
 };
 
 const mutations = {
     SET_AUTHENTICATED(state, payload) {
         state.isAuthenticated = payload;
+    },
+    SET_USER_ID(state, userId) {
+        state.userId = userId;
     },
 };
 
@@ -14,18 +18,15 @@ const actions = {
     setAuthenticated({ commit }, payload) {
         commit('SET_AUTHENTICATED', payload);
     },
-    signOut({ commit }) {
-        localStorage.removeItem('rest_access_token');
-        localStorage.removeItem('sse_access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user_id');
-        commit('SET_AUTHENTICATED', false);
-        router.push('/');
+    setUserId({ commit }, userId) {
+        commit('SET_USER_ID', parseInt(userId, 10));
+        setLocalStorage('user_id', parseInt(userId, 10));
     },
 };
 
 const getters = {
     isAuthenticated: state => state.isAuthenticated,
+    userId: state => state.userId,
 };
 
 export default {

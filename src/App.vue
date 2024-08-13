@@ -8,9 +8,7 @@
 </template>
 
 <script>
-import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import ErrorBox from '@/components/ErrorBox.vue';
 import NavigationMenu from '@/components/NavigationMenu.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
@@ -24,18 +22,10 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const store = useStore();
 
     const handleAuthSuccess = () => {
-      store.dispatch('auth/setAuthenticated', true);
       router.push('/matches');
     };
-
-    onMounted(() => {
-      if (localStorage.getItem('refresh_token')) {
-        store.dispatch('auth/setAuthenticated', true);
-      }
-    });
 
     return {
       handleAuthSuccess

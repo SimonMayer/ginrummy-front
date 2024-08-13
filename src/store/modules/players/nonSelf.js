@@ -1,6 +1,6 @@
 const getters = {
     getNonSelfPlayersMatchDataByMatchId: (state, getters, rootState, rootGetters) => matchId => {
-        const userId = parseInt(localStorage.getItem('user_id'), 10);
+        const userId = rootGetters['auth/user/userId'];
         return rootGetters['players/match/getPlayersMatchDataByMatchId'](matchId).filter(player => player.user_id !== userId);
     },
 };

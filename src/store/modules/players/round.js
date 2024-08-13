@@ -28,7 +28,7 @@ const actions = {
                 key: `playersRoundData_${roundId}`,
                 fetchFunction: () => roundsService.getPlayers(roundId),
                 onSuccess: async (playersData) => {
-                    commit('SET_PLAYERS_ROUND_DATA', { roundId, players: playersData });
+                    await commit('SET_PLAYERS_ROUND_DATA', { roundId, players: playersData });
                     const selfPlayerHandId = rootGetters['players/self/getSelfPlayerRoundDataByRoundId'](roundId)?.hand?.hand_id;
                     await dispatch('hands/fetchHand', { handId: selfPlayerHandId }, { root: true });
                 },

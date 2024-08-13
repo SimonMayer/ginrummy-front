@@ -12,25 +12,26 @@
       <router-link v-if="!isAuthenticated" to="/" custom v-slot="{ href, navigate, isActive, isExactActive }">
         <a :href="href" @click="navigate" :class="{ active: isActive, exactActive: isExactActive }">Sign In</a>
       </router-link>
-      <a v-if="isAuthenticated" @click.prevent="signOut" href="#" class="sign-out">Sign Out</a>
+      <a v-if="isAuthenticated" @click.prevent="handleSignOut" href="#" class="sign-out">Sign Out</a>
     </div>
   </nav>
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
+import {mapGetters} from 'vuex';
+import authService from "@/services/authService";
 
 export default {
   name: 'NavigationMenu',
   computed: {
     ...mapGetters({
-      isAuthenticated: 'auth/isAuthenticated',
+      isAuthenticated: 'auth/user/isAuthenticated',
     }),
   },
   methods: {
-    ...mapActions({
-      signOut: 'auth/signOut',
-    })
+    async handleSignOut() {
+      authService.signOutAndRedirect();
+    },
   }
 };
 </script>

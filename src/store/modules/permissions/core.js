@@ -6,8 +6,8 @@ const getters = {
         const currentRoundId = getters.privateCurrentRoundId;
         return rootGetters['registry/roundTurn/getCurrentTurnByRoundId'](currentRoundId);
     },
-    isCurrentUserTurn(state, getters) {
-        const signedInUserId = parseInt(localStorage.getItem('user_id'), 10); // todo move this to auth store module
+    isCurrentUserTurn(state, getters, rootState, rootGetters) {
+        const signedInUserId = rootGetters['auth/user/userId'];
         const currentTurn = getters.privateCurrentTurn;
 
         return currentTurn && currentTurn.userId === signedInUserId;

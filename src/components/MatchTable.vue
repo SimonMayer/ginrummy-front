@@ -99,9 +99,6 @@ export default {
     matchPhaseMixin,
     meldSelectionMixin,
   ],
-  props: {
-    signedInUserId: { type: Number, required: true },
-  },
   data() {
     return {
       refreshValues: 0,
@@ -176,9 +173,6 @@ export default {
     },
     selectedMeldId() {
       return this.selectedMeld ? this.selectedMeld.meld_id : null;
-    },
-    isCurrentUserTurn() {
-      return this.currentTurn && this.currentTurn.userId === this.signedInUserId;
     },
     hasDrawAction() {
       return this.currentTurn.actions.some(action => action.action_type === 'draw');

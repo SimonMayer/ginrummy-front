@@ -1,6 +1,6 @@
 <template>
   <div class="match-dashboard">
-    <MatchContent :signedInUserId="signedInUserId" />
+    <MatchContent />
   </div>
 </template>
 
@@ -15,11 +15,6 @@ export default {
     MatchContent,
   },
   mixins: [matchPhaseMixin],
-  data() {
-    return {
-      signedInUserId: parseInt(localStorage.getItem('user_id'), 10), // todo move sign in and storage to auth store
-    };
-  },
   async created() {
     await this.initializeMatchId(this.$route);
     await this.fetchMatch({ matchId: this.matchId });
