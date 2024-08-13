@@ -349,7 +349,7 @@ export default {
   .game-section {
     &.full-width {
       flex-basis: 100%;
-      padding: 10px;
+      padding: var(--base-padding);
       text-align: center;
     }
 
@@ -359,7 +359,7 @@ export default {
 
       .column {
         flex: 1;
-        padding: 10px;
+        padding: var(--base-padding);
         text-align: center;
       }
     }
