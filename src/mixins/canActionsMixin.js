@@ -6,6 +6,9 @@ export default {
         ...mapGetters({
             canAct: 'trackers/permissions/core/canAct',
             canDraw: 'trackers/permissions/draw/canDraw',
+            canDrawOne: 'trackers/permissions/draw/canDrawOne',
+            canDrawFromStockPile: 'trackers/permissions/draw/canDrawFromStockPile',
+            canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
         }),
     },
     methods: {
@@ -13,17 +16,8 @@ export default {
             const selectedCardCount = this.selectedHandCardCount + this.selectedDiscardPileCardCount;
             return selectedCardCount < (this.currentHandCardIds.length + this.countSelectedAndHigherDiscardPileCards);
         },
-        canDrawOne() {
-            return this.canDraw && this.hasNoHandCardsSelected && !this.selectedMeldId;
-        },
         canDrawMultiple() {
             return this.canDraw && this.hasPlayedMeld;
-        },
-        canDrawFromStockPile() {
-            return this.canDrawOne() && this.hasNoDiscardPileCardsSelected;
-        },
-        canDrawOneFromDiscardPile() {
-            return this.canDrawOne() && this.isOnlyTopDiscardPileCardSelected;
         },
         canDrawMultipleFromDiscardPile() {
             return this.canDrawMultiple() &&

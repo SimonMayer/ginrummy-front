@@ -178,7 +178,7 @@ export default {
       return this.canAct && this.hasPlayedMeld;
     },
     stockPileDisabled() {
-      return !this.canDrawFromStockPile();
+      return !this.canDrawFromStockPile;
     },
     discardButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed
@@ -194,7 +194,7 @@ export default {
     },
     drawOneFromDiscardPileButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canDrawOneFromDiscardPile();
+      return !this.canDrawOneFromDiscardPile;
     },
     drawMultipleFromDiscardPileButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed
@@ -244,7 +244,7 @@ export default {
       await this.handleDrawOneFromPileClick('discard');
     },
     async handleDrawOneFromPileClick(pileType) {
-      if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile()) || !this.canDraw) {
+      if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile) || !this.canDraw) {
         return;
       }
       await this.performAction(async () => {

@@ -22,7 +22,7 @@ export default {
         getSelectableDiscardPileCards() {
             return this.canDrawMultiple()
                 ? this.currentRoundDiscardPile
-                : this.canDrawOne() ? [this.currentTopDiscardPileCard] : [];
+                : this.canDrawOne ? [this.currentTopDiscardPileCard] : [];
         },
     }
 };
