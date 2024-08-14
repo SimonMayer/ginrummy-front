@@ -6,7 +6,7 @@ export default {
             canAct: 'trackers/permissions/core/canAct',
             canDraw: 'trackers/permissions/draw/canDraw',
             canDrawOne: 'trackers/permissions/draw/canDrawOne',
-            canDrawFromStockPile: 'trackers/permissions/draw/canDrawFromStockPile',
+            canDrawOneFromStockPile: 'trackers/permissions/draw/canDrawOneFromStockPile',
             canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
             canDiscard: 'trackers/permissions/discard/canDiscard',
             canPlayMeldFromHand: 'trackers/permissions/melds/canPlayMeldFromHand',

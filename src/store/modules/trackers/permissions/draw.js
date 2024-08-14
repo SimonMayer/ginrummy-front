@@ -8,7 +8,7 @@ const getters = {
             rootGetters['trackers/derived/selected/hasNoHandCardsSelected'] &&
             !rootGetters['trackers/selections/selectedMeldId'];
     },
-    canDrawFromStockPile(state, getters, rootState, rootGetters) {
+    canDrawOneFromStockPile(state, getters, rootState, rootGetters) {
         return getters.canDrawOne && rootGetters['trackers/derived/selected/hasNoDiscardPileCardsSelected'];
     },
     canDrawOneFromDiscardPile(state, getters, rootState, rootGetters) {

@@ -178,7 +178,7 @@ export default {
       return this.canAct && this.hasPlayedMeld;
     },
     stockPileDisabled() {
-      return !this.canDrawFromStockPile;
+      return !this.canDrawOneFromStockPile;
     },
     discardButtonDisabled() {
       return !this.canDiscard;
