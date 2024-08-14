@@ -184,15 +184,12 @@ export default {
       return !this.canDiscard;
     },
     playMeldButtonDisabled() {
-      this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canPlaySet() && !this.canPlayRun();
+      return !this.canPlaySetFromHand && !this.canPlayRunFromHand;
     },
     extendMeldButtonDisabled() {
-      this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canExtendMeld();
+      return !this.canExtendMeldFromHand;
     },
     drawOneFromDiscardPileButtonDisabled() {
-      this.refreshValues; // forces a recompute when refreshValues is changed
       return !this.canDrawOneFromDiscardPile;
     },
     drawMultipleFromDiscardPileButtonDisabled() {
@@ -289,10 +286,10 @@ export default {
       }, 'Failed to discard card!');
     },
     async handlePlayMeldClick() {
-      if (!this.canPlaySet() && !this.canPlayRun()) {
+      if (!this.canPlaySetFromHand && !this.canPlayRunFromHand) {
         return;
       }
-      const meldType = this.canPlaySet() ? 'set' : 'run';
+      const meldType = this.canPlaySetFromHand ? 'set' : 'run';
       await this.performAction(async () => {
         const cardIds = this.selectedHandCardIds;
         await turnsService.playMeld(this.matchId, cardIds, meldType);
@@ -301,7 +298,7 @@ export default {
       }, `Failed to play meld!`);
     },
     async handleExtendMeldClick() {
-      if (!this.canExtendMeld()) {
+      if (!this.canExtendMeldFromHand) {
         return;
       }
       await this.performAction(async () => {

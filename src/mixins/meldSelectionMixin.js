@@ -36,8 +36,8 @@ export default {
             if (!this.selectedMeldId || this.hasNoHandCardsSelected || this.hasAllHandCardsSelected) {
                 return false;
             }
-            const allCards = [...this.selectedMeldCards, ...this.selectedHandCards];
-            return meldsService.areAllCardsOfSameRank(allCards) || this.doCardsMakeValidRun(allCards);
+            const cards = [...this.selectedMeldCards, ...this.selectedHandCards];
+            return meldsService.doCardsMakeValidMeld(cards, this.runOrders);
         },
     }
 };

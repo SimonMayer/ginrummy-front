@@ -41,6 +41,9 @@ const meldsService = {
         }
         return cards;
     },
+    doCardsMakeValidMeld(cards, runOrders) {
+        return this.areAllCardsOfSameRank(cards) || this.doCardsMakeValidRun(cards, runOrders);
+    },
 };
 
 export default meldsService;

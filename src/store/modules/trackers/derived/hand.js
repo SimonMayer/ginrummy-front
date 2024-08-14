@@ -1,7 +1,6 @@
 const getters = {
     currentHand(state, getters, rootState, rootGetters) {
-        const currentRoundId = rootGetters['trackers/derived/rounds/currentRoundId'];
-        const selfPlayerData = rootGetters['players/self/getSelfPlayerRoundDataByRoundId'](currentRoundId);
+        const selfPlayerData = rootGetters['trackers/derived/self/currentSelfPlayerRoundData'];
         return selfPlayerData?.hand || null;
     },
     currentHandId(state, getters) {

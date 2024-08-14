@@ -1,5 +1,4 @@
 import {mapGetters} from "vuex";
-import meldsService from '@/services/meldsService';
 
 export default {
     computed: {
@@ -10,6 +9,10 @@ export default {
             canDrawFromStockPile: 'trackers/permissions/draw/canDrawFromStockPile',
             canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
             canDiscard: 'trackers/permissions/discard/canDiscard',
+            canPlayMeldFromHand: 'trackers/permissions/melds/canPlayMeldFromHand',
+            canPlayRunFromHand: 'trackers/permissions/melds/canPlayRunFromHand',
+            canPlaySetFromHand: 'trackers/permissions/melds/canPlaySetFromHand',
+            canExtendMeldFromHand: 'trackers/permissions/melds/canExtendMeldFromHand',
         }),
     },
     methods: {
@@ -27,30 +30,6 @@ export default {
                 this.isAnyDiscardPileCardSelectedBelowTop &&
                 this.isCardAvailableForHandAfterDrawMultipleAction() &&
                 this.doSelectedCardsFormValidMeld();
-        },
-        canPlayMeld() {
-            return this.canAct &&
-                this.hasDrawActionInCurrentTurn &&
-                !this.selectedMeldId &&
-                this.isRotationThatAllowsMelds() &&
-                this.isEnoughCardsForMeld(this.selectedHandCards) &&
-                !this.hasAllHandCardsSelected;
-        },
-        canPlayRun() {
-            return this.canPlayMeld() && this.doSelectedHandCardsMakeValidRun();
-        },
-        canPlaySet() {
-            return this.canPlayMeld() && meldsService.areAllCardsOfSameRank(this.selectedHandCards);
-        },
-        canExtendMeld() {
-            return this.canAct &&
-                this.hasDrawActionInCurrentTurn &&
-                this.hasPlayedMeld &&
-                this.selectedMeldId &&
-                this.isRotationThatAllowsMelds() &&
-                !this.hasNoHandCardsSelected &&
-                !this.hasAllHandCardsSelected &&
-                this.isValidMeldExtension();
         },
     }
 };

@@ -47,6 +47,11 @@ const actions = {
 
 const getters = {
     gameConfig: state => state,
+    allowMeldsFromRotation: state => state.allowMeldsFromRotation,
+    minimumMeldSize: state => state.minimumMeldSize,
+    minPlayers: state => state.minPlayers,
+    maxPlayers: state => state.maxPlayers,
+    runOrders: state => state.runOrders,
 };
 
 export default {
