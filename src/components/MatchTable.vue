@@ -181,8 +181,7 @@ export default {
       return !this.canDrawFromStockPile;
     },
     discardButtonDisabled() {
-      this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canDiscard();
+      return !this.canDiscard;
     },
     playMeldButtonDisabled() {
       this.refreshValues; // forces a recompute when refreshValues is changed
@@ -279,7 +278,7 @@ export default {
       }, `Failed to draw multiple from discard pile!`);
     },
     async handleDiscardClick() {
-      if (!this.canDiscard()) {
+      if (!this.canDiscard) {
         return;
       }
       await this.performAction(async () => {

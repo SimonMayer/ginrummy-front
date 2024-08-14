@@ -31,6 +31,7 @@ import trackersDerivedRounds from '@/store/modules/trackers/derived/rounds';
 import trackersDerivedSelected from '@/store/modules/trackers/derived/selected';
 import trackersDerivedTurns from '@/store/modules/trackers/derived/turns';
 import trackersPermissionsCore from '@/store/modules/trackers/permissions/core';
+import trackersPermissionsDiscard from '@/store/modules/trackers/permissions/discard';
 import trackersPermissionsDraw from '@/store/modules/trackers/permissions/draw';
 import trackersFetch from '@/store/modules/trackers/fetch';
 import trackersLoading from '@/store/modules/trackers/loading';
@@ -127,6 +128,7 @@ const store = createStore({
                     namespaced: true,
                     modules: {
                         core: trackersPermissionsCore,
+                        discard: trackersPermissionsDiscard,
                         draw: trackersPermissionsDraw,
                     },
                 },

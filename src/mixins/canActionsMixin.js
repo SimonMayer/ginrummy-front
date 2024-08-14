@@ -9,6 +9,7 @@ export default {
             canDrawOne: 'trackers/permissions/draw/canDrawOne',
             canDrawFromStockPile: 'trackers/permissions/draw/canDrawFromStockPile',
             canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
+            canDiscard: 'trackers/permissions/discard/canDiscard',
         }),
     },
     methods: {
@@ -51,8 +52,5 @@ export default {
                 !this.hasAllHandCardsSelected &&
                 this.isValidMeldExtension();
         },
-        canDiscard() {
-            return this.canAct && this.hasDrawActionInCurrentTurn && !this.selectedMeldId && this.hasOneHandCardSelected;
-        }
     }
 };

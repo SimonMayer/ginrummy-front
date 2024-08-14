@@ -1,9 +1,7 @@
 const getters = {
     canDraw(state, getters, rootState, rootGetters) {
-        if (!rootGetters['trackers/permissions/core/canAct']) {
-            return false;
-        }
-        return !rootGetters['trackers/derived/draw/hasDrawActionInCurrentTurn'];
+        return rootGetters['trackers/permissions/core/canAct'] &&
+            !rootGetters['trackers/derived/draw/hasDrawActionInCurrentTurn'];
     },
     canDrawOne(state, getters, rootState, rootGetters) {
         return getters.canDraw &&
