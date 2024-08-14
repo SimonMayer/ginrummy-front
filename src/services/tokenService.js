@@ -35,7 +35,7 @@ const tokenService = {
     },
     async refreshRestToken() {
         return await refreshToken('/auth/refresh/rest', 'rest_access_token', 'auth/tokens/setRestAccessToken');
-    }
-}
+    },
+};
 
 export default tokenService;

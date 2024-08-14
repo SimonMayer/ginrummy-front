@@ -13,13 +13,13 @@
 export default {
   name: 'NamePlate',
   props: {
-    name: String
+    name: String,
   },
   computed: {
     sizeClass() {
       return `size-${this.name.length}`;
-    }
-  }
+    },
+  },
 };
 </script>
 

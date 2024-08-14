@@ -1,4 +1,4 @@
-import {setLocalStorage, getLocalStorage} from "@/utils/localStorage";
+import {setLocalStorage, getLocalStorage} from '@/utils/localStorage';
 
 const state = {
     isAuthenticated: !!getLocalStorage('rest_access_token'),
@@ -15,10 +15,10 @@ const mutations = {
 };
 
 const actions = {
-    setAuthenticated({ commit }, payload) {
+    setAuthenticated({commit}, payload) {
         commit('SET_AUTHENTICATED', payload);
     },
-    setUserId({ commit }, userId) {
+    setUserId({commit}, userId) {
         commit('SET_USER_ID', parseInt(userId, 10));
         setLocalStorage('user_id', parseInt(userId, 10));
     },

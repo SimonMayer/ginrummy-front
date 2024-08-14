@@ -7,13 +7,13 @@ const state = {
 };
 
 const mutations = {
-    SET_STOCK_PILE_SIZE(state, { roundId, size }) {
+    SET_STOCK_PILE_SIZE(state, {roundId, size}) {
         state.stockPileSizes[roundId] = size;
     },
 };
 
 const actions = {
-    async fetchStockPileData({ commit, dispatch }, { roundId, forceFetch = false }) {
+    async fetchStockPileData({commit, dispatch}, {roundId, forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -22,14 +22,14 @@ const actions = {
                 key: `stockPileSize_${roundId}`,
                 fetchFunction: () => roundsService.getStockPileData(roundId),
                 onSuccess: async (stockPileData) => {
-                    commit('SET_STOCK_PILE_SIZE', { roundId, size: stockPileData.size });
+                    commit('SET_STOCK_PILE_SIZE', {roundId, size: stockPileData.size});
                 },
                 timeout: FETCH_STOCK_PILE_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
-    removeTopDiscardPileCard({ commit }, roundId) {
+    removeTopDiscardPileCard({commit}, roundId) {
         commit('REMOVE_TOP_DISCARD_PILE_CARD', roundId);
     },
 };

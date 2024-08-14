@@ -3,7 +3,7 @@ import cardsService from '@/services/cardsService';
 const FETCH_CARD_TIMEOUT = 365 * 24 * 60 * 60 * 1000;
 
 const state = {
-    cards: {}
+    cards: {},
 };
 
 function generateKey(cardId) {
@@ -19,12 +19,12 @@ function validateCard(card) {
 
 const mutations = {
     ADD_CARD(state, card) {
-        state.cards = { ...state.cards, [card.card_id]: card };
+        state.cards = {...state.cards, [card.card_id]: card};
     },
 };
 
 const actions = {
-    async fetchCard({ dispatch }, { cardId, forceFetch = false }) {
+    async fetchCard({dispatch}, {cardId, forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -37,15 +37,15 @@ const actions = {
                 },
                 timeout: FETCH_CARD_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
-    addCards({ dispatch }, cards) {
+    addCards({dispatch}, cards) {
         cards.forEach(card => {
             dispatch('addCard', card);
         });
     },
-    addCard({ commit, dispatch }, card) {
+    addCard({commit, dispatch}, card) {
         if (!validateCard(card)) {
             console.error('Invalid card:', card);
             return;
@@ -53,7 +53,7 @@ const actions = {
         commit('ADD_CARD', card);
 
         const key = generateKey(card.card_id);
-        dispatch('trackers/fetch/recordSuccess', key, { root: true });
+        dispatch('trackers/fetch/recordSuccess', key, {root: true});
     },
 };
 
@@ -68,5 +68,5 @@ export default {
     state,
     mutations,
     actions,
-    getters
+    getters,
 };

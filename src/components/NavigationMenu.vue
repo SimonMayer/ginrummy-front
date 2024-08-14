@@ -1,7 +1,8 @@
 <template>
   <nav>
     <div class="nav-links">
-      <router-link v-if="isAuthenticated" to="/create-match" custom v-slot="{ href, navigate, isActive, isExactActive }">
+      <router-link v-if="isAuthenticated" to="/create-match" custom
+                   v-slot="{ href, navigate, isActive, isExactActive }">
         <a :href="href" @click="navigate" :class="{ active: isActive, exactActive: isExactActive }">Create Match</a>
       </router-link>
       <router-link v-if="isAuthenticated" to="/matches" custom v-slot="{ href, navigate, isActive, isExactActive }">
@@ -19,7 +20,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import authService from "@/services/authService";
+import authService from '@/services/authService';
 
 export default {
   name: 'NavigationMenu',
@@ -32,7 +33,7 @@ export default {
     async handleSignOut() {
       authService.signOutAndRedirect();
     },
-  }
+  },
 };
 </script>
 

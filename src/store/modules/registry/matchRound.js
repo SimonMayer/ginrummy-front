@@ -5,53 +5,53 @@ const state = {
 };
 
 const mutations = {
-    SET_CURRENT_ROUND_ID(state, { matchId, roundId }) {
-        state.currentRoundIds = { ...state.currentRoundIds, [matchId]: roundId };
+    SET_CURRENT_ROUND_ID(state, {matchId, roundId}) {
+        state.currentRoundIds = {...state.currentRoundIds, [matchId]: roundId};
     },
     CLEAR_CURRENT_ROUND_ID(state, matchId) {
-        state.currentRoundIds = { ...state.currentRoundIds, [matchId]: null };
+        state.currentRoundIds = {...state.currentRoundIds, [matchId]: null};
     },
-    SET_LATEST_ROUND_ID(state, { matchId, roundId }) {
-        state.latestRoundIds = { ...state.latestRoundIds, [matchId]: roundId };
+    SET_LATEST_ROUND_ID(state, {matchId, roundId}) {
+        state.latestRoundIds = {...state.latestRoundIds, [matchId]: roundId};
     },
-    SET_ALL_ROUND_IDS(state, { matchId, roundIds }) {
-        state.allRoundIds = { ...state.allRoundIds, [matchId]: roundIds };
+    SET_ALL_ROUND_IDS(state, {matchId, roundIds}) {
+        state.allRoundIds = {...state.allRoundIds, [matchId]: roundIds};
     },
-    ADD_TO_ALL_ROUND_IDS(state, { matchId, roundId }) {
+    ADD_TO_ALL_ROUND_IDS(state, {matchId, roundId}) {
         const roundIds = state.allRoundIds[matchId] || [];
         if (!roundIds.includes(roundId)) {
-            state.allRoundIds = { ...state.allRoundIds, [matchId]: [...roundIds, roundId] };
+            state.allRoundIds = {...state.allRoundIds, [matchId]: [...roundIds, roundId]};
         }
     },
 };
 
 const actions = {
-    async setCurrentRoundId({ commit, dispatch }, { matchId, roundId }) {
+    async setCurrentRoundId({commit, dispatch}, {matchId, roundId}) {
         if (!roundId) {
             commit('CLEAR_CURRENT_ROUND_ID', matchId);
             return;
         }
-        commit('SET_CURRENT_ROUND_ID', { matchId, roundId });
-        commit('SET_LATEST_ROUND_ID', { matchId, roundId });
-        commit('ADD_TO_ALL_ROUND_IDS', { matchId, roundId });
-        await dispatch('rounds/discardPiles/fetchDiscardPile', { roundId }, { root: true });
-        await dispatch('rounds/stockPiles/fetchStockPileData', { roundId }, { root: true });
-        await dispatch('rounds/melds/fetchMelds', { roundId }, { root: true });
+        commit('SET_CURRENT_ROUND_ID', {matchId, roundId});
+        commit('SET_LATEST_ROUND_ID', {matchId, roundId});
+        commit('ADD_TO_ALL_ROUND_IDS', {matchId, roundId});
+        await dispatch('rounds/discardPiles/fetchDiscardPile', {roundId}, {root: true});
+        await dispatch('rounds/stockPiles/fetchStockPileData', {roundId}, {root: true});
+        await dispatch('rounds/melds/fetchMelds', {roundId}, {root: true});
     },
-    async setLatestRoundId({ commit, dispatch }, { matchId, roundId }) {
-        commit('SET_LATEST_ROUND_ID', { matchId, roundId });
+    async setLatestRoundId({commit, dispatch}, {matchId, roundId}) {
+        commit('SET_LATEST_ROUND_ID', {matchId, roundId});
         if (!roundId) {
             return;
         }
-        await dispatch('rounds/discardPiles/fetchDiscardPile', { roundId }, { root: true });
-        await dispatch('rounds/stockPiles/fetchStockPileData', { roundId }, { root: true });
-        await dispatch('rounds/melds/fetchMelds', { roundId }, { root: true });
+        await dispatch('rounds/discardPiles/fetchDiscardPile', {roundId}, {root: true});
+        await dispatch('rounds/stockPiles/fetchStockPileData', {roundId}, {root: true});
+        await dispatch('rounds/melds/fetchMelds', {roundId}, {root: true});
     },
-    setAllRoundIds({ commit }, { matchId, roundIds }) {
-        commit('SET_ALL_ROUND_IDS', { matchId, roundIds });
+    setAllRoundIds({commit}, {matchId, roundIds}) {
+        commit('SET_ALL_ROUND_IDS', {matchId, roundIds});
     },
-    addToAllRoundIds({ commit }, { matchId, roundId }) {
-        commit('ADD_TO_ALL_ROUND_IDS', { matchId, roundId });
+    addToAllRoundIds({commit}, {matchId, roundId}) {
+        commit('ADD_TO_ALL_ROUND_IDS', {matchId, roundId});
     },
 };
 

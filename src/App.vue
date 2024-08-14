@@ -1,14 +1,14 @@
 <template>
   <div class="container">
-    <NavigationMenu />
-    <LoadingIndicator />
-    <ErrorBox />
-    <router-view @auth-success="handleAuthSuccess" />
+    <NavigationMenu/>
+    <LoadingIndicator/>
+    <ErrorBox/>
+    <router-view @auth-success="handleAuthSuccess"/>
   </div>
 </template>
 
 <script>
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 import ErrorBox from '@/components/ErrorBox.vue';
 import NavigationMenu from '@/components/NavigationMenu.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
@@ -18,7 +18,7 @@ export default {
   components: {
     NavigationMenu,
     ErrorBox,
-    LoadingIndicator
+    LoadingIndicator,
   },
   setup() {
     const router = useRouter();
@@ -28,9 +28,9 @@ export default {
     };
 
     return {
-      handleAuthSuccess
+      handleAuthSuccess,
     };
-  }
+  },
 };
 </script>
 

@@ -1,4 +1,4 @@
-import configService from "@/services/configService";
+import configService from '@/services/configService';
 
 const FETCH_GAME_CONFIG_TIMEOUT = 24 * 60 * 60 * 1000;
 
@@ -21,7 +21,7 @@ const mutations = {
 };
 
 const actions = {
-    async fetchGameConfig({ commit, dispatch }, { forceFetch = false }) {
+    async fetchGameConfig({commit, dispatch}, {forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -40,7 +40,7 @@ const actions = {
                 },
                 timeout: FETCH_GAME_CONFIG_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
 };

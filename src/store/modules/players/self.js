@@ -5,7 +5,7 @@ const getters = {
     },
     getSelfPlayerRoundDataByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
         const userId = rootGetters['auth/user/userId'];
-        return rootGetters['players/round/getPlayerRoundDataByRoundAndPlayerIds']({ roundId, playerId: userId });
+        return rootGetters['players/round/getPlayerRoundDataByRoundAndPlayerIds']({roundId, playerId: userId});
     },
 };
 

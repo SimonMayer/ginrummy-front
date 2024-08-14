@@ -18,7 +18,7 @@ const apiService = {
             console.error(errorMessage, error);
             throw new Error(error.response.data.error);
         }
-    }
+    },
 };
 
 export default apiService;

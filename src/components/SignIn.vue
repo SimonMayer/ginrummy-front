@@ -2,15 +2,15 @@
   <div class="sign-in">
     <h1>Sign in</h1>
     <form @submit.prevent="handleSignIn">
-      <input v-model="username" placeholder="Username" />
-      <input v-model="password" type="password" placeholder="Password" />
+      <input v-model="username" placeholder="Username"/>
+      <input v-model="password" type="password" placeholder="Password"/>
       <button type="submit">Sign in</button>
     </form>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import {mapActions} from 'vuex';
 
 export default {
   name: 'SignIn',
@@ -27,13 +27,13 @@ export default {
       setLoading: 'trackers/loading/setLoading',
     }),
     async handleSignIn() {
-      const isAuthenticated = await this.signIn({ username: this.username, password: this.password });
+      const isAuthenticated = await this.signIn({username: this.username, password: this.password});
       if (isAuthenticated) {
         this.$emit('auth-success');
       }
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

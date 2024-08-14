@@ -5,10 +5,10 @@
         <div class="highlight-container">
           <div v-if="hasCurrentTurn" class="highlight"></div>
         </div>
-        <NamePlate :name="username" />
+        <NamePlate :name="username"/>
       </div>
       <div class="score">
-        <ScoreBoard :totalScore="totalScore" :roundScore="roundScore" />
+        <ScoreBoard :totalScore="totalScore" :roundScore="roundScore"/>
       </div>
     </div>
     <div class="hand">
@@ -25,22 +25,22 @@
 </template>
 
 <script>
-import NamePlate from "@/components/NamePlate.vue";
-import ScoreBoard from "@/components/ScoreBoard.vue";
+import NamePlate from '@/components/NamePlate.vue';
+import ScoreBoard from '@/components/ScoreBoard.vue';
 import VisibleCard from '@/components/VisibleCard.vue';
-import { mapGetters } from 'vuex';
-import matchPhaseMixin from "@/mixins/matchPhaseMixin";
+import {mapGetters} from 'vuex';
+import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'SelfMatchPlayer',
   components: {
     NamePlate,
     ScoreBoard,
-    VisibleCard
+    VisibleCard,
   },
   mixins: [matchPhaseMixin],
   props: {
-    selectable: Boolean
+    selectable: Boolean,
   },
   computed: {
     ...mapGetters({
@@ -60,10 +60,13 @@ export default {
       if (!this.visibleRoundId) {
         return null;
       }
-      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.visibleRoundId, playerId: this.playerMatchData.user_id });
+      return this.getPlayerRoundDataByRoundAndPlayerIds({
+        roundId: this.visibleRoundId,
+        playerId: this.playerMatchData.user_id,
+      });
     },
     hasCurrentTurn() {
-      return this.isCurrentTurnForPlayer({ roundId: this.visibleRoundId, playerId: this.playerMatchData.user_id });
+      return this.isCurrentTurnForPlayer({roundId: this.visibleRoundId, playerId: this.playerMatchData.user_id});
     },
     username() {
       return this.playerMatchData.username;

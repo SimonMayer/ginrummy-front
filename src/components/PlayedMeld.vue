@@ -18,29 +18,29 @@ import meldsService from '@/services/meldsService';
 export default {
   name: 'PlayedMeld',
   components: {
-    VisibleCard
+    VisibleCard,
   },
   props: {
     cards: {
       type: Array,
-      required: true
+      required: true,
     },
     id: {
       type: Number,
-      required: true
+      required: true,
     },
     type: {
       type: String,
-      required: true
+      required: true,
     },
     selected: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selectable: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     ...mapGetters({
@@ -51,7 +51,7 @@ export default {
     },
     sortedCards() {
       return meldsService.sortCardsByRunOrders(this.cards, this.runOrders);
-    }
+    },
   },
   methods: {
     ...mapActions({
@@ -62,13 +62,14 @@ export default {
         this.toggleSelectedMeldId(this.id);
       }
     },
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/globalVariables';
 @import '@/assets/cards/variables.css';
+
 @mixin fan-shape($num-cards, $span, $offset-rotation) {
   @for $i from 1 through $num-cards {
     $rotation: (($i - calc($num-cards / 2)) * calc($span / $num-cards) + $offset-rotation);

@@ -23,13 +23,13 @@ export default {
     },
     errorMessage() {
       return this.error ? (this.error.response?.data?.error || this.error.message || '') : '';
-    }
+    },
   },
   methods: {
     ...mapActions({
       clearError: 'error/clearError',
     }),
-  }
+  },
 };
 </script>
 

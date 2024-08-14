@@ -13,7 +13,7 @@ const mutations = {
 };
 
 const actions = {
-    async fetchMatchList({ dispatch, commit }, { forceFetch = false }) {
+    async fetchMatchList({dispatch, commit}, {forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -26,7 +26,7 @@ const actions = {
                 },
                 timeout: FETCH_MATCH_LIST_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
 
     },

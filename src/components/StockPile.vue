@@ -1,7 +1,7 @@
 <template>
   <div class="stock-pile-container">
     <div class="stock-pile" :class="{ disabled: disabled, empty: isEmpty }" @click="handleClick">
-      <HiddenCard v-for="n in size" :key="n" class="stock-card-item" />
+      <HiddenCard v-for="n in size" :key="n" class="stock-card-item"/>
       <div v-if="isEmpty" class="empty-placeholder">
         <div class="icon">↻</div>
         <div>Rebuild from discards</div>
@@ -12,8 +12,8 @@
 
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
-import {mapGetters} from "vuex";
-import matchPhaseMixin from "@/mixins/matchPhaseMixin";
+import {mapGetters} from 'vuex';
+import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'StockPile',
@@ -36,7 +36,7 @@ export default {
     },
     isEmpty() {
       return this.size === 0;
-    }
+    },
   },
   methods: {
     handleClick() {
@@ -73,20 +73,15 @@ export default {
     .stock-card-item:nth-child(#{$i}) {
       @if $i % 24 == 0 {
         transform: rotate(-1deg);
-      }
-      @else if $i % 11 == 0 {
+      } @else if $i % 11 == 0 {
         transform: rotate(1.1deg);
-      }
-      @else if $i % 7 == 0 {
+      } @else if $i % 7 == 0 {
         transform: rotate(-0.5deg);
-      }
-      @else if $i % 5 == 0 {
+      } @else if $i % 5 == 0 {
         transform: rotate(0.4deg);
-      }
-      @else if $i % 2 == 0 {
+      } @else if $i % 2 == 0 {
         transform: rotate(0.2deg);
-      }
-      @else if $i % 2 != 0 {
+      } @else if $i % 2 != 0 {
         transform: rotate(-0.3deg);
       }
 

@@ -1,4 +1,4 @@
-import roundsService from "@/services/roundsService";
+import roundsService from '@/services/roundsService';
 
 const FETCH_CURRENT_TURN_TIMEOUT = 0;
 
@@ -7,16 +7,16 @@ const state = {
 };
 
 const mutations = {
-    SET_CURRENT_TURN_ID(state, { roundId, turnId }) {
-        state.currentTurnIds = { ...state.currentTurnIds, [roundId]: turnId };
+    SET_CURRENT_TURN_ID(state, {roundId, turnId}) {
+        state.currentTurnIds = {...state.currentTurnIds, [roundId]: turnId};
     },
     CLEAR_CURRENT_TURN_ID(state, roundId) {
-        state.currentTurnIds = { ...state.currentTurnIds, [roundId]: null };
+        state.currentTurnIds = {...state.currentTurnIds, [roundId]: null};
     },
 };
 
 const actions = {
-    async fetchCurrentTurn({ commit, dispatch }, { roundId, matchId, forceFetch = false }) {
+    async fetchCurrentTurn({commit, dispatch}, {roundId, matchId, forceFetch = false}) {
         if (!roundId) {
             commit('CLEAR_CURRENT_TURN_ID', roundId);
             return;
@@ -29,17 +29,20 @@ const actions = {
                 key: `currentTurn_${roundId}`,
                 fetchFunction: () => roundsService.getCurrentTurn(roundId),
                 onSuccess: async (data) => {
-                    await dispatch('setCurrentTurnId', { roundId: roundId, 'turnId': data.turn_id })
-                    await dispatch('registry/matchAction/setLatestActionId', { matchId, actionId: data.latest_action_id }, { root:true })
+                    await dispatch('setCurrentTurnId', {roundId: roundId, 'turnId': data.turn_id});
+                    await dispatch('registry/matchAction/setLatestActionId', {
+                        matchId,
+                        actionId: data.latest_action_id,
+                    }, {root: true});
                 },
                 timeout: FETCH_CURRENT_TURN_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
-    setCurrentTurnId({ commit, dispatch }, { roundId, turnId }) {
-        dispatch('turns/turns/fetchTurn', { turnId }, { root: true });
-        commit('SET_CURRENT_TURN_ID', { roundId, turnId });
+    setCurrentTurnId({commit, dispatch}, {roundId, turnId}) {
+        dispatch('turns/turns/fetchTurn', {turnId}, {root: true});
+        commit('SET_CURRENT_TURN_ID', {roundId, turnId});
     },
 };
 

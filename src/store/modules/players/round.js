@@ -7,7 +7,7 @@ const state = {
 };
 
 const mutations = {
-    SET_PLAYERS_ROUND_DATA(state, { roundId, players }) {
+    SET_PLAYERS_ROUND_DATA(state, {roundId, players}) {
         state.playersRoundData = {
             ...state.playersRoundData,
             [roundId]: players,
@@ -16,8 +16,8 @@ const mutations = {
 };
 
 const actions = {
-    async fetchPlayersRoundData({ dispatch, commit, rootGetters }, { roundId, forceFetch = false }) {
-        if(!roundId) {
+    async fetchPlayersRoundData({dispatch, commit, rootGetters}, {roundId, forceFetch = false}) {
+        if (!roundId) {
             return;
         }
         await dispatch(
@@ -28,22 +28,22 @@ const actions = {
                 key: `playersRoundData_${roundId}`,
                 fetchFunction: () => roundsService.getPlayers(roundId),
                 onSuccess: async (playersData) => {
-                    await commit('SET_PLAYERS_ROUND_DATA', { roundId, players: playersData });
+                    await commit('SET_PLAYERS_ROUND_DATA', {roundId, players: playersData});
                     const selfPlayerHandId = rootGetters['players/self/getSelfPlayerRoundDataByRoundId'](roundId)?.hand?.hand_id;
-                    await dispatch('hands/fetchHand', { handId: selfPlayerHandId }, { root: true });
+                    await dispatch('hands/fetchHand', {handId: selfPlayerHandId}, {root: true});
                 },
                 timeout: FETCH_PLAYERS_ROUND_DATA_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
 };
 
 const getters = {
-    getPlayerRoundDataByRoundAndPlayerIds: state => ({ roundId, playerId }) => {
+    getPlayerRoundDataByRoundAndPlayerIds: state => ({roundId, playerId}) => {
         return state.playersRoundData[roundId]?.find(player => player.user_id === playerId);
     },
-    isCurrentTurnForPlayer: (state, getters, rootState, rootGetters) => ({ roundId, playerId }) => {
+    isCurrentTurnForPlayer: (state, getters, rootState, rootGetters) => ({roundId, playerId}) => {
         const currentTurnId = rootGetters['registry/roundTurn/getCurrentTurnIdByRoundId'](roundId);
         if (!currentTurnId) {
             return false;

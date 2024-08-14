@@ -1,6 +1,6 @@
 <template>
   <div class="item-search">
-    <input v-model="searchInput" @input="onSearchInput" :placeholder="placeholder" />
+    <input v-model="searchInput" @input="onSearchInput" :placeholder="placeholder"/>
     <ul v-if="filteredResults.length">
       <li v-for="item in filteredResults" :key="item.id" @click="selectItem(item)" class="search-item">
         {{ item[displayProperty] }}
@@ -10,39 +10,39 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'ItemSearch',
   props: {
     placeholder: {
       type: String,
-      default: 'Search…'
+      default: 'Search…',
     },
     searchFunction: {
       type: Function,
-      required: true
+      required: true,
     },
     displayProperty: {
       type: String,
-      default: 'name'
+      default: 'name',
     },
     excludeItems: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     excludeProperty: {
       type: String,
-      required: true
+      required: true,
     },
     searchKey: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      searchInput: ''
+      searchInput: '',
     };
   },
   computed: {
@@ -53,10 +53,10 @@ export default {
     filteredResults() {
       return this.searchResultsList(this.searchKey).filter(
           result => !this.excludeItems.some(
-              excludeItem => excludeItem[this.excludeProperty] === result[this.excludeProperty]
-          )
+              excludeItem => excludeItem[this.excludeProperty] === result[this.excludeProperty],
+          ),
       );
-    }
+    },
   },
   methods: {
     ...mapActions({
@@ -68,12 +68,12 @@ export default {
     },
     selectItem(item) {
       this.$emit('item-selected', item);
-    }
+    },
   },
   mounted() {
     this.searchInput = this.searchTerm(this.searchKey);
     this.registerSearchFunction({key: this.searchKey, searchFunction: this.searchFunction});
-  }
+  },
 };
 </script>
 

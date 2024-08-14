@@ -1,4 +1,4 @@
-import {mapGetters} from "vuex";
+import {mapGetters} from 'vuex';
 
 export default {
     computed: {
@@ -24,5 +24,5 @@ export default {
                 ? this.currentRoundDiscardPile
                 : this.canDrawOne ? [this.currentTopDiscardPileCard] : [];
         },
-    }
+    },
 };

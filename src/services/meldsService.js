@@ -21,7 +21,7 @@ const meldsService = {
         const sortedIndices = [...indices].sort((a, b) => a - b);
         return sortedIndices.every((index, i) => i === 0 || index === sortedIndices[i - 1] + 1);
     },
-    areRanksConsecutiveInRunOrder(ranks, runOrder){
+    areRanksConsecutiveInRunOrder(ranks, runOrder) {
         const indices = this.getRankIndicesInRunOrder(ranks, runOrder);
         return this.areIndicesConsecutive(indices);
     },

@@ -18,7 +18,7 @@ import CardCorner from '@/components/CardCorner.vue';
 import CardPattern from '@/components/CardPattern.vue';
 import {getSuitEmoji, getDisplayRank, getSuitRepeat} from '@/utils/cardUtils';
 import cardsService from '@/services/cardsService';
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'VisibleCard',
@@ -41,12 +41,12 @@ export default {
             typeof value.suit === 'string' &&
             typeof value.point_value === 'number'
         );
-      }
+      },
     },
     selectable: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -96,7 +96,7 @@ export default {
     } else {
       this.cardData = this.cardProp;
     }
-  }
+  },
 };
 </script>
 

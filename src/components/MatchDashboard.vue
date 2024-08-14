@@ -1,13 +1,13 @@
 <template>
   <div class="match-dashboard">
-    <MatchContent />
+    <MatchContent/>
   </div>
 </template>
 
 <script>
 import MatchContent from '@/components/MatchContent.vue';
 import {mapActions} from 'vuex';
-import matchPhaseMixin from "@/mixins/matchPhaseMixin";
+import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'MatchDashboard',
@@ -17,8 +17,8 @@ export default {
   mixins: [matchPhaseMixin],
   async created() {
     await this.initializeMatchId(this.$route);
-    await this.fetchMatch({ matchId: this.matchId });
-    await this.fetchPlayersMatchData({ matchId: this.matchId });
+    await this.fetchMatch({matchId: this.matchId});
+    await this.fetchPlayersMatchData({matchId: this.matchId});
   },
   methods: {
     ...mapActions({

@@ -7,7 +7,7 @@ const state = {
 };
 
 const mutations = {
-    SET_DISCARD_PILE_CARD_IDS(state, { roundId, discardPile }) {
+    SET_DISCARD_PILE_CARD_IDS(state, {roundId, discardPile}) {
         state.discardPileCardIds[roundId] = discardPile.map(card => card.card_id);
     },
     REMOVE_TOP_DISCARD_PILE_CARD(state, roundId) {
@@ -18,7 +18,7 @@ const mutations = {
 };
 
 const actions = {
-    async fetchDiscardPile({ commit, dispatch }, { roundId, forceFetch = false }) {
+    async fetchDiscardPile({commit, dispatch}, {roundId, forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -27,15 +27,15 @@ const actions = {
                 key: `discardPile_${roundId}`,
                 fetchFunction: () => roundsService.getDiscardPileList(roundId),
                 onSuccess: async (discardPile) => {
-                    await dispatch('cards/cards/addCards', discardPile, { root: true });
-                    commit('SET_DISCARD_PILE_CARD_IDS', { roundId, discardPile });
+                    await dispatch('cards/cards/addCards', discardPile, {root: true});
+                    commit('SET_DISCARD_PILE_CARD_IDS', {roundId, discardPile});
                 },
                 timeout: FETCH_DISCARD_PILE_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
-    removeTopDiscardPileCard({ commit }, roundId) {
+    removeTopDiscardPileCard({commit}, roundId) {
         commit('REMOVE_TOP_DISCARD_PILE_CARD', roundId);
     },
 };

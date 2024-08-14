@@ -1,4 +1,4 @@
-import turnsService from "@/services/turnsService";
+import turnsService from '@/services/turnsService';
 
 const FETCH_TURN_TIMEOUT = 30 * 1000;
 
@@ -17,15 +17,15 @@ function createTurn(id, userId, rotationNumber, actions) {
 
 const mutations = {
     ADD_TURN(state, turn) {
-        state.turns = { ...state.turns, [turn.id]: turn };
+        state.turns = {...state.turns, [turn.id]: turn};
     },
-    APPEND_ACTION_TO_TURN(state, { turnId, action }) {
+    APPEND_ACTION_TO_TURN(state, {turnId, action}) {
         state.turns[turnId].actions.push(action);
     },
 };
 
 const actions = {
-    async fetchTurn({ commit, dispatch }, { turnId, forceFetch = false }) {
+    async fetchTurn({commit, dispatch}, {turnId, forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -39,20 +39,20 @@ const actions = {
                 },
                 timeout: FETCH_TURN_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
 
     },
-    async appendActionToTurn({ commit, dispatch, getters }, { turnId, action }) {
+    async appendActionToTurn({commit, dispatch, getters}, {turnId, action}) {
         if (!getters.getTurnById(turnId)) {
             return;
         }
 
-        const isAppendableAction = await dispatch('turns/actions/isAppendableAction', {turnId, action}, {root:true})
+        const isAppendableAction = await dispatch('turns/actions/isAppendableAction', {turnId, action}, {root: true});
         if (!isAppendableAction) {
             return;
         }
-        commit('APPEND_ACTION_TO_TURN', { turnId, action });
+        commit('APPEND_ACTION_TO_TURN', {turnId, action});
     },
 };
 

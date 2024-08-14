@@ -1,14 +1,14 @@
 <template>
   <div v-if="playerMatchData" class="player-item non-self-player">
     <div class="hand">
-      <HiddenCard v-for="n in handSize" :key="n" class="card" />
+      <HiddenCard v-for="n in handSize" :key="n" class="card"/>
     </div>
     <div class="player-details">
       <div class="username">
-        <NamePlate :name="username" />
+        <NamePlate :name="username"/>
       </div>
       <div class="score">
-        <ScoreBoard :totalScore="totalScore" :roundScore="roundScore" />
+        <ScoreBoard :totalScore="totalScore" :roundScore="roundScore"/>
       </div>
     </div>
     <div class="highlight-container">
@@ -20,16 +20,16 @@
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
 import NamePlate from '@/components/NamePlate.vue';
-import ScoreBoard from "@/components/ScoreBoard.vue";
-import { mapGetters } from 'vuex';
-import matchPhaseMixin from "@/mixins/matchPhaseMixin";
+import ScoreBoard from '@/components/ScoreBoard.vue';
+import {mapGetters} from 'vuex';
+import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'NonSelfMatchPlayer',
   components: {
     ScoreBoard,
     HiddenCard,
-    NamePlate
+    NamePlate,
   },
   mixins: [matchPhaseMixin],
   props: {
@@ -45,16 +45,16 @@ export default {
       isCurrentTurnForPlayer: 'players/round/isCurrentTurnForPlayer',
     }),
     playerMatchData() {
-      return this.getPlayerMatchDataByMatchAndPlayerIds({ matchId: this.matchId, playerId: this.userId });
+      return this.getPlayerMatchDataByMatchAndPlayerIds({matchId: this.matchId, playerId: this.userId});
     },
     playerRoundData() {
       if (!this.visibleRoundId) {
         return null;
       }
-      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.visibleRoundId, playerId: this.userId });
+      return this.getPlayerRoundDataByRoundAndPlayerIds({roundId: this.visibleRoundId, playerId: this.userId});
     },
     hasCurrentTurn() {
-      return this.isCurrentTurnForPlayer({ roundId: this.visibleRoundId, playerId: this.userId });
+      return this.isCurrentTurnForPlayer({roundId: this.visibleRoundId, playerId: this.userId});
     },
     username() {
       return this.playerMatchData.username;
@@ -70,7 +70,7 @@ export default {
       const score = this.playerRoundData?.score.points_this_round;
       return Number.isInteger(score) ? score : null;
     },
-  }
+  },
 };
 </script>
 

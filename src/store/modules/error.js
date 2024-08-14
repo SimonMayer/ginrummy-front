@@ -4,7 +4,7 @@ const state = {
 };
 
 const mutations = {
-    SET_ERROR(state, { title, error }) {
+    SET_ERROR(state, {title, error}) {
         state.errorTitle = title;
         state.error = error;
     },
@@ -15,10 +15,10 @@ const mutations = {
 };
 
 const actions = {
-    setError({ commit }, error) {
+    setError({commit}, error) {
         commit('SET_ERROR', error);
     },
-    clearError({ commit }) {
+    clearError({commit}) {
         commit('CLEAR_ERROR');
     },
 };

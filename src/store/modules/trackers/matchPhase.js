@@ -9,7 +9,7 @@ const mutations = {
 };
 
 const actions = {
-    initializeMatchId({ commit }, route) {
+    initializeMatchId({commit}, route) {
         const matchId = parseInt(route.params.id, 10);
         commit('SET_MATCH_ID', matchId);
     },

@@ -23,7 +23,7 @@ import ItemSearch from '@/components/ItemSearch.vue';
 import matchesService from '@/services/matchesService';
 import usersService from '@/services/usersService';
 import {mapActions, mapGetters} from 'vuex';
-import matchPhaseMixin from "@/mixins/matchPhaseMixin";
+import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'MatchContent',
@@ -53,8 +53,8 @@ export default {
   },
   async created() {
     await this.fetchGameConfig({});
-    await this.fetchMatch({ matchId: this.matchId });
-    await this.fetchPlayersMatchData({ matchId: this.matchId });
+    await this.fetchMatch({matchId: this.matchId});
+    await this.fetchPlayersMatchData({matchId: this.matchId});
   },
   methods: {
     ...mapActions({
@@ -70,7 +70,7 @@ export default {
         try {
           await matchesService.startMatch(this.matchId);
           await this.$refs.matchTable.loadAllData(true);
-          this.fetchMatch({ matchId: this.matchId, forceFetch: true });
+          this.fetchMatch({matchId: this.matchId, forceFetch: true});
         } catch (error) {
           this.setError({title: 'Failed to start match!', error: error});
         } finally {
@@ -90,15 +90,15 @@ export default {
       if (this.players.length < this.maxPlayers) {
         try {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
-          await this.fetchPlayersMatchData({ matchId: this.matchId, forceFetch: true });
+          await this.fetchPlayersMatchData({matchId: this.matchId, forceFetch: true});
         } catch (error) {
           this.setError({title: 'Failed to add player!', error: error});
         }
       } else {
         alert('Maximum number of players reached.');
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,10 +1,10 @@
-import roundsService from "@/services/roundsService";
+import roundsService from '@/services/roundsService';
 
 const FETCH_MELDS_TIMEOUT = 5 * 60 * 1000;
 
 const state = {
     meldIds: {},
-    melds: {}
+    melds: {},
 };
 
 function validateMeld(meld) {
@@ -16,26 +16,26 @@ function validateMeld(meld) {
 
 const mutations = {
     ADD_MELD(state, meld) {
-        state.melds = { ...state.melds, [meld.meld_id]: meld };
+        state.melds = {...state.melds, [meld.meld_id]: meld};
     },
-    ADD_CARD_TO_MELD(state, { meldId, cardId }) {
+    ADD_CARD_TO_MELD(state, {meldId, cardId}) {
         const meld = state.melds[meldId];
         if (meld && !meld.cardIds.includes(cardId)) {
             meld.cardIds.push(cardId);
         }
     },
-    SET_MELD_IDS(state, { roundId, meldIds }) {
+    SET_MELD_IDS(state, {roundId, meldIds}) {
         state.meldIds[roundId] = meldIds;
     },
 };
 
 const actions = {
-    addMeldWithCards({ commit, dispatch }, meld) {
+    addMeldWithCards({commit, dispatch}, meld) {
         const cardIds = meld.cards.map(card => card.card_id);
         const newMeld = {
             meld_id: meld.meld_id,
             meld_type: meld.meld_type,
-            cardIds
+            cardIds,
         };
 
         if (!validateMeld(newMeld)) {
@@ -45,10 +45,10 @@ const actions = {
 
         commit('ADD_MELD', newMeld);
         for (const card of meld.cards) {
-            dispatch('cards/cards/addCard', card, { root: true });
+            dispatch('cards/cards/addCard', card, {root: true});
         }
     },
-    async addMeldWithCardIds({ commit, dispatch }, meld) {
+    async addMeldWithCardIds({commit, dispatch}, meld) {
         if (!validateMeld(meld)) {
             console.error('Invalid meld:', meld);
             return;
@@ -56,21 +56,21 @@ const actions = {
 
         commit('ADD_MELD', meld);
         for (const cardId of meld.cardIds) {
-            await dispatch('cards/cards/fetchCard', { cardId }, { root: true });
+            await dispatch('cards/cards/fetchCard', {cardId}, {root: true});
         }
     },
-    addCardToMeld({ commit, dispatch, state }, { meldId, card }) {
+    addCardToMeld({commit, dispatch, state}, {meldId, card}) {
         const meld = state.melds[meldId];
         if (!meld) {
             console.error('Meld not found:', meldId);
             return;
         }
         if (!meld.cardIds.includes(card.card_id)) {
-            commit('ADD_CARD_TO_MELD', { meldId, cardId: card.card_id });
-            dispatch('cards/cards/addCard', card, { root: true });
+            commit('ADD_CARD_TO_MELD', {meldId, cardId: card.card_id});
+            dispatch('cards/cards/addCard', card, {root: true});
         }
     },
-    async fetchMelds({ commit, dispatch }, { roundId, forceFetch = false }) {
+    async fetchMelds({commit, dispatch}, {roundId, forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -82,11 +82,11 @@ const actions = {
                     await melds.forEach(meld => {
                         dispatch('addMeldWithCards', meld);
                     });
-                    commit('SET_MELD_IDS', { roundId, meldIds: melds.map(meld => meld.meld_id) });
+                    commit('SET_MELD_IDS', {roundId, meldIds: melds.map(meld => meld.meld_id)});
                 },
                 timeout: FETCH_MELDS_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
 };
@@ -113,5 +113,5 @@ export default {
     state,
     mutations,
     actions,
-    getters
+    getters,
 };

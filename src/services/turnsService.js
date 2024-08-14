@@ -19,7 +19,7 @@ const turnsService = {
     async drawMultipleFromDiscardPile(matchId, discardPileCardIds, handCardIds, meldId = null) {
         const requestBody = {
             discard_pile_card_ids: discardPileCardIds,
-            hand_card_ids: handCardIds
+            hand_card_ids: handCardIds,
         };
 
         if (meldId) {
@@ -29,20 +29,20 @@ const turnsService = {
         const data = await apiService.post(
             `/matches/${matchId}/actions/draw_multiple_from_discard_pile`,
             requestBody,
-            'Failed to draw from discard pile!'
+            'Failed to draw from discard pile!',
         );
 
         return data.new_hand_card_ids;
     },
     async discardCard(matchId, cardId) {
-        return await apiService.post(`/matches/${matchId}/actions/discard_card`, { card_id: cardId }, 'Failed to discard card!');
+        return await apiService.post(`/matches/${matchId}/actions/discard_card`, {card_id: cardId}, 'Failed to discard card!');
     },
     async playMeld(matchId, cardIds, meldType) {
-        return await apiService.post(`/matches/${matchId}/actions/play_meld/${meldType}`, { card_ids: cardIds }, 'Failed to play meld!');
+        return await apiService.post(`/matches/${matchId}/actions/play_meld/${meldType}`, {card_ids: cardIds}, 'Failed to play meld!');
     },
     async extendMeld(matchId, meldId, cardIds) {
-        return await apiService.post(`/matches/${matchId}/actions/extend_meld/${meldId}`, { card_ids: cardIds }, 'Failed to extend meld!');
-    }
+        return await apiService.post(`/matches/${matchId}/actions/extend_meld/${meldId}`, {card_ids: cardIds}, 'Failed to extend meld!');
+    },
 };
 
 export default turnsService;

@@ -7,7 +7,7 @@ const state = {
 };
 
 const mutations = {
-    SET_PLAYERS_MATCH_DATA(state, { matchId, players }) {
+    SET_PLAYERS_MATCH_DATA(state, {matchId, players}) {
         state.playersMatchData = {
             ...state.playersMatchData,
             [matchId]: players,
@@ -16,7 +16,7 @@ const mutations = {
 };
 
 const actions = {
-    async fetchPlayersMatchData({ dispatch, commit }, { matchId, forceFetch = false }) {
+    async fetchPlayersMatchData({dispatch, commit}, {matchId, forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -25,18 +25,18 @@ const actions = {
                 key: `playersMatchData_${matchId}`,
                 fetchFunction: () => matchesService.getPlayers(matchId),
                 onSuccess: async (playersData) => {
-                    commit('SET_PLAYERS_MATCH_DATA', { matchId, players: playersData });
+                    commit('SET_PLAYERS_MATCH_DATA', {matchId, players: playersData});
                 },
                 timeout: FETCH_PLAYERS_MATCH_DATA_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
     },
 };
 
 const getters = {
     getPlayersMatchDataByMatchId: state => matchId => state.playersMatchData[matchId] || [],
-    getPlayerMatchDataByMatchAndPlayerIds: state => ({ matchId, playerId }) => {
+    getPlayerMatchDataByMatchAndPlayerIds: state => ({matchId, playerId}) => {
         return state.playersMatchData[matchId]?.find(player => player.user_id === playerId);
     },
 };

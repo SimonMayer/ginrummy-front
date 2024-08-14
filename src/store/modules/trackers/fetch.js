@@ -13,20 +13,20 @@ const mutations = {
     },
     RECORD_FAILED_FETCH(state, key) {
         state.isFetching[key] = false;
-    }
+    },
 };
 
 const actions = {
-    recordAttempt({ commit }, key) {
+    recordAttempt({commit}, key) {
         commit('RECORD_FETCH_ATTEMPT', key);
     },
-    recordSuccess({ commit }, key) {
+    recordSuccess({commit}, key) {
         commit('RECORD_SUCCESSFUL_FETCH', key);
     },
-    recordFail({ commit }, key) {
+    recordFail({commit}, key) {
         commit('RECORD_FAILED_FETCH', key);
     },
-    shouldFetch({ state }, { key, timeout, forceFetch }) {
+    shouldFetch({state}, {key, timeout, forceFetch}) {
         const isFetching = state.isFetching[key];
         const lastFetched = state.lastFetched[key];
 
@@ -36,7 +36,7 @@ const actions = {
             return false;
         }
         return true;
-    }
+    },
 };
 
 const getters = {

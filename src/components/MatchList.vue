@@ -16,7 +16,7 @@
 
 <script>
 import {mapActions, mapGetters} from 'vuex';
-import { formatDateTime } from '@/utils/dateFormatter';
+import {formatDateTime} from '@/utils/dateFormatter';
 
 export default {
   name: 'MatchList',
@@ -26,17 +26,17 @@ export default {
     }),
     sortedMatchList() {
       return this.matchList.slice().sort((a, b) => new Date(b.create_time) - new Date(a.create_time));
-    }
+    },
   },
   async created() {
-    await this.fetchMatchList({ forceFetch: true });
+    await this.fetchMatchList({forceFetch: true});
   },
   methods: {
     ...mapActions({
       fetchMatchList: 'matches/list/fetchMatchList',
     }),
-    formatDateTime
-  }
+    formatDateTime,
+  },
 };
 </script>
 

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import {mapActions} from 'vuex';
 import apiClient from '@/api/axios';
 
 export default {
@@ -26,9 +26,9 @@ export default {
       } finally {
         this.setLoading(false);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

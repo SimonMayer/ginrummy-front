@@ -1,4 +1,4 @@
-import handsService from "@/services/handsService";
+import handsService from '@/services/handsService';
 
 const FETCH_HAND_TIMEOUT = 60 * 1000;
 
@@ -21,13 +21,13 @@ const mutations = {
             [hand.hand_id]: hand,
         };
     },
-    ADD_CARD_ID_TO_HAND(state, { handId, cardId }) {
+    ADD_CARD_ID_TO_HAND(state, {handId, cardId}) {
         const cardIds = state.hands[handId]?.cardIds || [];
         if (state.hands[handId] && !cardIds.includes(cardId)) {
             state.hands[handId].cardIds.push(cardId);
         }
     },
-    REMOVE_CARD_IDS_FROM_HAND(state, { handId, cardIds }) {
+    REMOVE_CARD_IDS_FROM_HAND(state, {handId, cardIds}) {
         if (state.hands[handId]) {
             state.hands[handId].cardIds = state.hands[handId].cardIds.filter(id => !cardIds.includes(id));
         }
@@ -35,7 +35,7 @@ const mutations = {
 };
 
 const actions = {
-    async fetchHand({ dispatch }, { handId, forceFetch = false }) {
+    async fetchHand({dispatch}, {handId, forceFetch = false}) {
         await dispatch(
             'fetchHandler/handleFetch',
             {
@@ -48,17 +48,17 @@ const actions = {
                 },
                 timeout: FETCH_HAND_TIMEOUT,
             },
-            { root: true }
+            {root: true},
         );
 
     },
-    addHandWithCards({ commit, dispatch }, hand) {
+    addHandWithCards({commit, dispatch}, hand) {
         const cardIds = hand.cards.map(card => card.card_id);
         const newHand = {
             hand_id: hand.hand_id,
             round_id: hand.round_id,
             user_id: hand.user_id,
-            cardIds
+            cardIds,
         };
 
         if (!validateHand(newHand)) {
@@ -68,10 +68,10 @@ const actions = {
 
         commit('ADD_HAND', newHand);
         for (const card of hand.cards) {
-            dispatch('cards/cards/addCard', card, { root: true });
+            dispatch('cards/cards/addCard', card, {root: true});
         }
     },
-    async addHandWithCardIds({ commit, dispatch }, hand) {
+    async addHandWithCardIds({commit, dispatch}, hand) {
         if (!validateHand(hand)) {
             console.error('Invalid hand:', hand);
             return;
@@ -79,17 +79,17 @@ const actions = {
         commit('ADD_HAND', hand);
 
         for (const cardId of hand.cardIds) {
-            await dispatch('cards/cards/fetchCard', { cardId }, { root: true });
+            await dispatch('cards/cards/fetchCard', {cardId}, {root: true});
         }
     },
-    async addCardIdsToHand({ commit, dispatch }, { handId, cardIds }) {
+    async addCardIdsToHand({commit, dispatch}, {handId, cardIds}) {
         for (const cardId of cardIds) {
-            await dispatch('cards/cards/fetchCard', { cardId }, { root: true });
-            commit('ADD_CARD_ID_TO_HAND', { handId, cardId });
+            await dispatch('cards/cards/fetchCard', {cardId}, {root: true});
+            commit('ADD_CARD_ID_TO_HAND', {handId, cardId});
         }
     },
-    removeCardIdsFromHand({ commit }, { handId, cardIds }) {
-        commit('REMOVE_CARD_IDS_FROM_HAND', { handId, cardIds });
+    removeCardIdsFromHand({commit}, {handId, cardIds}) {
+        commit('REMOVE_CARD_IDS_FROM_HAND', {handId, cardIds});
     },
 };
 

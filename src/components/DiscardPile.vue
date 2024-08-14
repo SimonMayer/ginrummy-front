@@ -16,8 +16,8 @@
 
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
-import {mapGetters} from "vuex";
-import matchPhaseMixin from "@/mixins/matchPhaseMixin";
+import {mapGetters} from 'vuex';
+import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'DiscardPile',
@@ -40,13 +40,13 @@ export default {
     },
     isEmpty() {
       return this.visibleCards?.length === 0;
-    }
+    },
   },
   methods: {
     isCardSelectable(card) {
       return this.selectableCards.includes(card);
-    }
-  }
+    },
+  },
 };
 </script>
 

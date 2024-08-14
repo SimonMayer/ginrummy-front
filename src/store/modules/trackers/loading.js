@@ -9,7 +9,7 @@ const mutations = {
 };
 
 const actions = {
-    setLoading({ commit }, payload) {
+    setLoading({commit}, payload) {
         commit('SET_LOADING', payload);
     },
 };

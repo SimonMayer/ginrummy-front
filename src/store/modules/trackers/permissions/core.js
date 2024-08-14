@@ -9,7 +9,7 @@ const getters = {
         const isLoading = rootGetters['trackers/loading/loading'];
         const isVisibleRoundCurrent = rootGetters['trackers/derived/rounds/isVisibleRoundCurrent'];
         return getters.isCurrentUserTurn && isVisibleRoundCurrent && !isLoading;
-    }
+    },
 };
 
 export default {
