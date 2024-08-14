@@ -32,15 +32,15 @@
           <button @click="handleStartNewRound">Start new round</button>
         </div>
         <div v-if="currentRoundId" class="buttons-container">
-          <button @click="handleDrawOneFromDiscardPileClick" :disabled="drawOneFromDiscardPileButtonDisabled">
+          <button @click="handleDrawOneFromDiscardPileClick" :disabled="!canDrawOneFromDiscardPile">
             Draw one from discard pile
           </button>
-          <button @click="handleDrawMultipleFromDiscardPileClick" :disabled="drawMultipleFromDiscardPileButtonDisabled">
+          <button @click="handleDrawMultipleFromDiscardPileClick" :disabled="!canDrawMultipleFromDiscardPile">
             Draw multiple from discard pile
           </button>
-          <button @click="handlePlayMeldClick" :disabled="playMeldButtonDisabled">Play meld</button>
-          <button @click="handleExtendMeldClick" :disabled="extendMeldButtonDisabled">Extend meld</button>
-          <button @click="handleDiscardClick" :disabled="discardButtonDisabled">Discard</button>
+          <button @click="handlePlayMeldClick" :disabled="!canPlaySetFromHand && !canPlayRunFromHand">Play meld</button>
+          <button @click="handleExtendMeldClick" :disabled="!canExtendMeldFromHand">Extend meld</button>
+          <button @click="handleDiscardClick" :disabled="!canDiscard">Discard</button>
         </div>
         <div class="self-player-container">
           <SelfMatchPlayer
@@ -170,21 +170,6 @@ export default {
     },
     isMeldSelectable() {
       return this.canAct && this.hasPlayedMeld;
-    },
-    discardButtonDisabled() {
-      return !this.canDiscard;
-    },
-    playMeldButtonDisabled() {
-      return !this.canPlaySetFromHand && !this.canPlayRunFromHand;
-    },
-    extendMeldButtonDisabled() {
-      return !this.canExtendMeldFromHand;
-    },
-    drawOneFromDiscardPileButtonDisabled() {
-      return !this.canDrawOneFromDiscardPile;
-    },
-    drawMultipleFromDiscardPileButtonDisabled() {
-      return !this.canDrawMultipleFromDiscardPile;
     },
   },
   methods: {

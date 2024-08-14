@@ -23,7 +23,7 @@ const getters = {
     selectableDiscardPileCards(state, getters, rootState, rootGetters) {
         return rootGetters['trackers/permissions/draw/canDrawMultiple']
             ? getters.currentDiscardPileCards
-            : rootGetters['trackers/permissions/draw/canDrawOneFromDiscardPile']
+            : rootGetters['trackers/permissions/draw/canDrawOne']
                 ? [getters.currentTopDiscardPileCard]
                 : [];
     },
