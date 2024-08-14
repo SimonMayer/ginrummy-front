@@ -86,15 +86,8 @@ export default {
     }),
     handleClick() {
       if (this.selectable) {
-        this.toggleSelection();
+        this.toggleSelectedCard(this.id);
       }
-    },
-    emitUpdateSelected() {
-      this.$emit('update:selected', this.cardData.card_id, this.isSelected);
-    },
-    toggleSelection() {
-      this.toggleSelectedCard(this.id);
-      this.emitUpdateSelected();
     },
   },
   async created() {

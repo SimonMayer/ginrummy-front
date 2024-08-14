@@ -47,7 +47,7 @@ const getters = {
     },
     isAnyDiscardPileCardSelectedBelowTop(state, getters, rootState, rootGetters) {
         const topCardId = rootGetters['trackers/derived/discardPile/currentTopDiscardPileCardId'];
-        return getters.lowestSelectedCardIdInDiscardPile !== topCardId;
+        return getters.isAnyDiscardPileCardSelected && getters.lowestSelectedCardIdInDiscardPile !== topCardId;
     },
     isOnlyTopDiscardPileCardSelected(state, getters, rootState, rootGetters) {
         const topCardId = rootGetters['trackers/derived/discardPile/currentTopDiscardPileCardId'];
@@ -66,6 +66,9 @@ const getters = {
     selectedMeldCards(state, getters) {
         const selectedMeld = getters.selectedMeld;
         return selectedMeld ? selectedMeld.cards : [];
+    },
+    allSelectedCards(state, getters) {
+        return [...getters.selectedMeldCards, ...getters.selectedHandCards, ...getters.selectedDiscardPileCards];
     },
 };
 

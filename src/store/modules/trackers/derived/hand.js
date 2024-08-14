@@ -11,6 +11,9 @@ const getters = {
         const handId = getters.currentHandId;
         return handId ? rootGetters['hands/getCardIdsByHandId'](handId) : [];
     },
+    currentHandCardLength(state, getters) {
+        return getters.currentHandCardIds.length;
+    },
 };
 
 export default {

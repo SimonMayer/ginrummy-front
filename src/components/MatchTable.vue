@@ -22,7 +22,6 @@
             v-if="visibleRoundId"
             :ref="'discard-pile'"
             :selectableCards="getSelectableDiscardPileCards()"
-            @update:selected="forceRefresh()"
         />
       </div>
       <div class="game-column">
@@ -58,7 +57,6 @@
               :ref="'player-self'"
               :selectable="isHandSelectable"
               class="self-player"
-              @update:selected="forceRefresh()"
           />
         </div>
       </div>
@@ -74,11 +72,9 @@ import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
 import roundsService from '@/services/roundsService';
 import turnsService from '@/services/turnsService';
-import canActionsMixin from '@/mixins/canActionsMixin.js';
 import discardPileMixin from '@/mixins/discardPileMixin.js';
-import meldSelectionMixin from '@/mixins/meldSelectionMixin.js';
-import { mapActions, mapGetters } from "vuex";
-import matchPhaseMixin from "@/mixins/matchPhaseMixin";
+import {mapActions, mapGetters} from 'vuex';
+import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'MatchTable',
@@ -90,16 +86,9 @@ export default {
     NonSelfMatchPlayer,
   },
   mixins: [
-    canActionsMixin,
     discardPileMixin,
     matchPhaseMixin,
-    meldSelectionMixin,
   ],
-  data() {
-    return {
-      refreshValues: 0,
-    };
-  },
   async created() {
     await this.fetchGameConfig({});
     await this.loadAllData(false);
@@ -129,6 +118,21 @@ export default {
       selectedHandCardCount: 'trackers/derived/selected/selectedHandCardCount',
       selectedHandCardIds: 'trackers/derived/selected/selectedHandCardIds',
       selectedHandCards: 'trackers/derived/selected/selectedHandCards',
+      selectedMeld: 'trackers/derived/selected/selectedMeld',
+      selectedMeldCards: 'trackers/derived/selected/selectedMeldCards',
+      canAct: 'trackers/permissions/core/canAct',
+      canDiscard: 'trackers/permissions/discard/canDiscard',
+      canDraw: 'trackers/permissions/draw/canDraw',
+      canDrawMultiple: 'trackers/permissions/draw/canDrawMultiple',
+      canDrawMultipleFromDiscardPile: 'trackers/permissions/draw/canDrawMultipleFromDiscardPile',
+      canDrawOne: 'trackers/permissions/draw/canDrawOne',
+      canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
+      canDrawOneFromStockPile: 'trackers/permissions/draw/canDrawOneFromStockPile',
+      canExtendMeldFromHand: 'trackers/permissions/melds/canExtendMeldFromHand',
+      canPlayMeldFromHand: 'trackers/permissions/melds/canPlayMeldFromHand',
+      canPlayRunFromHand: 'trackers/permissions/melds/canPlayRunFromHand',
+      canPlaySetFromHand: 'trackers/permissions/melds/canPlaySetFromHand',
+      selectedMeldId: 'trackers/selections/selectedMeldId',
       loading: 'trackers/loading/loading',
     }),
     allowMeldsFromRotation() {
@@ -149,9 +153,6 @@ export default {
     currentRoundStockPileSize() {
       return this.getStockPileSizeByRoundId(this.currentRoundId);
     },
-    currentTurn() {
-      return this.getCurrentTurnByRoundId(this.currentRoundId);
-    },
     currentRoundHandId() {
       return this.selfPlayerCurrentRoundData?.hand?.hand_id;
     },
@@ -165,14 +166,17 @@ export default {
       if (!this.selfPlayerMatchData || !this.currentRoundId) {
         return null;
       }
-      return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.currentRoundId, playerId: this.selfPlayerMatchData.user_id });
+      return this.getPlayerRoundDataByRoundAndPlayerIds({
+        roundId: this.currentRoundId,
+        playerId: this.selfPlayerMatchData.user_id,
+      });
     },
     hasPlayedMeld() {
-      const selfPlayerCurrentRoundData = this.selfPlayerCurrentRoundData
+      const selfPlayerCurrentRoundData = this.selfPlayerCurrentRoundData;
       return selfPlayerCurrentRoundData && selfPlayerCurrentRoundData.melds && selfPlayerCurrentRoundData.melds.length > 0;
     },
     isHandSelectable() {
-      return this.canDrawMultiple() || (this.canAct && this.hasDrawActionInCurrentTurn);
+      return this.canDrawMultiple || (this.canAct && this.hasDrawActionInCurrentTurn);
     },
     isMeldSelectable() {
       return this.canAct && this.hasPlayedMeld;
@@ -193,9 +197,8 @@ export default {
       return !this.canDrawOneFromDiscardPile;
     },
     drawMultipleFromDiscardPileButtonDisabled() {
-      this.refreshValues; // forces a recompute when refreshValues is changed
-      return !this.canDrawMultipleFromDiscardPile();
-    }
+      return !this.canDrawMultipleFromDiscardPile;
+    },
   },
   methods: {
     ...mapActions({
@@ -218,10 +221,6 @@ export default {
       setLoading: 'trackers/loading/setLoading',
       appendActionToTurn: 'turns/turns/appendActionToTurn',
     }),
-    forceRefresh() {
-      // forces refresh of computed values
-      this.refreshValues++;
-    },
     async performAction(action, errorMessage) {
       await this.setLoading(true);
       try {
@@ -230,7 +229,6 @@ export default {
         await this.setError({title: errorMessage, error: error});
       } finally {
         await this.setLoading(false);
-        this.forceRefresh();
       }
     },
     async handleStockPileClick() {
@@ -251,14 +249,14 @@ export default {
               : await turnsService.drawFromEmptyStockPile(this.matchId);
         } else if (pileType === 'discard') {
           cardId = await turnsService.drawOneFromDiscardPile(this.matchId);
-          await this.removeTopDiscardPileCard({ matchId: this.matchId });
+          await this.removeTopDiscardPileCard({matchId: this.matchId});
         }
-        await this.addCardIdsToHand({ handId: this.currentRoundHandId, cardIds: [cardId] });
+        await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: [cardId]});
         await this.unselectAllCards();
       }, `Failed to draw from ${pileType} pile!`);
     },
     async handleDrawMultipleFromDiscardPileClick() {
-      if (!this.canDrawMultipleFromDiscardPile()) {
+      if (!this.canDrawMultipleFromDiscardPile) {
         return;
       }
       await this.performAction(async () => {
@@ -267,10 +265,10 @@ export default {
             this.matchId,
             this.selectedDiscardPileCardIds,
             handCardIds,
-            this.selectedMeldId
+            this.selectedMeldId,
         );
-        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: handCardIds });
-        await this.addCardIdsToHand({ handId: this.currentRoundHandId, cardIds: newHandCardIds });
+        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: handCardIds});
+        await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: newHandCardIds});
         await this.unselectAllCards();
       }, `Failed to draw multiple from discard pile!`);
     },
@@ -281,7 +279,7 @@ export default {
       await this.performAction(async () => {
         const cardId = this.selectedHandCardIds[0];
         await turnsService.discardCard(this.matchId, cardId);
-        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: [cardId] });
+        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: [cardId]});
         await this.unselectAllCards();
       }, 'Failed to discard card!');
     },
@@ -293,7 +291,7 @@ export default {
       await this.performAction(async () => {
         const cardIds = this.selectedHandCardIds;
         await turnsService.playMeld(this.matchId, cardIds, meldType);
-        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: cardIds });
+        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
         await this.unselectAllCards();
       }, `Failed to play meld!`);
     },
@@ -304,22 +302,22 @@ export default {
       await this.performAction(async () => {
         const cardIds = this.selectedHandCardIds;
         await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
-        await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: cardIds });
+        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
         await this.unselectAllCards();
       }, 'Failed to extend meld!');
     },
     async handleStartNewRound() {
       await this.performAction(async () => {
         const roundId = await roundsService.startRound(this.matchId);
-        await this.setCurrentRoundId({ matchId: this.matchId, roundId: roundId });
-        await this.fetchCurrentTurn({ matchId: this.matchId, roundId: this.currentRoundId });
-        await this.fetchPlayersRoundData({ roundId: this.currentRoundId });
+        await this.setCurrentRoundId({matchId: this.matchId, roundId: roundId});
+        await this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId});
+        await this.fetchPlayersRoundData({roundId: this.currentRoundId});
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
-      await this.fetchMatch({ matchId: this.matchId, forceFetch: forceFetch });
-      await this.fetchCurrentTurn({ matchId: this.matchId, roundId: this.currentRoundId, forceFetch: forceFetch });
-      await this.fetchPlayersRoundData({ roundId: this.latestRoundId, forceFetch: forceFetch });
+      await this.fetchMatch({matchId: this.matchId, forceFetch: forceFetch});
+      await this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId, forceFetch: forceFetch});
+      await this.fetchPlayersRoundData({roundId: this.latestRoundId, forceFetch: forceFetch});
       await this.initializeSse(this.matchId);
     },
   },
