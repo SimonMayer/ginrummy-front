@@ -3,6 +3,9 @@ const getters = {
         const currentRoundId = rootGetters['trackers/derived/rounds/currentRoundId'];
         return rootGetters['rounds/discardPiles/getDiscardPileCardIdsByRoundId'](currentRoundId) || [];
     },
+    currentDiscardPileCards(state, getters, rootState, rootGetters) {
+        return getters.currentDiscardPileCardIds.map(cardId => rootGetters['cards/cards/getCardById'](cardId));
+    },
     currentTopDiscardPileCardId(state, getters) {
         const discardPileCardIds = getters.currentDiscardPileCardIds;
         if (discardPileCardIds.length === 0) {
@@ -16,6 +19,20 @@ const getters = {
             return null;
         }
         return rootGetters['cards/cards/getCardById'](topCardId);
+    },
+    selectableDiscardPileCards(state, getters, rootState, rootGetters) {
+        return rootGetters['trackers/permissions/draw/canDrawMultiple']
+            ? getters.currentDiscardPileCards
+            : rootGetters['trackers/permissions/draw/canDrawOneFromDiscardPile']
+                ? [getters.currentTopDiscardPileCard]
+                : [];
+    },
+    visibleDiscardPileCardIds(state, getters, rootState, rootGetters) {
+        const visibleRoundId = rootGetters['trackers/derived/rounds/visibleRoundId'];
+        return rootGetters['rounds/discardPiles/getDiscardPileCardIdsByRoundId'](visibleRoundId) || [];
+    },
+    visibleDiscardPileCards(state, getters, rootState, rootGetters) {
+        return getters.visibleDiscardPileCardIds.map(cardId => rootGetters['cards/cards/getCardById'](cardId));
     },
 };
 

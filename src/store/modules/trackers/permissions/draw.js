@@ -17,7 +17,9 @@ const getters = {
         return getters.canDrawOne && rootGetters['trackers/derived/selected/isOnlyTopDiscardPileCardSelected'];
     },
     canDrawMultiple(state, getters, rootState, rootGetters) {
-        return getters.canDraw && rootGetters['trackers/derived/self/hasPlayedMeld'];
+        return getters.canDraw &&
+            rootGetters['trackers/derived/self/hasPlayedMeld'] &&
+            rootGetters['trackers/permissions/melds/canMeldOnThisRotation'];
     },
     canDrawMultipleFromDiscardPile(state, getters, rootState, rootGetters) {
         const futureMeldedCardCount = rootGetters['trackers/derived/selected/selectedHandCardCount'] + rootGetters['trackers/derived/selected/selectedDiscardPileCardCount'];
@@ -29,8 +31,7 @@ const getters = {
         const minimumMeldSize = rootGetters['gameConfig/minimumMeldSize'];
         const runOrders = rootGetters['gameConfig/runOrders'];
 
-        return getters.canDrawMultiple &&
-            rootGetters['trackers/permissions/melds/canMeldOnThisRotation'] &&
+        return getters.canDrawMultiple  &&
             rootGetters['trackers/derived/selected/isAnyDiscardPileCardSelectedBelowTop'] &&
             futureMeldedCardCount < (handCardLength + drawnCardsLength) &&
             currentAndFutureMeldedCards.length >= minimumMeldSize &&

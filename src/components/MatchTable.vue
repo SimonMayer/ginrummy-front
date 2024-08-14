@@ -18,11 +18,7 @@
             @click="handleStockPileClick"
             :disabled="stockPileDisabled"
         />
-        <DiscardPile
-            v-if="visibleRoundId"
-            :ref="'discard-pile'"
-            :selectableCards="getSelectableDiscardPileCards()"
-        />
+        <DiscardPile v-if="visibleRoundId" :ref="'discard-pile'"/>
       </div>
       <div class="game-column">
         <div class="melds-container">
@@ -72,7 +68,6 @@ import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
 import roundsService from '@/services/roundsService';
 import turnsService from '@/services/turnsService';
-import discardPileMixin from '@/mixins/discardPileMixin.js';
 import {mapActions, mapGetters} from 'vuex';
 import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
@@ -86,7 +81,6 @@ export default {
     NonSelfMatchPlayer,
   },
   mixins: [
-    discardPileMixin,
     matchPhaseMixin,
   ],
   async created() {
@@ -110,11 +104,23 @@ export default {
       getDiscardPileCardsByRoundId: 'rounds/discardPiles/getDiscardPileCardsByRoundId',
       getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
       getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
+      currentDiscardPileCardIds: 'trackers/derived/discardPile/currentDiscardPileCardIds',
+      currentTopDiscardPileCard: 'trackers/derived/discardPile/currentTopDiscardPileCard',
+      currentTopDiscardPileCardId: 'trackers/derived/discardPile/currentTopDiscardPileCardId',
       hasDrawActionInCurrentTurn: 'trackers/derived/draw/hasDrawActionInCurrentTurn',
       currentHandCardIds: 'trackers/derived/hand/currentHandCardIds',
       hasAllHandCardsSelected: 'trackers/derived/selected/hasAllHandCardsSelected',
+      hasNoDiscardPileCardsSelected: 'trackers/derived/selected/hasNoDiscardPileCardsSelected',
       hasNoHandCardsSelected: 'trackers/derived/selected/hasNoHandCardsSelected',
+      hasOneDiscardPileCardSelected: 'trackers/derived/selected/hasOneDiscardPileCardSelected',
       hasOneHandCardSelected: 'trackers/derived/selected/hasOneHandCardSelected',
+      isAnyDiscardPileCardSelected: 'trackers/derived/selected/isAnyDiscardPileCardSelected',
+      isAnyDiscardPileCardSelectedBelowTop: 'trackers/derived/selected/isAnyDiscardPileCardSelectedBelowTop',
+      isOnlyTopDiscardPileCardSelected: 'trackers/derived/selected/isOnlyTopDiscardPileCardSelected',
+      lowestSelectedCardIdInDiscardPile: 'trackers/derived/selected/lowestSelectedCardIdInDiscardPile',
+      selectedDiscardPileCardCount: 'trackers/derived/selected/selectedDiscardPileCardCount',
+      selectedDiscardPileCardIds: 'trackers/derived/selected/selectedDiscardPileCardIds',
+      selectedDiscardPileCards: 'trackers/derived/selected/selectedDiscardPileCards',
       selectedHandCardCount: 'trackers/derived/selected/selectedHandCardCount',
       selectedHandCardIds: 'trackers/derived/selected/selectedHandCardIds',
       selectedHandCards: 'trackers/derived/selected/selectedHandCards',
@@ -143,9 +149,6 @@ export default {
     },
     runOrders() {
       return this.gameConfig.runOrders;
-    },
-    currentRoundDiscardPile() {
-      return this.getDiscardPileCardsByRoundId(this.currentRoundId);
     },
     visibleRoundMelds() {
       return this.getMeldsByRoundId(this.visibleRoundId);
