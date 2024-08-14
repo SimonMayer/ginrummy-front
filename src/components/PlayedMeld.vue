@@ -13,6 +13,7 @@
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
 import {mapActions, mapGetters} from 'vuex';
+import meldsService from '@/services/meldsService';
 
 export default {
   name: 'PlayedMeld',
@@ -49,32 +50,13 @@ export default {
       return this.gameConfig.runOrders;
     },
     sortedCards() {
-      const ranks = this.cards.map(card => card.rank);
-      for (let order of this.runOrders) {
-        const indices = ranks.map(rank => order.indexOf(rank));
-        if (this.isMatchingOrder(indices)) {
-          return [...this.cards].sort((a, b) => order.indexOf(a.rank) - order.indexOf(b.rank));
-        }
-      }
-      return this.cards;
+      return meldsService.sortCardsByRunOrders(this.cards, this.runOrders);
     }
   },
   methods: {
     ...mapActions({
       toggleSelectedMeldId: 'trackers/selections/toggleSelectedMeldId',
     }),
-    isMatchingOrder(indices) {
-      if (indices.includes(-1)) {
-        return false;
-      }
-      const sortedIndices = [...indices].sort((a, b) => a - b);
-      for (let i = 1; i < sortedIndices.length; i++) {
-        if (sortedIndices[i] !== sortedIndices[i - 1] + 1) {
-          return false;
-        }
-      }
-      return true;
-    },
     handleClick() {
       if (this.selectable) {
         this.toggleSelectedMeldId(this.id);

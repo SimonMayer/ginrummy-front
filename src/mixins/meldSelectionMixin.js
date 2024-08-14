@@ -1,4 +1,5 @@
 import {mapGetters} from 'vuex';
+import meldsService from '@/services/meldsService';
 
 export default {
     computed: {
@@ -12,18 +13,8 @@ export default {
         getAllSelectedCards() {
             return [...this.selectedMeldCards, ...this.selectedHandCards, ...this.selectedDiscardPileCards];
         },
-        areAllCardsOfSameRank(cards) {
-            return cards.every(card => card.rank === cards[0].rank);
-        },
-        areAllCardsOfSameSuit(cards) {
-            return cards.every(card => card.suit === cards[0].suit);
-        },
         doCardsMakeValidRun(cards) {
-            return this.areAllCardsOfSameSuit(cards) && this.runOrders.some(order => {
-                const ranks = cards.map(card => card.rank);
-                const indices = ranks.map(rank => order.indexOf(rank)).sort((a, b) => a - b);
-                return indices.every((index, i) => i === 0 || index === indices[i - 1] + 1);
-            });
+            return meldsService.doCardsMakeValidRun(cards, this.runOrders);
         },
         doSelectedHandCardsMakeValidRun() {
             return this.doCardsMakeValidRun(this.selectedHandCards);
@@ -39,14 +30,14 @@ export default {
         doSelectedCardsFormValidMeld() {
             const allSelectedCards = this.getAllSelectedCards();
             return this.isEnoughCardsForMeld(allSelectedCards) &&
-                (this.areAllCardsOfSameRank(allSelectedCards) || this.doCardsMakeValidRun(allSelectedCards));
+                (meldsService.areAllCardsOfSameRank(allSelectedCards) || this.doCardsMakeValidRun(allSelectedCards));
         },
         isValidMeldExtension() {
             if (!this.selectedMeldId || this.hasNoHandCardsSelected || this.hasAllHandCardsSelected) {
                 return false;
             }
             const allCards = [...this.selectedMeldCards, ...this.selectedHandCards];
-            return this.areAllCardsOfSameRank(allCards) || this.doCardsMakeValidRun(allCards);
+            return meldsService.areAllCardsOfSameRank(allCards) || this.doCardsMakeValidRun(allCards);
         },
     }
 };

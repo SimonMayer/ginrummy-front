@@ -1,4 +1,5 @@
 import {mapGetters} from "vuex";
+import meldsService from '@/services/meldsService';
 
 export default {
     computed: {
@@ -44,7 +45,7 @@ export default {
             return this.canPlayMeld() && this.doSelectedHandCardsMakeValidRun();
         },
         canPlaySet() {
-            return this.canPlayMeld() && this.areAllCardsOfSameRank(this.selectedHandCards);
+            return this.canPlayMeld() && meldsService.areAllCardsOfSameRank(this.selectedHandCards);
         },
         canExtendMeld() {
             return this.canAct &&
