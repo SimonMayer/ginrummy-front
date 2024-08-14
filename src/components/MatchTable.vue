@@ -13,12 +13,8 @@
     </div>
     <div class="game-section row">
       <div class="game-column pile-container">
-        <StockPile
-            v-if="visibleRoundId"
-            @click="handleStockPileClick"
-            :disabled="stockPileDisabled"
-        />
-        <DiscardPile v-if="visibleRoundId" :ref="'discard-pile'"/>
+        <StockPile v-if="visibleRoundId" @draw:stock-pile="handleStockPileClick"/>
+        <DiscardPile v-if="visibleRoundId"/>
       </div>
       <div class="game-column">
         <div class="melds-container">
@@ -50,7 +46,6 @@
           <SelfMatchPlayer
               v-if="visibleRoundId && selfPlayerMatchData"
               :key="selfPlayerMatchData.user_id"
-              :ref="'player-self'"
               :selectable="isHandSelectable"
               class="self-player"
           />
@@ -98,12 +93,7 @@ export default {
       getNonSelfPlayersMatchDataByMatchId: 'players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
       getSelfPlayerMatchDataByMatchId: 'players/self/getSelfPlayerMatchDataByMatchId',
       getPlayerRoundDataByRoundAndPlayerIds: 'players/round/getPlayerRoundDataByRoundAndPlayerIds',
-      getLatestActionIdByMatchId: 'registry/matchAction/getLatestActionIdByMatchId',
-      getCurrentTurnIdByRoundId: 'registry/roundTurn/getCurrentTurnIdByRoundId',
-      getCurrentTurnByRoundId: 'registry/roundTurn/getCurrentTurnByRoundId',
-      getDiscardPileCardsByRoundId: 'rounds/discardPiles/getDiscardPileCardsByRoundId',
       getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
-      getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
       currentDiscardPileCardIds: 'trackers/derived/discardPile/currentDiscardPileCardIds',
       currentTopDiscardPileCard: 'trackers/derived/discardPile/currentTopDiscardPileCard',
       currentTopDiscardPileCardId: 'trackers/derived/discardPile/currentTopDiscardPileCardId',
@@ -126,6 +116,7 @@ export default {
       selectedHandCards: 'trackers/derived/selected/selectedHandCards',
       selectedMeld: 'trackers/derived/selected/selectedMeld',
       selectedMeldCards: 'trackers/derived/selected/selectedMeldCards',
+      currentStockPileSize: 'trackers/derived/stockPile/currentStockPileSize',
       canAct: 'trackers/permissions/core/canAct',
       canDiscard: 'trackers/permissions/discard/canDiscard',
       canDraw: 'trackers/permissions/draw/canDraw',
@@ -133,7 +124,6 @@ export default {
       canDrawMultipleFromDiscardPile: 'trackers/permissions/draw/canDrawMultipleFromDiscardPile',
       canDrawOne: 'trackers/permissions/draw/canDrawOne',
       canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
-      canDrawOneFromStockPile: 'trackers/permissions/draw/canDrawOneFromStockPile',
       canExtendMeldFromHand: 'trackers/permissions/melds/canExtendMeldFromHand',
       canPlayMeldFromHand: 'trackers/permissions/melds/canPlayMeldFromHand',
       canPlayRunFromHand: 'trackers/permissions/melds/canPlayRunFromHand',
@@ -152,9 +142,6 @@ export default {
     },
     visibleRoundMelds() {
       return this.getMeldsByRoundId(this.visibleRoundId);
-    },
-    currentRoundStockPileSize() {
-      return this.getStockPileSizeByRoundId(this.currentRoundId);
     },
     currentRoundHandId() {
       return this.selfPlayerCurrentRoundData?.hand?.hand_id;
@@ -184,9 +171,6 @@ export default {
     isMeldSelectable() {
       return this.canAct && this.hasPlayedMeld;
     },
-    stockPileDisabled() {
-      return !this.canDrawOneFromStockPile;
-    },
     discardButtonDisabled() {
       return !this.canDiscard;
     },
@@ -215,14 +199,10 @@ export default {
       setLatestActionId: 'registry/matchAction/setLatestActionId',
       setCurrentRoundId: 'registry/matchRound/setCurrentRoundId',
       fetchCurrentTurn: 'registry/roundTurn/fetchCurrentTurn',
-      fetchDiscardPile: 'rounds/discardPiles/fetchDiscardPile',
       removeTopDiscardPileCard: 'rounds/discardPiles/removeTopDiscardPileCard',
-      fetchMelds: 'rounds/melds/fetchMelds',
-      fetchStockPileData: 'rounds/stockPiles/fetchStockPileData',
       initializeSse: 'sse/connection/initializeSse',
       cleanupSse: 'sse/connection/cleanupSse',
       setLoading: 'trackers/loading/setLoading',
-      appendActionToTurn: 'turns/turns/appendActionToTurn',
     }),
     async performAction(action, errorMessage) {
       await this.setLoading(true);
@@ -247,7 +227,7 @@ export default {
       await this.performAction(async () => {
         let cardId;
         if (pileType === 'stock') {
-          cardId = this.currentRoundStockPileSize > 0
+          cardId = this.currentStockPileSize > 0
               ? await turnsService.drawFromStockPile(this.matchId)
               : await turnsService.drawFromEmptyStockPile(this.matchId);
         } else if (pileType === 'discard') {

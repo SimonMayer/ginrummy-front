@@ -13,35 +13,28 @@
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
 import {mapGetters} from 'vuex';
-import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'StockPile',
   components: {
     HiddenCard,
   },
-  mixins: [matchPhaseMixin],
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
   computed: {
     ...mapGetters({
-      getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
+      size: 'trackers/derived/stockPile/visibleStockPileSize',
+      canDrawOneFromStockPile: 'trackers/permissions/draw/canDrawOneFromStockPile',
     }),
-    size() {
-      return this.getStockPileSizeByRoundId(this.visibleRoundId);
-    },
     isEmpty() {
       return this.size === 0;
+    },
+    disabled() {
+      return !this.canDrawOneFromStockPile;
     },
   },
   methods: {
     handleClick() {
       if (!this.disabled) {
-        this.$emit('click');
+        this.$emit('draw:stock-pile');
       }
     },
   },

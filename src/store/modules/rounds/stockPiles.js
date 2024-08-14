@@ -35,7 +35,7 @@ const actions = {
 };
 
 const getters = {
-    getStockPileSizeByRoundId: (state) => (roundId) => state.stockPileSizes[roundId],
+    getStockPileSizeByRoundId: (state) => (roundId) => state.stockPileSizes[roundId] || 0,
 };
 
 export default {
