@@ -4,7 +4,6 @@ import authTokens from '@/store/modules/auth/tokens';
 import authUser from '@/store/modules/auth/user';
 
 import cardsCards from '@/store/modules/cards/cards';
-import cardsSelections from '@/store/modules/cards/selections';
 
 import matchesList from '@/store/modules/matches/list';
 import matchesMatches from '@/store/modules/matches/matches';
@@ -25,6 +24,7 @@ import roundsStockPiles from '@/store/modules/rounds/stockPiles';
 import sseConnection from '@/store/modules/sse/connection';
 import sseDataProcessor from '@/store/modules/sse/dataProcessor';
 
+import trackersDerivedDiscardPile from '@/store/modules/trackers/derived/discardPile';
 import trackersDerivedDraw from '@/store/modules/trackers/derived/draw';
 import trackersDerivedHand from '@/store/modules/trackers/derived/hand';
 import trackersDerivedRounds from '@/store/modules/trackers/derived/rounds';
@@ -35,6 +35,7 @@ import trackersPermissionsDraw from '@/store/modules/trackers/permissions/draw';
 import trackersFetch from '@/store/modules/trackers/fetch';
 import trackersLoading from '@/store/modules/trackers/loading';
 import trackersMatchPhase from '@/store/modules/trackers/matchPhase';
+import trackersSelections from '@/store/modules/trackers/selections';
 
 import turnsActions from '@/store/modules/turns/actions';
 import turnsTurns from '@/store/modules/turns/turns';
@@ -59,7 +60,6 @@ const store = createStore({
             namespaced: true,
             modules: {
                 cards: cardsCards,
-                selections: cardsSelections,
             },
         },
         error,
@@ -112,6 +112,7 @@ const store = createStore({
                 derived: {
                     namespaced: true,
                     modules: {
+                        discardPile: trackersDerivedDiscardPile,
                         draw: trackersDerivedDraw,
                         hand: trackersDerivedHand,
                         rounds: trackersDerivedRounds,
@@ -129,6 +130,7 @@ const store = createStore({
                         draw: trackersPermissionsDraw,
                     },
                 },
+                selections: trackersSelections,
             },
         },
         turns: {

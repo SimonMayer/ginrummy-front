@@ -4,10 +4,10 @@ export default {
     computed: {
         ...mapGetters({
             getMatchById: 'matches/matches/getMatchById',
-            currentRoundId: 'trackers/derived/rounds/getCurrentRoundId',
-            latestRoundId: 'trackers/derived/rounds/getLatestRoundId',
+            currentRoundId: 'trackers/derived/rounds/currentRoundId',
+            latestRoundId: 'trackers/derived/rounds/latestRoundId',
             matchId: 'trackers/matchPhase/getMatchId',
-            visibleRoundId: 'trackers/derived/rounds/getVisibleRoundId',
+            visibleRoundId: 'trackers/derived/rounds/visibleRoundId',
         }),
         match() {
             return this.getMatchById(this.matchId);

@@ -1,5 +1,6 @@
 const state = {
     selectedCardIds: [],
+    selectedMeldId: null,
 };
 
 const mutations = {
@@ -14,30 +15,56 @@ const mutations = {
     UNSELECT_ALL_CARDS(state) {
         state.selectedCardIds = [];
     },
+    SET_SELECTED_MELD_ID(state, meldId) {
+        state.selectedMeldId = meldId;
+    },
+    CLEAR_SELECTED_MELD_ID(state) {
+        state.selectedMeldId = null;
+    },
 };
 
 const actions = {
-    addSelectedCard({ commit }, cardId) {
+    addSelectedCard({commit}, cardId) {
         commit('ADD_SELECTED_CARD', cardId);
     },
-    removeSelectedCard({ commit }, cardId) {
+    removeSelectedCard({commit}, cardId) {
         commit('REMOVE_SELECTED_CARD', cardId);
     },
-    toggleSelectedCard({ dispatch, getters }, cardId) {
+    toggleSelectedCard({dispatch, getters}, cardId) {
         if (getters.isCardSelected(cardId)) {
             dispatch('removeSelectedCard', cardId);
         } else {
             dispatch('addSelectedCard', cardId);
         }
     },
-    unselectAllCards({ commit }) {
+    unselectAllCards({commit, dispatch}) {
         commit('UNSELECT_ALL_CARDS');
+        dispatch('clearSelectedMeldId');
+    },
+    setSelectedMeldId({commit}, meldId) {
+        commit('SET_SELECTED_MELD_ID', meldId);
+    },
+    clearSelectedMeldId({commit}) {
+        commit('CLEAR_SELECTED_MELD_ID');
+    },
+    async toggleSelectedMeldId({dispatch, getters}, meldId) {
+        if (getters.isMeldSelected(meldId)) {
+            await dispatch('clearSelectedMeldId');
+        } else {
+            await dispatch('setSelectedMeldId', meldId);
+        }
     },
 };
 
 const getters = {
     isCardSelected: (state) => (cardId) => {
         return state.selectedCardIds.includes(cardId);
+    },
+    isMeldSelected: (state) => (meldId) => {
+        return state.selectedMeldId === meldId;
+    },
+    selectedMeldId(state) {
+        return state.selectedMeldId;
     },
     getSelectedCardIds: (state) => {
         return state.selectedCardIds;

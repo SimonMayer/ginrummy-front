@@ -33,10 +33,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getDiscardPileByRoundId: 'rounds/discardPiles/getDiscardPileByRoundId',
+      getDiscardPileCardsByRoundId: 'rounds/discardPiles/getDiscardPileCardsByRoundId',
     }),
     visibleCards() {
-      return this.getDiscardPileByRoundId(this.visibleRoundId);
+      return this.getDiscardPileCardsByRoundId(this.visibleRoundId);
     },
     isEmpty() {
       return this.visibleCards?.length === 0;

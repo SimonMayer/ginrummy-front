@@ -1,17 +1,16 @@
+import {mapGetters} from 'vuex';
+
 export default {
+    computed: {
+        ...mapGetters({
+            selectedMeld: 'trackers/derived/selected/selectedMeld',
+            selectedMeldCards: 'trackers/derived/selected/selectedMeldCards',
+            selectedMeldId: 'trackers/selections/selectedMeldId',
+        }),
+    },
     methods: {
         getAllSelectedCards() {
-            return [...this.getSelectedMeldCards(), ...this.selectedHandCards, ...this.selectedDiscardPileCards];
-        },
-        getSelectedMeldCards() {
-            return this.selectedMeld ? this.selectedMeld.cards : [];
-        },
-        unselectMeld() {
-            this.selectedMeld = null;
-        },
-        handleMeldClick(meldId) {
-            const meld = this.visibleRoundMelds.find(meld => meld.meld_id === meldId);
-            this.selectedMeld = !meld || (this.selectedMeldId === meldId) ? null : meld;
+            return [...this.selectedMeldCards, ...this.selectedHandCards, ...this.selectedDiscardPileCards];
         },
         areAllCardsOfSameRank(cards) {
             return cards.every(card => card.rank === cards[0].rank);
@@ -43,10 +42,10 @@ export default {
                 (this.areAllCardsOfSameRank(allSelectedCards) || this.doCardsMakeValidRun(allSelectedCards));
         },
         isValidMeldExtension() {
-            if (!this.selectedMeld || this.hasNoHandCardsSelected || this.hasAllHandCardsSelected) {
+            if (!this.selectedMeldId || this.hasNoHandCardsSelected || this.hasAllHandCardsSelected) {
                 return false;
             }
-            const allCards = [...this.getSelectedMeldCards(), ...this.selectedHandCards];
+            const allCards = [...this.selectedMeldCards, ...this.selectedHandCards];
             return this.areAllCardsOfSameRank(allCards) || this.doCardsMakeValidRun(allCards);
         },
     }

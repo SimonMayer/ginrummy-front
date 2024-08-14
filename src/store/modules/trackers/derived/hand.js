@@ -1,15 +1,15 @@
 const getters = {
-    getCurrentHand(state, getters, rootState, rootGetters) {
-        const currentRoundId = rootGetters['trackers/derived/rounds/getCurrentRoundId'];
+    currentHand(state, getters, rootState, rootGetters) {
+        const currentRoundId = rootGetters['trackers/derived/rounds/currentRoundId'];
         const selfPlayerData = rootGetters['players/self/getSelfPlayerRoundDataByRoundId'](currentRoundId);
         return selfPlayerData?.hand || null;
     },
-    getCurrentHandId(state, getters) {
-        const hand = getters.getCurrentHand;
+    currentHandId(state, getters) {
+        const hand = getters.currentHand;
         return hand?.hand_id || null;
     },
-    getCurrentHandCardIds(state, getters, rootState, rootGetters) {
-        const handId = getters.getCurrentHandId;
+    currentHandCardIds(state, getters, rootState, rootGetters) {
+        const handId = getters.currentHandId;
         return handId ? rootGetters['hands/getCardIdsByHandId'](handId) : [];
     },
 };

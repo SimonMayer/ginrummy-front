@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isCardSelected: 'cards/selections/isCardSelected',
+      isCardSelected: 'trackers/selections/isCardSelected',
     }),
     id() {
       return this.cardData?.card_id;
@@ -81,8 +81,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      toggleSelectedCard: 'cards/selections/toggleSelectedCard',
-      removeSelectedCard: 'cards/selections/removeSelectedCard',
+      toggleSelectedCard: 'trackers/selections/toggleSelectedCard',
+      removeSelectedCard: 'trackers/selections/removeSelectedCard',
     }),
     handleClick() {
       if (this.selectable) {

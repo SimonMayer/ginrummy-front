@@ -35,7 +35,6 @@
               :cards="meld.cards"
               :selected="selectedMeldId === meld.meld_id"
               :selectable="isMeldSelectable"
-              @select:meld="handleMeldClick(meld.meld_id)"
           />
         </div>
         <div v-if="!currentRoundId" class="buttons-container">
@@ -99,7 +98,6 @@ export default {
   data() {
     return {
       refreshValues: 0,
-      selectedMeld: null,
     };
   },
   async created() {
@@ -120,10 +118,11 @@ export default {
       getLatestActionIdByMatchId: 'registry/matchAction/getLatestActionIdByMatchId',
       getCurrentTurnIdByRoundId: 'registry/roundTurn/getCurrentTurnIdByRoundId',
       getCurrentTurnByRoundId: 'registry/roundTurn/getCurrentTurnByRoundId',
-      getDiscardPileByRoundId: 'rounds/discardPiles/getDiscardPileByRoundId',
+      getDiscardPileCardsByRoundId: 'rounds/discardPiles/getDiscardPileCardsByRoundId',
       getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
       getStockPileSizeByRoundId: 'rounds/stockPiles/getStockPileSizeByRoundId',
       hasDrawActionInCurrentTurn: 'trackers/derived/draw/hasDrawActionInCurrentTurn',
+      currentHandCardIds: 'trackers/derived/hand/currentHandCardIds',
       hasAllHandCardsSelected: 'trackers/derived/selected/hasAllHandCardsSelected',
       hasNoHandCardsSelected: 'trackers/derived/selected/hasNoHandCardsSelected',
       hasOneHandCardSelected: 'trackers/derived/selected/hasOneHandCardSelected',
@@ -142,7 +141,7 @@ export default {
       return this.gameConfig.runOrders;
     },
     currentRoundDiscardPile() {
-      return this.getDiscardPileByRoundId(this.currentRoundId);
+      return this.getDiscardPileCardsByRoundId(this.currentRoundId);
     },
     visibleRoundMelds() {
       return this.getMeldsByRoundId(this.visibleRoundId);
@@ -156,10 +155,6 @@ export default {
     currentRoundHandId() {
       return this.selfPlayerCurrentRoundData?.hand?.hand_id;
     },
-    currentRoundHandCards() {
-      const handId = this.currentRoundHandId;
-      return handId ? this.getCardsByHandId(handId) : [];
-    },
     nonSelfPlayersMatchData() {
       return this.getNonSelfPlayersMatchDataByMatchId(this.matchId);
     },
@@ -171,9 +166,6 @@ export default {
         return null;
       }
       return this.getPlayerRoundDataByRoundAndPlayerIds({ roundId: this.currentRoundId, playerId: this.selfPlayerMatchData.user_id });
-    },
-    selectedMeldId() {
-      return this.selectedMeld ? this.selectedMeld.meld_id : null;
     },
     hasPlayedMeld() {
       const selfPlayerCurrentRoundData = this.selfPlayerCurrentRoundData
@@ -211,7 +203,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      unselectAllCards: 'cards/selections/unselectAllCards',
+      unselectAllCards: 'trackers/selections/unselectAllCards',
       setError: 'error/setError',
       fetchGameConfig: 'gameConfig/fetchGameConfig',
       addCardIdsToHand: 'hands/addCardIdsToHand',
@@ -281,7 +273,6 @@ export default {
             handCardIds,
             this.selectedMeldId
         );
-        this.unselectMeld();
         await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: handCardIds });
         await this.addCardIdsToHand({ handId: this.currentRoundHandId, cardIds: newHandCardIds });
         await this.unselectAllCards();
@@ -318,7 +309,6 @@ export default {
         const cardIds = this.selectedHandCardIds;
         await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
         await this.removeCardIdsFromHand({ handId: this.currentRoundHandId, cardIds: cardIds });
-        this.unselectMeld();
         await this.unselectAllCards();
       }, 'Failed to extend meld!');
     },

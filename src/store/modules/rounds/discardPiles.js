@@ -41,19 +41,12 @@ const actions = {
 };
 
 const getters = {
-    getDiscardPileByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
-        const discardPileCardIds = state.discardPileCardIds[roundId] || [];
-        return discardPileCardIds.map(id => rootGetters['cards/cards/getCardById'](id));
+    getDiscardPileCardIdsByRoundId: (state) => (roundId) => {
+        return state.discardPileCardIds[roundId] || [];
     },
-    getSelectedDiscardPileCardIdsByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
-        const discardPileCardIds = state.discardPileCardIds[roundId] || [];
-        const selectedCardIds = rootGetters['cards/selections/getSelectedCardIds'];
-
-        return discardPileCardIds.filter(cardId => selectedCardIds.includes(cardId))
-    },
-    getSelectedDiscardPileCardsByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
-        return getters.getSelectedDiscardPileCardIdsByRoundId(roundId)
-            .map(cardId => rootGetters['cards/cards/getCardById'](cardId));
+    getDiscardPileCardsByRoundId: (state, getters, rootState, rootGetters) => (roundId) => {
+        return getters.getDiscardPileCardIdsByRoundId(roundId)
+            .map(id => rootGetters['cards/cards/getCardById'](id));
     },
 };
 

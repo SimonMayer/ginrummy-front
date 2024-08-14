@@ -12,7 +12,7 @@
 
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
-import {mapGetters} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'PlayedMeld',
@@ -60,6 +60,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      toggleSelectedMeldId: 'trackers/selections/toggleSelectedMeldId',
+    }),
     isMatchingOrder(indices) {
       if (indices.includes(-1)) {
         return false;
@@ -74,9 +77,9 @@ export default {
     },
     handleClick() {
       if (this.selectable) {
-        this.$emit('select:meld', this.id);
+        this.toggleSelectedMeldId(this.id);
       }
-    }
+    },
   }
 };
 </script>
