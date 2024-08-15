@@ -15,6 +15,7 @@ const getters = {
     },
     canDrawOneFromDiscardPile(state, getters, rootState, rootGetters) {
         return getters.canDrawOne &&
+            rootGetters['trackers/derived/discardPile/currentTopDiscardPileCardId'] &&
             (
                 rootGetters['trackers/derived/selected/hasNoDiscardPileCardsSelected'] ||
                 rootGetters['trackers/derived/selected/isOnlyTopDiscardPileCardSelected']
