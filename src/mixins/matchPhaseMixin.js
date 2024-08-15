@@ -6,7 +6,7 @@ export default {
             getMatchById: 'storage/matches/matches/getMatchById',
             currentRoundId: 'sessionState/derived/rounds/currentRoundId',
             latestRoundId: 'sessionState/derived/rounds/latestRoundId',
-            matchId: 'sessionState/matchPhase/getMatchId',
+            matchId: 'sessionState/matchIdentifier/getMatchId',
             visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
         }),
         match() {

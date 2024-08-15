@@ -17,7 +17,7 @@ import sessionStatePermissionsMelds from '@/store/modules/sessionState/permissio
 import sessionStateError from '@/store/modules/sessionState/error';
 import sessionStateFetchRecords from '@/store/modules/sessionState/fetchRecords';
 import sessionStateLoading from '@/store/modules/sessionState/loading';
-import sessionStateMatchPhase from '@/store/modules/sessionState/matchPhase';
+import sessionStateMatchIdentifier from '@/store/modules/sessionState/matchIdentifier';
 import sessionStateSelections from '@/store/modules/sessionState/selections';
 
 import storageCardsCards from '@/store/modules/storage/cards/cards';
@@ -138,7 +138,7 @@ const store = createStore({
                 error: sessionStateError,
                 fetchRecords: sessionStateFetchRecords,
                 loading: sessionStateLoading,
-                matchPhase: sessionStateMatchPhase,
+                matchIdentifier: sessionStateMatchIdentifier,
                 permissions: {
                     namespaced: true,
                     modules: {
