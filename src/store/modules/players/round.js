@@ -20,7 +20,7 @@ const actions = {
         if (!roundId) {
             return;
         }
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch round players!',
@@ -30,7 +30,7 @@ const actions = {
                 onSuccess: async (playersData) => {
                     await commit('SET_PLAYERS_ROUND_DATA', {roundId, players: playersData});
                     const selfPlayerHandId = rootGetters['players/self/getSelfPlayerRoundDataByRoundId'](roundId)?.hand?.hand_id;
-                    await dispatch('hands/fetchHand', {handId: selfPlayerHandId}, {root: true});
+                    return await dispatch('hands/fetchHand', {handId: selfPlayerHandId}, {root: true});
                 },
                 timeout: FETCH_PLAYERS_ROUND_DATA_TIMEOUT,
             },

@@ -22,7 +22,7 @@ const mutations = {
 
 const actions = {
     async fetchGameConfig({commit, dispatch}, {forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch game configuration!',
@@ -30,13 +30,15 @@ const actions = {
                 key: 'gameConfig',
                 fetchFunction: () => configService.getGameConfig(),
                 onSuccess: async (configData) => {
-                    commit('SET_GAME_CONFIG', {
+                    const gameConfig = {
                         allowMeldsFromRotation: configData.allowMeldsFromRotation,
                         minimumMeldSize: configData.minimumMeldSize,
                         runOrders: configData.runOrders,
                         minPlayers: configData.players.minimumAllowed,
                         maxPlayers: configData.players.maximumAllowed,
-                    });
+                    };
+                    commit('SET_GAME_CONFIG', gameConfig);
+                    return gameConfig;
                 },
                 timeout: FETCH_GAME_CONFIG_TIMEOUT,
             },

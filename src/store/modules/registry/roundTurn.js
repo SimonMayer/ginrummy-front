@@ -21,7 +21,7 @@ const actions = {
             commit('CLEAR_CURRENT_TURN_ID', roundId);
             return;
         }
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch current turn!',
@@ -29,20 +29,24 @@ const actions = {
                 key: `currentTurn_${roundId}`,
                 fetchFunction: () => roundsService.getCurrentTurn(roundId),
                 onSuccess: async (data) => {
-                    await dispatch('setCurrentTurnId', {roundId: roundId, 'turnId': data.turn_id});
+                    const response = await dispatch('setCurrentTurnId', {roundId: roundId, 'turnId': data.turn_id});
                     await dispatch('registry/matchAction/setLatestActionId', {
                         matchId,
                         actionId: data.latest_action_id,
                     }, {root: true});
+
+                    return response;
                 },
                 timeout: FETCH_CURRENT_TURN_TIMEOUT,
             },
             {root: true},
         );
     },
-    setCurrentTurnId({commit, dispatch}, {roundId, turnId}) {
-        dispatch('turns/turns/fetchTurn', {turnId}, {root: true});
+    async setCurrentTurnId({commit, dispatch}, {roundId, turnId}) {
+        const response = await dispatch('turns/turns/fetchTurn', {turnId}, {root: true});
         commit('SET_CURRENT_TURN_ID', {roundId, turnId});
+
+        return response;
     },
 };
 

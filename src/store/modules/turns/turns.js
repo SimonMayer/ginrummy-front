@@ -26,7 +26,7 @@ const mutations = {
 
 const actions = {
     async fetchTurn({commit, dispatch}, {turnId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch turn!',
@@ -36,12 +36,13 @@ const actions = {
                 onSuccess: async (data) => {
                     const turn = createTurn(data.turn_id, data.user_id, data.rotation_number, data.actions || []);
                     commit('ADD_TURN', turn);
+
+                    return turn;
                 },
                 timeout: FETCH_TURN_TIMEOUT,
             },
             {root: true},
         );
-
     },
     async appendActionToTurn({commit, dispatch, getters}, {turnId, action}) {
         if (!getters.getTurnById(turnId)) {

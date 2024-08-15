@@ -36,7 +36,7 @@ const mutations = {
 
 const actions = {
     async fetchHand({dispatch}, {handId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch hand!',
@@ -45,6 +45,7 @@ const actions = {
                 fetchFunction: () => handsService.getHand(handId),
                 onSuccess: async (hand) => {
                     await dispatch('addHandWithCards', hand);
+                    return hand;
                 },
                 timeout: FETCH_HAND_TIMEOUT,
             },
@@ -78,15 +79,19 @@ const actions = {
         }
         commit('ADD_HAND', hand);
 
+        const cardResponses = [];
         for (const cardId of hand.cardIds) {
-            await dispatch('cards/cards/fetchCard', {cardId}, {root: true});
+            cardResponses.push(await dispatch('cards/cards/fetchCard', {cardId}, {root: true}));
         }
+        return cardResponses
     },
     async addCardIdsToHand({commit, dispatch}, {handId, cardIds}) {
+        const cardResponses = [];
         for (const cardId of cardIds) {
-            await dispatch('cards/cards/fetchCard', {cardId}, {root: true});
+            cardResponses.push(await dispatch('cards/cards/fetchCard', {cardId}, {root: true}));
             commit('ADD_CARD_ID_TO_HAND', {handId, cardId});
         }
+        return cardResponses
     },
     removeCardIdsFromHand({commit}, {handId, cardIds}) {
         commit('REMOVE_CARD_IDS_FROM_HAND', {handId, cardIds});

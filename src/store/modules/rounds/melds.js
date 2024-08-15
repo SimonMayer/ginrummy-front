@@ -55,9 +55,11 @@ const actions = {
         }
 
         commit('ADD_MELD', meld);
+        const cardResponses = [];
         for (const cardId of meld.cardIds) {
-            await dispatch('cards/cards/fetchCard', {cardId}, {root: true});
+            cardResponses.push(await dispatch('cards/cards/fetchCard', {cardId}, {root: true}));
         }
+        return cardResponses;
     },
     addCardToMeld({commit, dispatch, state}, {meldId, card}) {
         const meld = state.melds[meldId];
@@ -71,7 +73,7 @@ const actions = {
         }
     },
     async fetchMelds({commit, dispatch}, {roundId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch melds!',
@@ -83,6 +85,7 @@ const actions = {
                         dispatch('addMeldWithCards', meld);
                     });
                     commit('SET_MELD_IDS', {roundId, meldIds: melds.map(meld => meld.meld_id)});
+                    return melds;
                 },
                 timeout: FETCH_MELDS_TIMEOUT,
             },

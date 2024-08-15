@@ -19,7 +19,7 @@ const mutations = {
 
 const actions = {
     async fetchDiscardPile({commit, dispatch}, {roundId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch discard pile!',
@@ -29,6 +29,8 @@ const actions = {
                 onSuccess: async (discardPile) => {
                     await dispatch('cards/cards/addCards', discardPile, {root: true});
                     commit('SET_DISCARD_PILE_CARD_IDS', {roundId, discardPile});
+
+                    return discardPile;
                 },
                 timeout: FETCH_DISCARD_PILE_TIMEOUT,
             },

@@ -25,7 +25,7 @@ const mutations = {
 
 const actions = {
     async fetchCard({dispatch}, {cardId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch card!',
@@ -34,6 +34,7 @@ const actions = {
                 fetchFunction: () => cardsService.getCard(cardId),
                 onSuccess: async (card) => {
                     dispatch('addCard', card);
+                    return card;
                 },
                 timeout: FETCH_CARD_TIMEOUT,
             },

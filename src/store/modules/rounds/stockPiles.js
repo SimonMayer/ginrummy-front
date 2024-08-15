@@ -14,7 +14,7 @@ const mutations = {
 
 const actions = {
     async fetchStockPileData({commit, dispatch}, {roundId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch stock pile data!',
@@ -23,6 +23,7 @@ const actions = {
                 fetchFunction: () => roundsService.getStockPileData(roundId),
                 onSuccess: async (stockPileData) => {
                     commit('SET_STOCK_PILE_SIZE', {roundId, size: stockPileData.size});
+                    return stockPileData;
                 },
                 timeout: FETCH_STOCK_PILE_TIMEOUT,
             },

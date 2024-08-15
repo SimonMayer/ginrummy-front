@@ -14,7 +14,7 @@ const mutations = {
 
 const actions = {
     async fetchMatchList({dispatch, commit}, {forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch match list!',
@@ -23,6 +23,7 @@ const actions = {
                 fetchFunction: () => matchesService.getMatchList(),
                 onSuccess: async (matchList) => {
                     commit('SET_MATCH_LIST', matchList);
+                    return matchList;
                 },
                 timeout: FETCH_MATCH_LIST_TIMEOUT,
             },

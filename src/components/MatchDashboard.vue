@@ -1,30 +1,32 @@
 <template>
   <div class="match-dashboard">
-    <MatchContent/>
+    <MatchContent v-if="isMatchLoaded"/>
   </div>
 </template>
 
 <script>
 import MatchContent from '@/components/MatchContent.vue';
 import {mapActions} from 'vuex';
-import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'MatchDashboard',
   components: {
     MatchContent,
   },
-  mixins: [matchPhaseMixin],
+  data() {
+    return {
+      isMatchLoaded: false,
+    };
+  },
   async created() {
-    await this.initializeMatchId(this.$route);
-    await this.fetchMatch({matchId: this.matchId});
-    await this.fetchPlayersMatchData({matchId: this.matchId});
+    const response = await this.initializeMatchId(this.$route);
+    if (!response.fetchRequired || response.isSuccess) {
+      this.isMatchLoaded = true;
+    }
   },
   methods: {
     ...mapActions({
-      fetchMatch: 'matches/matches/fetchMatch',
       initializeMatchId: 'trackers/matchPhase/initializeMatchId',
-      fetchPlayersMatchData: 'players/match/fetchPlayersMatchData',
     }),
   },
 };

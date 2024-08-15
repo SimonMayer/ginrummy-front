@@ -9,9 +9,10 @@ const mutations = {
 };
 
 const actions = {
-    initializeMatchId({commit}, route) {
+    async initializeMatchId({commit, dispatch}, route) {
         const matchId = parseInt(route.params.id, 10);
         commit('SET_MATCH_ID', matchId);
+        return await dispatch('matches/matches/fetchMatch', {matchId}, {root: true});
     },
 };
 

@@ -17,7 +17,7 @@ const mutations = {
 
 const actions = {
     async fetchMatch({dispatch, commit}, {matchId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch match details!',
@@ -26,18 +26,22 @@ const actions = {
                 fetchFunction: () => matchesService.getMatchDetails(matchId),
                 onSuccess: async (match) => {
                     commit('SET_MATCH', {matchId, match});
-                    await dispatch('registry/matchRound/setCurrentRoundId', {
+                    const responses = {};
+                    responses.fetchPlayersMatchData = await dispatch('players/match/fetchPlayersMatchData', {matchId, forceFetch}, {root: true});
+                    responses.setCurrentRoundId = await dispatch('registry/matchRound/setCurrentRoundId', {
                         matchId: matchId,
                         roundId: match.current_round_id,
                     }, {root: true});
-                    await dispatch('registry/matchRound/setLatestRoundId', {
+                    responses.setLatestRoundId = await dispatch('registry/matchRound/setLatestRoundId', {
                         matchId: matchId,
                         roundId: match.latest_round_id,
                     }, {root: true});
-                    await dispatch('registry/matchRound/setAllRoundIds', {
+                    dispatch('registry/matchRound/setAllRoundIds', {
                         matchId: matchId,
                         roundId: match.all_round_ids,
                     }, {root: true});
+
+                    return responses;
                 },
                 timeout: FETCH_MATCH_TIMEOUT,
             },

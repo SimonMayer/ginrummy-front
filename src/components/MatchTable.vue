@@ -124,7 +124,6 @@ export default {
     matchPhaseMixin,
   ],
   async created() {
-    await this.fetchGameConfig({});
     await this.loadAllData(false);
   },
   beforeUnmount() {
@@ -216,10 +215,8 @@ export default {
     ...mapActions({
       unselectAllCards: 'trackers/selections/unselectAllCards',
       setError: 'error/setError',
-      fetchGameConfig: 'gameConfig/fetchGameConfig',
       addCardIdsToHand: 'hands/addCardIdsToHand',
       removeCardIdsFromHand: 'hands/removeCardIdsFromHand',
-      fetchMatch: 'matches/matches/fetchMatch',
       fetchPlayersRoundData: 'players/round/fetchPlayersRoundData',
       setLatestActionId: 'registry/matchAction/setLatestActionId',
       setCurrentRoundId: 'registry/matchRound/setCurrentRoundId',
@@ -323,7 +320,6 @@ export default {
       }, 'Failed to start new round!');
     },
     async loadAllData(forceFetch = false) {
-      await this.fetchMatch({matchId: this.matchId, forceFetch: forceFetch});
       await this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId, forceFetch: forceFetch});
       await this.fetchPlayersRoundData({roundId: this.latestRoundId, forceFetch: forceFetch});
       await this.initializeSse(this.matchId);

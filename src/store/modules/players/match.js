@@ -17,7 +17,7 @@ const mutations = {
 
 const actions = {
     async fetchPlayersMatchData({dispatch, commit}, {matchId, forceFetch = false}) {
-        await dispatch(
+        return await dispatch(
             'fetchHandler/handleFetch',
             {
                 errorTitle: 'Failed to fetch match players!',
@@ -26,6 +26,8 @@ const actions = {
                 fetchFunction: () => matchesService.getPlayers(matchId),
                 onSuccess: async (playersData) => {
                     commit('SET_PLAYERS_MATCH_DATA', {matchId, players: playersData});
+
+                    return playersData;
                 },
                 timeout: FETCH_PLAYERS_MATCH_DATA_TIMEOUT,
             },

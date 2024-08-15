@@ -45,8 +45,6 @@ export default {
   },
   async created() {
     await this.fetchGameConfig({});
-    await this.fetchMatch({matchId: this.matchId});
-    await this.fetchPlayersMatchData({matchId: this.matchId});
   },
   methods: {
     ...mapActions({
