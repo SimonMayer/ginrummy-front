@@ -3,9 +3,9 @@ const actions = {
         const newCurrentRoundId = data.current_status.round_id;
         const newCurrentTurnId = data.current_status.turn_id;
 
-        const latestActionId = rootGetters['storage/registry/matchAction/getLatestActionIdByMatchId'](matchId);
+        const latestActionId = rootGetters['storage/registry/matchActions/getLatestActionIdByMatchId'](matchId);
         if (data.action.action_id > latestActionId) {
-            await dispatch('storage/registry/matchAction/setLatestActionId', {
+            await dispatch('storage/registry/matchActions/setLatestActionId', {
                 matchId,
                 actionId: data.action.action_id,
             }, {root: true});
@@ -13,19 +13,19 @@ const actions = {
 
         await dispatch('storage/turns/turns/appendActionToTurn', {turnId: data.turn_id, action: data.action}, {root: true});
 
-        const roundChanged = newCurrentRoundId !== rootGetters['storage/registry/matchRound/getCurrentRoundIdByMatchId'](matchId);
-        await dispatch('storage/registry/matchRound/setCurrentRoundId', {matchId, roundId: newCurrentRoundId}, {root: true});
+        const roundChanged = newCurrentRoundId !== rootGetters['storage/registry/matchRounds/getCurrentRoundIdByMatchId'](matchId);
+        await dispatch('storage/registry/matchRounds/setCurrentRoundId', {matchId, roundId: newCurrentRoundId}, {root: true});
 
         const currentRoundId = newCurrentRoundId;
-        const latestRoundId = await rootGetters['storage/registry/matchRound/getLatestRoundIdByMatchId'](matchId);
+        const latestRoundId = await rootGetters['storage/registry/matchRounds/getLatestRoundIdByMatchId'](matchId);
 
         const betweenRounds = currentRoundId === null;
-        const turnChanged = newCurrentTurnId !== rootGetters['storage/registry/roundTurn/getCurrentTurnByRoundId'](currentRoundId)?.id;
+        const turnChanged = newCurrentTurnId !== rootGetters['storage/registry/roundTurns/getCurrentTurnByRoundId'](currentRoundId)?.id;
         const cardsDrawn = ['draw'].includes(data.action.action_type);
         const cardsMelded = ['play_meld', 'extend_meld'].includes(data.action.action_type);
 
         if (!betweenRounds && (roundChanged || turnChanged)) {
-            await dispatch('storage/registry/roundTurn/fetchCurrentTurn', {
+            await dispatch('storage/registry/roundTurns/fetchCurrentTurn', {
                 matchId,
                 roundId: currentRoundId,
                 forceFetch: true,

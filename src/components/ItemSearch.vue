@@ -47,8 +47,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      searchResultsList: 'storage/search/getSearchResults',
-      searchTerm: 'storage/search/getSearchTerm',
+      searchResultsList: 'storage/search/searches/getSearchResults',
+      searchTerm: 'storage/search/searches/getSearchTerm',
     }),
     filteredResults() {
       return this.searchResultsList(this.searchKey).filter(
@@ -60,8 +60,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      registerSearchFunction: 'storage/search/registerSearchFunction',
-      setSearchTerm: 'storage/search/setSearchTerm',
+      setSearchTerm: 'storage/search/searches/setSearchTerm',
+      registerSearchFunction: 'storage/search/searchFunctions/registerSearchFunction',
     }),
     onSearchInput() {
       this.setSearchTerm({key: this.searchKey, term: this.searchInput});

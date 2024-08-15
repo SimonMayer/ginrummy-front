@@ -18,7 +18,7 @@ const mutations = {
 
 const actions = {
     async initializeSse({commit, dispatch, rootGetters}, matchId) {
-        const latestActionId = rootGetters['storage/registry/matchAction/getLatestActionIdByMatchId'](matchId) || '';
+        const latestActionId = rootGetters['storage/registry/matchActions/getLatestActionIdByMatchId'](matchId) || '';
         const endpoint = `/matches/${matchId}/events`;
         const params = {latest_action_id: latestActionId};
 

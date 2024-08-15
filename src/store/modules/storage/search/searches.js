@@ -1,6 +1,5 @@
 const state = {
     searches: {},
-    searchFunctions: {},
 };
 
 const mutations = {
@@ -16,16 +15,14 @@ const mutations = {
         }
         state.searches[key].results = results;
     },
-    REGISTER_SEARCH_FUNCTION(state, {key, searchFunction}) {
-        state.searchFunctions[key] = searchFunction;
-    },
 };
 
 const actions = {
-    async setSearchTerm({commit, dispatch, state}, {key, term}) {
+    async setSearchTerm({commit, dispatch, rootGetters}, {key, term}) {
         commit('SET_SEARCH_TERM', {key, term});
         if (term.length >= 3) {
-            await dispatch('performSearch', {key, term, searchFunction: state.searchFunctions[key]});
+            const searchFunction = rootGetters['storage/search/searchFunctions/getSearchFunction'](key);
+            await dispatch('performSearch', {key, term, searchFunction});
         } else {
             commit('SET_SEARCH_RESULTS', {key, results: []});
         }
@@ -41,9 +38,6 @@ const actions = {
         } finally {
             dispatch('sessionState/loading/setLoading', false, {root: true});
         }
-    },
-    registerSearchFunction({commit}, {key, searchFunction}) {
-        commit('REGISTER_SEARCH_FUNCTION', {key, searchFunction});
     },
 };
 

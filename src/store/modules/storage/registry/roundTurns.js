@@ -30,7 +30,7 @@ const actions = {
                 fetchFunction: () => roundsService.getCurrentTurn(roundId),
                 onSuccess: async (data) => {
                     const response = await dispatch('setCurrentTurnId', {roundId: roundId, 'turnId': data.turn_id});
-                    await dispatch('storage/registry/matchAction/setLatestActionId', {
+                    await dispatch('storage/registry/matchActions/setLatestActionId', {
                         matchId,
                         actionId: data.latest_action_id,
                     }, {root: true});

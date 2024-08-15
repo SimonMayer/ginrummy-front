@@ -3,22 +3,22 @@ import meldsService from '@/services/meldsService';
 const getters = {
     canDraw(state, getters, rootState, rootGetters) {
         return rootGetters['sessionState/permissions/core/canAct'] &&
-            !rootGetters['sessionState/derived/draw/hasDrawActionInCurrentTurn'];
+            !rootGetters['sessionState/derived/turn/hasDrawActionInCurrentTurn'];
     },
     canDrawOne(state, getters, rootState, rootGetters) {
         return getters.canDraw &&
-            rootGetters['sessionState/derived/selected/hasNoHandCardsSelected'] &&
+            rootGetters['sessionState/derived/selectedItems/hasNoHandCardsSelected'] &&
             !rootGetters['sessionState/selections/selectedMeldId'];
     },
     canDrawOneFromStockPile(state, getters, rootState, rootGetters) {
-        return getters.canDrawOne && rootGetters['sessionState/derived/selected/hasNoDiscardPileCardsSelected'];
+        return getters.canDrawOne && rootGetters['sessionState/derived/selectedItems/hasNoDiscardPileCardsSelected'];
     },
     canDrawOneFromDiscardPile(state, getters, rootState, rootGetters) {
         return getters.canDrawOne &&
             rootGetters['sessionState/derived/discardPile/currentTopDiscardPileCardId'] &&
             (
-                rootGetters['sessionState/derived/selected/hasNoDiscardPileCardsSelected'] ||
-                rootGetters['sessionState/derived/selected/isOnlyTopDiscardPileCardSelected']
+                rootGetters['sessionState/derived/selectedItems/hasNoDiscardPileCardsSelected'] ||
+                rootGetters['sessionState/derived/selectedItems/isOnlyTopDiscardPileCardSelected']
             );
     },
     canDrawMultiple(state, getters, rootState, rootGetters) {
@@ -27,17 +27,17 @@ const getters = {
             rootGetters['sessionState/permissions/melds/canMeldOnThisRotation'];
     },
     canDrawMultipleFromDiscardPile(state, getters, rootState, rootGetters) {
-        const futureMeldedCardCount = rootGetters['sessionState/derived/selected/selectedHandCardCount'] + rootGetters['sessionState/derived/selected/selectedDiscardPileCardCount'];
-        const currentAndFutureMeldedCards = rootGetters['sessionState/derived/selected/allSelectedCards'];
+        const futureMeldedCardCount = rootGetters['sessionState/derived/selectedItems/selectedHandCardCount'] + rootGetters['sessionState/derived/selectedItems/selectedDiscardPileCardCount'];
+        const currentAndFutureMeldedCards = rootGetters['sessionState/derived/selectedItems/allSelectedCards'];
 
         const handCardLength = rootGetters['sessionState/derived/hand/currentHandCardLength'];
-        const drawnCardsLength = rootGetters['sessionState/derived/selected/countSelectedAndHigherDiscardPileCards'];
+        const drawnCardsLength = rootGetters['sessionState/derived/selectedItems/countSelectedAndHigherDiscardPileCards'];
 
         const minimumMeldSize = rootGetters['storage/gameConfig/minimumMeldSize'];
         const runOrders = rootGetters['storage/gameConfig/runOrders'];
 
         return getters.canDrawMultiple  &&
-            rootGetters['sessionState/derived/selected/isAnyDiscardPileCardSelectedBelowTop'] &&
+            rootGetters['sessionState/derived/selectedItems/isAnyDiscardPileCardSelectedBelowTop'] &&
             futureMeldedCardCount < (handCardLength + drawnCardsLength) &&
             currentAndFutureMeldedCards.length >= minimumMeldSize &&
             meldsService.doCardsMakeValidMeld(currentAndFutureMeldedCards, runOrders);

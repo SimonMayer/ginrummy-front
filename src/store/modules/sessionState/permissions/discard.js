@@ -1,9 +1,9 @@
 const getters = {
     canDiscard(state, getters, rootState, rootGetters) {
         return rootGetters['sessionState/permissions/core/canAct'] &&
-            rootGetters['sessionState/derived/draw/hasDrawActionInCurrentTurn'] &&
+            rootGetters['sessionState/derived/turn/hasDrawActionInCurrentTurn'] &&
             !rootGetters['sessionState/selections/selectedMeldId'] &&
-            rootGetters['sessionState/derived/selected/hasOneHandCardSelected'];
+            rootGetters['sessionState/derived/selectedItems/hasOneHandCardSelected'];
     },
 };
 

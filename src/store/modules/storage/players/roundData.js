@@ -44,7 +44,7 @@ const getters = {
         return state.playersRoundData[roundId]?.find(player => player.user_id === playerId);
     },
     isCurrentTurnForPlayer: (state, getters, rootState, rootGetters) => ({roundId, playerId}) => {
-        const currentTurnId = rootGetters['storage/registry/roundTurn/getCurrentTurnIdByRoundId'](roundId);
+        const currentTurnId = rootGetters['storage/registry/roundTurns/getCurrentTurnIdByRoundId'](roundId);
         if (!currentTurnId) {
             return false;
         }

@@ -28,15 +28,15 @@ const actions = {
                     commit('SET_MATCH', {matchId, match});
                     const responses = {};
                     responses.fetchPlayersMatchData = await dispatch('storage/players/match/fetchPlayersMatchData', {matchId, forceFetch}, {root: true});
-                    responses.setCurrentRoundId = await dispatch('storage/registry/matchRound/setCurrentRoundId', {
+                    responses.setCurrentRoundId = await dispatch('storage/registry/matchRounds/setCurrentRoundId', {
                         matchId: matchId,
                         roundId: match.current_round_id,
                     }, {root: true});
-                    responses.setLatestRoundId = await dispatch('storage/registry/matchRound/setLatestRoundId', {
+                    responses.setLatestRoundId = await dispatch('storage/registry/matchRounds/setLatestRoundId', {
                         matchId: matchId,
                         roundId: match.latest_round_id,
                     }, {root: true});
-                    dispatch('storage/registry/matchRound/setAllRoundIds', {
+                    dispatch('storage/registry/matchRounds/setAllRoundIds', {
                         matchId: matchId,
                         roundId: match.all_round_ids,
                     }, {root: true});

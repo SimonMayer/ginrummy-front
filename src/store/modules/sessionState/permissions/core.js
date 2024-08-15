@@ -1,7 +1,7 @@
 const getters = {
     isCurrentUserTurn(state, getters, rootState, rootGetters) {
         const signedInUserId = rootGetters['authentication/user/userId'];
-        const currentTurn = rootGetters['sessionState/derived/turns/currentTurn'];
+        const currentTurn = rootGetters['sessionState/derived/turn/currentTurn'];
 
         return currentTurn && currentTurn.userId === signedInUserId;
     },
