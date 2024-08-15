@@ -70,6 +70,11 @@ const getters = {
     allSelectedCards(state, getters) {
         return [...getters.selectedMeldCards, ...getters.selectedHandCards, ...getters.selectedDiscardPileCards];
     },
+    hasSelectedMeldOrCards(state, getters, rootState, rootGetters) {
+        return !!rootGetters['trackers/selections/selectedMeldId'] ||
+            getters.selectedDiscardPileCardCount > 0 ||
+            getters.selectedHandCardCount > 0;
+    },
 };
 
 export default {

@@ -1,34 +1,36 @@
 <template>
   <div class="game-button-container">
-    <GameButton
-        v-for="(buttonConfig, index) in buttonConfigs"
-        :key="index"
-        @button:press="buttonConfig.pressHandler"
-        :isDisabled="buttonConfig.isDisabled"
-        :labelEnabled="buttonConfig.labelEnabled"
-        :labelDisabled="buttonConfig.labelDisabled"
-    >
-      <template #icon="{ mutedMidToMutedLight, mutedLightToSecondary, mutedMidToTertiary, mutedLightToWhite }">
-        <component
-            :is="iconMap[buttonConfig.icon]"
-            :fillColor="mutedLightToWhite"
-            :strokeColor="mutedMidToMutedLight"
-            :strongIndicatorColor="mutedLightToSecondary"
-            :sharpIndicatorColor="mutedMidToTertiary"
-        />
-      </template>
-    </GameButton>
+    <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
+      <div v-if="buttonConfig.addSeparatorBefore" class="button-separator"></div>
+      <GameButton
+          @button:press="buttonConfig.pressHandler"
+          :isDisabled="buttonConfig.isDisabled"
+          :labelEnabled="buttonConfig.labelEnabled"
+          :labelDisabled="buttonConfig.labelDisabled"
+      >
+        <template #icon="{ mutedLightToSecondary, mutedLightToWhite, mutedMidToAccent, mutedMidToMutedLight}">
+          <component
+              :is="iconMap[buttonConfig.icon]"
+              :fillColor="mutedLightToWhite"
+              :strokeColor="mutedMidToMutedLight"
+              :strongIndicatorColor="mutedLightToSecondary"
+              :sharpIndicatorColor="mutedMidToAccent"
+          />
+        </template>
+      </GameButton>
+    </template>
   </div>
 </template>
 
 <script>
 import GameButton from '@/components/GameButton.vue';
-import DrawOneFromStockIcon from '@/components/SvgIcons/DrawOneFromStockIcon.vue';
-import DrawOneFromDiscardIcon from '@/components/SvgIcons/DrawOneFromDiscardIcon.vue';
-import DrawMultipleFromDiscardIcon from '@/components/SvgIcons/DrawMultipleFromDiscardIcon.vue';
-import PlayMeldIcon from '@/components/SvgIcons/PlayMeldIcon.vue';
-import ExtendMeldIcon from '@/components/SvgIcons/ExtendMeldIcon.vue';
 import DiscardIcon from '@/components/SvgIcons/DiscardIcon.vue';
+import DrawMultipleFromDiscardIcon from '@/components/SvgIcons/DrawMultipleFromDiscardIcon.vue';
+import DrawOneFromDiscardIcon from '@/components/SvgIcons/DrawOneFromDiscardIcon.vue';
+import DrawOneFromStockIcon from '@/components/SvgIcons/DrawOneFromStockIcon.vue';
+import ExtendMeldIcon from '@/components/SvgIcons/ExtendMeldIcon.vue';
+import PlayMeldIcon from '@/components/SvgIcons/PlayMeldIcon.vue';
+import UnselectCardsIcon from '@/components/SvgIcons/UnselectCardsIcon.vue';
 
 export default {
   name: 'GameButtonContainer',
@@ -51,23 +53,34 @@ export default {
   computed: {
     iconMap() {
       return {
-        DrawOneFromStockIcon: DrawOneFromStockIcon,
-        DrawOneFromDiscardIcon: DrawOneFromDiscardIcon,
-        DrawMultipleFromDiscardIcon: DrawMultipleFromDiscardIcon,
-        PlayMeldIcon: PlayMeldIcon,
-        ExtendMeldIcon: ExtendMeldIcon,
         DiscardIcon: DiscardIcon,
+        DrawMultipleFromDiscardIcon: DrawMultipleFromDiscardIcon,
+        DrawOneFromDiscardIcon: DrawOneFromDiscardIcon,
+        DrawOneFromStockIcon: DrawOneFromStockIcon,
+        ExtendMeldIcon: ExtendMeldIcon,
+        PlayMeldIcon: PlayMeldIcon,
+        UnselectCardsIcon: UnselectCardsIcon,
       };
     },
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/globalVariables';
+
 .game-button-container {
   display: flex;
   gap: var(--base-margin);
   justify-content: center;
   width: 100%;
+
+  .button-separator {
+    width: 1px;
+    height: 100%;
+    background-color: var(--muted-light-color);
+    margin-left: var(--base-margin);
+    margin-right: var(--base-margin);
+  }
 }
 </style>

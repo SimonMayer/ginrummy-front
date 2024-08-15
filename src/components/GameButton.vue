@@ -4,16 +4,15 @@
       :disabled="isDisabled"
       aria-label="{{ label }}"
   >
-    <span class="button-tooltip">{{ label }}</span>
+    <span class="button-tooltip">
+      <span v-if="isDisabled" class="unavailable-note">Action unavailable: </span>
+      {{ label }}
+    </span>
     <slot name="icon"
-          :mutedLightToAccent="mutedLightToAccent"
-          :mutedLightToWhite="mutedLightToWhite"
           :mutedLightToSecondary="mutedLightToSecondary"
-          :mutedLightToTertiary="mutedLightToTertiary"
+          :mutedLightToWhite="mutedLightToWhite"
           :mutedMidToAccent="mutedMidToAccent"
           :mutedMidToMutedLight="mutedMidToMutedLight"
-          :mutedMidToTertiary="mutedMidToTertiary"
-          :mutedMidToWhite="mutedMidToWhite"
     />
   </button>
 </template>
@@ -42,26 +41,14 @@ export default {
     mutedLightToWhite() {
       return this.isDisabled ? 'var(--muted-light-color)' : '#fff';
     },
-    mutedLightToAccent() {
-      return this.isDisabled ? 'var(--muted-light-color)' : 'var(--accent-color)';
-    },
     mutedLightToSecondary() {
       return this.isDisabled ? 'var(--muted-light-color)' : 'var(--secondary-color)';
-    },
-    mutedLightToTertiary() {
-      return this.isDisabled ? 'var(--muted-light-color)' : 'var(--tertiary-color)';
     },
     mutedMidToMutedLight() {
       return this.isDisabled ? 'var(--muted-mid-color)' : 'var(--muted-light-color)';
     },
     mutedMidToAccent() {
       return this.isDisabled ? 'var(--muted-mid-color)' : 'var(--accent-color)';
-    },
-    mutedMidToTertiary() {
-      return this.isDisabled ? 'var(--muted-mid-color)' : 'var(--tertiary-color)';
-    },
-    mutedMidToWhite() {
-      return this.isDisabled ? 'var(--muted-mid-color)' : '#fff';
     },
   },
   methods: {
@@ -83,6 +70,11 @@ button {
   padding: 0;
 
   .button-tooltip {
+    .unavailable-note {
+      display: block;
+      font-weight: bold;
+    }
+
     position: absolute;
     width: 1px;
     height: 1px;

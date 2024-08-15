@@ -29,54 +29,62 @@
         <div v-if="!currentRoundId" class="buttons-container">
           <button @click="handleStartNewRound">Start new round</button>
         </div>
-        <GameButtonContainer
+        <GameButtonContainer v-if="currentRoundId"
             :buttonConfigs="[
                 {
-                  pressHandler: handleDrawFromStockPileClick,
-                  isDisabled: !canDrawOneFromStockPile,
-                  labelEnabled: 'Draw one card from the stock pile',
-                  labelDisabled: 'Action unavailable: Draw one card from the stock pile',
                   icon: 'DrawOneFromStockIcon',
+                  isDisabled: !canDrawOneFromStockPile,
+                  labelDisabled: 'Draw one card from the stock pile',
+                  labelEnabled: 'Draw one card from the stock pile',
+                  pressHandler: handleDrawFromStockPileClick,
                 },
                 {
-                  pressHandler: handleDrawOneFromDiscardPileClick,
-                  isDisabled: !canDrawOneFromDiscardPile,
-                  labelEnabled: 'Draw one card from the discard pile',
-                  labelDisabled: 'Action unavailable: Draw one card from the discard pile',
                   icon: 'DrawOneFromDiscardIcon',
+                  isDisabled: !canDrawOneFromDiscardPile,
+                  labelDisabled: 'Draw one card from the discard pile',
+                  labelEnabled: 'Draw one card from the discard pile',
+                  pressHandler: handleDrawOneFromDiscardPileClick,
                 },
                 {
-                  pressHandler: handleDrawMultipleFromDiscardPileClick,
-                  isDisabled: !canDrawMultipleFromDiscardPile,
-                  labelEnabled: 'Draw multiple cards to play or extend a meld',
-                  labelDisabled: 'Action unavailable: Draw multiple cards to play or extend a meld',
                   icon: 'DrawMultipleFromDiscardIcon',
+                  isDisabled: !canDrawMultipleFromDiscardPile,
+                  labelDisabled: 'Draw multiple cards to play or extend a meld',
+                  labelEnabled: 'Draw multiple cards to play or extend a meld',
+                  pressHandler: handleDrawMultipleFromDiscardPileClick,
                 },
                 {
-                  pressHandler: handlePlayMeldClick,
-                  isDisabled: !canPlaySetFromHand && !canPlayRunFromHand,
-                  labelEnabled: 'Play a meld from the selected cards',
-                  labelDisabled: 'Action unavailable: Play a meld',
+                  addSeparatorBefore: true,
                   icon: 'PlayMeldIcon',
+                  isDisabled: !canPlaySetFromHand && !canPlayRunFromHand,
+                  labelDisabled: 'Play a meld',
+                  labelEnabled: 'Play a meld from the selected cards',
+                  pressHandler: handlePlayMeldClick,
                 },
                 {
-                  pressHandler: handleExtendMeldClick,
-                  isDisabled: !canExtendMeldFromHand,
-                  labelEnabled: 'Extend the selected meld',
-                  labelDisabled: 'Action unavailable: Extend a meld',
                   icon: 'ExtendMeldIcon',
+                  isDisabled: !canExtendMeldFromHand,
+                  labelDisabled: 'Extend a meld',
+                  labelEnabled: 'Extend the selected meld',
+                  pressHandler: handleExtendMeldClick,
                 },
                 {
-                  pressHandler: handleDiscardClick,
-                  isDisabled: !canDiscard,
-                  labelEnabled: 'Discard one card from your hand',
-                  labelDisabled: 'Action unavailable: Discard one card from your hand',
+                  addSeparatorBefore: true,
                   icon: 'DiscardIcon',
+                  isDisabled: !canDiscard,
+                  labelDisabled: 'Discard one card from your hand',
+                  labelEnabled: 'Discard one card from your hand',
+                  pressHandler: handleDiscardClick,
+                },
+                {
+                  addSeparatorBefore: true,
+                  icon: 'UnselectCardsIcon',
+                  isDisabled: !hasSelectedMeldOrCards,
+                  labelDisabled: 'You don\'t have any cards or melds selected.',
+                  labelEnabled: 'Unselect all cards and melds',
+                  pressHandler: unselectAllCards,
                 },
             ]"
         />
-        <div v-if="currentRoundId" class="buttons-container">
-        </div>
         <div class="self-player-container">
           <SelfMatchPlayer
               v-if="visibleRoundId && selfPlayerMatchData"
@@ -141,6 +149,7 @@ export default {
       hasNoHandCardsSelected: 'trackers/derived/selected/hasNoHandCardsSelected',
       hasOneDiscardPileCardSelected: 'trackers/derived/selected/hasOneDiscardPileCardSelected',
       hasOneHandCardSelected: 'trackers/derived/selected/hasOneHandCardSelected',
+      hasSelectedMeldOrCards: 'trackers/derived/selected/hasSelectedMeldOrCards',
       isAnyDiscardPileCardSelected: 'trackers/derived/selected/isAnyDiscardPileCardSelected',
       isAnyDiscardPileCardSelectedBelowTop: 'trackers/derived/selected/isAnyDiscardPileCardSelectedBelowTop',
       isOnlyTopDiscardPileCardSelected: 'trackers/derived/selected/isOnlyTopDiscardPileCardSelected',
