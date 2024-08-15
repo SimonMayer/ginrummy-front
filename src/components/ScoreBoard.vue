@@ -42,7 +42,7 @@ export default {
 
   .total,
   .turn {
-    color: var(--accent-color);
+    color: var(--tertiary-color);
     font-size: var(--font-size-large);
     font-weight: bold;
   }

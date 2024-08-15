@@ -31,11 +31,13 @@ const getters = {
         const selectedHandCards = rootGetters['trackers/derived/selected/selectedHandCards'];
         return getters.canPlayMeldFromHand && meldsService.areAllCardsOfSameRank(selectedHandCards);
     },
-    canExtendMeld(state, getters, rootState, rootGetters) {
+    canSelectMelds(state, getters, rootState, rootGetters) {
         return rootGetters['trackers/permissions/core/canAct'] &&
             rootGetters['trackers/derived/self/hasPlayedMeld'] &&
-            rootGetters['trackers/selections/selectedMeldId'] &&
             getters.canMeldOnThisRotation;
+    },
+    canExtendMeld(state, getters, rootState, rootGetters) {
+        return getters.canSelectMelds && rootGetters['trackers/selections/selectedMeldId'];
     },
     canExtendMeldFromHand(state, getters, rootState, rootGetters) {
         const cards = [

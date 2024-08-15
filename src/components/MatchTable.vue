@@ -13,7 +13,7 @@
     </div>
     <div class="game-section row">
       <div class="game-column pile-container">
-        <StockPile v-if="visibleRoundId" @draw:stock-pile="handleStockPileClick"/>
+        <StockPile v-if="visibleRoundId" @draw:stock-pile="handleDrawFromStockPileClick"/>
         <DiscardPile v-if="visibleRoundId"/>
       </div>
       <div class="game-column">
@@ -24,23 +24,58 @@
               :id="meld.meld_id"
               :type="meld.meld_type"
               :cards="meld.cards"
-              :selected="selectedMeldId === meld.meld_id"
-              :selectable="isMeldSelectable"
           />
         </div>
         <div v-if="!currentRoundId" class="buttons-container">
           <button @click="handleStartNewRound">Start new round</button>
         </div>
+        <GameButtonContainer
+            :buttonConfigs="[
+                {
+                  pressHandler: handleDrawFromStockPileClick,
+                  isDisabled: !canDrawOneFromStockPile,
+                  labelEnabled: 'Draw one card from the stock pile',
+                  labelDisabled: 'Action unavailable: Draw one card from the stock pile',
+                  icon: 'DrawOneFromStockIcon',
+                },
+                {
+                  pressHandler: handleDrawOneFromDiscardPileClick,
+                  isDisabled: !canDrawOneFromDiscardPile,
+                  labelEnabled: 'Draw one card from the discard pile',
+                  labelDisabled: 'Action unavailable: Draw one card from the discard pile',
+                  icon: 'DrawOneFromDiscardIcon',
+                },
+                {
+                  pressHandler: handleDrawMultipleFromDiscardPileClick,
+                  isDisabled: !canDrawMultipleFromDiscardPile,
+                  labelEnabled: 'Draw multiple cards to play or extend a meld',
+                  labelDisabled: 'Action unavailable: Draw multiple cards to play or extend a meld',
+                  icon: 'DrawMultipleFromDiscardIcon',
+                },
+                {
+                  pressHandler: handlePlayMeldClick,
+                  isDisabled: !canPlaySetFromHand && !canPlayRunFromHand,
+                  labelEnabled: 'Play a meld from the selected cards',
+                  labelDisabled: 'Action unavailable: Play a meld',
+                  icon: 'PlayMeldIcon',
+                },
+                {
+                  pressHandler: handleExtendMeldClick,
+                  isDisabled: !canExtendMeldFromHand,
+                  labelEnabled: 'Extend the selected meld',
+                  labelDisabled: 'Action unavailable: Extend a meld',
+                  icon: 'ExtendMeldIcon',
+                },
+                {
+                  pressHandler: handleDiscardClick,
+                  isDisabled: !canDiscard,
+                  labelEnabled: 'Discard one card from your hand',
+                  labelDisabled: 'Action unavailable: Discard one card from your hand',
+                  icon: 'DiscardIcon',
+                },
+            ]"
+        />
         <div v-if="currentRoundId" class="buttons-container">
-          <button @click="handleDrawOneFromDiscardPileClick" :disabled="!canDrawOneFromDiscardPile">
-            Draw one from discard pile
-          </button>
-          <button @click="handleDrawMultipleFromDiscardPileClick" :disabled="!canDrawMultipleFromDiscardPile">
-            Draw multiple from discard pile
-          </button>
-          <button @click="handlePlayMeldClick" :disabled="!canPlaySetFromHand && !canPlayRunFromHand">Play meld</button>
-          <button @click="handleExtendMeldClick" :disabled="!canExtendMeldFromHand">Extend meld</button>
-          <button @click="handleDiscardClick" :disabled="!canDiscard">Discard</button>
         </div>
         <div class="self-player-container">
           <SelfMatchPlayer
@@ -56,6 +91,7 @@
 </template>
 
 <script>
+import GameButtonContainer from '@/components/GameButtonContainer.vue';
 import PlayedMeld from '@/components/PlayedMeld.vue';
 import StockPile from '@/components/StockPile.vue';
 import DiscardPile from '@/components/DiscardPile.vue';
@@ -69,6 +105,7 @@ import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 export default {
   name: 'MatchTable',
   components: {
+    GameButtonContainer,
     PlayedMeld,
     StockPile,
     DiscardPile,
@@ -124,6 +161,7 @@ export default {
       canDrawMultipleFromDiscardPile: 'trackers/permissions/draw/canDrawMultipleFromDiscardPile',
       canDrawOne: 'trackers/permissions/draw/canDrawOne',
       canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
+      canDrawOneFromStockPile: 'trackers/permissions/draw/canDrawOneFromStockPile',
       canExtendMeldFromHand: 'trackers/permissions/melds/canExtendMeldFromHand',
       canPlayMeldFromHand: 'trackers/permissions/melds/canPlayMeldFromHand',
       canPlayRunFromHand: 'trackers/permissions/melds/canPlayRunFromHand',
@@ -161,15 +199,8 @@ export default {
         playerId: this.selfPlayerMatchData.user_id,
       });
     },
-    hasPlayedMeld() {
-      const selfPlayerCurrentRoundData = this.selfPlayerCurrentRoundData;
-      return selfPlayerCurrentRoundData && selfPlayerCurrentRoundData.melds && selfPlayerCurrentRoundData.melds.length > 0;
-    },
     isHandSelectable() {
       return this.canDrawMultiple || (this.canAct && this.hasDrawActionInCurrentTurn);
-    },
-    isMeldSelectable() {
-      return this.canAct && this.hasPlayedMeld;
     },
   },
   methods: {
@@ -199,7 +230,7 @@ export default {
         await this.setLoading(false);
       }
     },
-    async handleStockPileClick() {
+    async handleDrawFromStockPileClick() {
       await this.handleDrawOneFromPileClick('stock');
     },
     async handleDrawOneFromDiscardPileClick() {

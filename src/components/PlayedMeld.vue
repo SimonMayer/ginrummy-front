@@ -1,5 +1,5 @@
 <template>
-  <div :class="['meld', type, { 'selected': selected, 'selectable': selectable }]" @click="handleClick">
+  <div :class="['meld', type, { 'selected': isSelected, 'selectable': selectable }]" @click="handleClick">
     <VisibleCard
         v-for="card in sortedCards"
         :key="card.card_id"
@@ -33,21 +33,15 @@ export default {
       type: String,
       required: true,
     },
-    selected: {
-      type: Boolean,
-      default: false,
-    },
-    selectable: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     ...mapGetters({
-      gameConfig: 'gameConfig/gameConfig',
+      runOrders: 'gameConfig/runOrders',
+      selectable: 'trackers/permissions/melds/canSelectMelds',
+      selectedMeldId: 'trackers/selections/selectedMeldId',
     }),
-    runOrders() {
-      return this.gameConfig.runOrders;
+    isSelected() {
+      return this.selectedMeldId === this.id;
     },
     sortedCards() {
       return meldsService.sortCardsByRunOrders(this.cards, this.runOrders);

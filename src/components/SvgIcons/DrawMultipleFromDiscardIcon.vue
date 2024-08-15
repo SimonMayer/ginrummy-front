@@ -1,0 +1,48 @@
+<template>
+  <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 32"
+      width="48"
+      height="48"
+      :fill="fillColor"
+      :stroke="strokeColor"
+      stroke-width="1"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+  >
+    <IconCard :x="10" :y="0" :rotationAngle="90"/>
+    <IconCard :x="10" :y="3" :rotationAngle="90"/>
+    <IconCard :x="10" :y="6" :rotationAngle="90"/>
+    <IconCard :x="13" :y="13" :rotationAngle="90" :fillColor="fillColor" :strokeColor="sharpIndicatorColor"/>
+    <IconCard :x="13" :y="16" :rotationAngle="90" :fillColor="fillColor" :strokeColor="sharpIndicatorColor"/>
+
+    <IconArrow :color="strongIndicatorColor" :rotationAngle="180" :tipCoordinateX="25" :tipCoordinateY="28"/>
+  </svg>
+</template>
+
+<script>
+import IconArrow from '@/components/SvgIcons/IconArrow.vue';
+import IconCard from '@/components/SvgIcons/IconCard.vue';
+
+export default {
+  components: {IconCard, IconArrow},
+  props: {
+    fillColor: {
+      type: String,
+      required: true,
+    },
+    strokeColor: {
+      type: String,
+      required: true,
+    },
+    strongIndicatorColor: {
+      type: String,
+      required: true,
+    },
+    sharpIndicatorColor: {
+      type: String,
+      required: true,
+    },
+  },
+};
+</script>

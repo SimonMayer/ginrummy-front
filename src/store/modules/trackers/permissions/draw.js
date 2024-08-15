@@ -14,7 +14,11 @@ const getters = {
         return getters.canDrawOne && rootGetters['trackers/derived/selected/hasNoDiscardPileCardsSelected'];
     },
     canDrawOneFromDiscardPile(state, getters, rootState, rootGetters) {
-        return getters.canDrawOne && rootGetters['trackers/derived/selected/isOnlyTopDiscardPileCardSelected'];
+        return getters.canDrawOne &&
+            (
+                rootGetters['trackers/derived/selected/hasNoDiscardPileCardsSelected'] ||
+                rootGetters['trackers/derived/selected/isOnlyTopDiscardPileCardSelected']
+            );
     },
     canDrawMultiple(state, getters, rootState, rootGetters) {
         return getters.canDraw &&
