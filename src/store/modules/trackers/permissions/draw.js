@@ -23,7 +23,7 @@ const getters = {
     },
     canDrawMultiple(state, getters, rootState, rootGetters) {
         return getters.canDraw &&
-            rootGetters['trackers/derived/self/hasPlayedMeld'] &&
+            rootGetters['trackers/derived/players/currentSelfHasPlayedMeld'] &&
             rootGetters['trackers/permissions/melds/canMeldOnThisRotation'];
     },
     canDrawMultipleFromDiscardPile(state, getters, rootState, rootGetters) {

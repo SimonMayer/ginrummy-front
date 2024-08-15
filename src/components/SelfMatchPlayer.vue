@@ -29,7 +29,6 @@ import NamePlate from '@/components/NamePlate.vue';
 import ScoreBoard from '@/components/ScoreBoard.vue';
 import VisibleCard from '@/components/VisibleCard.vue';
 import {mapGetters} from 'vuex';
-import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
 export default {
   name: 'SelfMatchPlayer',
@@ -38,36 +37,16 @@ export default {
     ScoreBoard,
     VisibleCard,
   },
-  mixins: [matchPhaseMixin],
   props: {
     selectable: Boolean,
   },
   computed: {
     ...mapGetters({
-      getCardsByHandId: 'hands/getCardsByHandId',
-      getSelfPlayerMatchDataByMatchId: 'players/self/getSelfPlayerMatchDataByMatchId',
-      getPlayerRoundDataByRoundAndPlayerIds: 'players/round/getPlayerRoundDataByRoundAndPlayerIds',
-      isCurrentTurnForPlayer: 'players/round/isCurrentTurnForPlayer',
+      handCards: 'trackers/derived/hand/currentHandCards',
+      hasCurrentTurn: 'trackers/permissions/core/isCurrentUserTurn',
+      playerMatchData: 'trackers/derived/players/selfPlayerMatchData',
+      playerRoundData: 'trackers/derived/players/visibleSelfPlayerRoundData',
     }),
-    handCards() {
-      const handId = this.playerRoundData?.hand?.hand_id;
-      return handId ? this.getCardsByHandId(handId) : [];
-    },
-    playerMatchData() {
-      return this.getSelfPlayerMatchDataByMatchId(this.matchId);
-    },
-    playerRoundData() {
-      if (!this.visibleRoundId) {
-        return null;
-      }
-      return this.getPlayerRoundDataByRoundAndPlayerIds({
-        roundId: this.visibleRoundId,
-        playerId: this.playerMatchData.user_id,
-      });
-    },
-    hasCurrentTurn() {
-      return this.isCurrentTurnForPlayer({roundId: this.visibleRoundId, playerId: this.playerMatchData.user_id});
-    },
     username() {
       return this.playerMatchData.username;
     },

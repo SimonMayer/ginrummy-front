@@ -34,19 +34,11 @@ export default {
   mixins: [matchPhaseMixin],
   computed: {
     ...mapGetters({
-      getPlayersMatchDataByMatchId: 'players/match/getPlayersMatchDataByMatchId',
-      gameConfig: 'gameConfig/gameConfig',
-      loading: 'trackers/loading/loading',
+      maxPlayers: 'gameConfig/maxPlayers',
+      minPlayers: 'gameConfig/minPlayers',
+      players: 'trackers/derived/players/playersMatchData',
+      loading: 'trackers/loading/loading'
     }),
-    maxPlayers() {
-      return this.gameConfig.maxPlayers;
-    },
-    minPlayers() {
-      return this.gameConfig.minPlayers;
-    },
-    players() {
-      return this.getPlayersMatchDataByMatchId(this.matchId);
-    },
     canStartMatch() {
       return this.match && this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
     },

@@ -33,7 +33,7 @@ const getters = {
     },
     canSelectMelds(state, getters, rootState, rootGetters) {
         return rootGetters['trackers/permissions/core/canAct'] &&
-            rootGetters['trackers/derived/self/hasPlayedMeld'] &&
+            rootGetters['trackers/derived/players/currentSelfHasPlayedMeld'] &&
             getters.canMeldOnThisRotation;
     },
     canExtendMeld(state, getters, rootState, rootGetters) {
