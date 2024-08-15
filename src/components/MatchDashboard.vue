@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      initializeMatchId: 'trackers/matchPhase/initializeMatchId',
+      initializeMatchId: 'sessionState/matchPhase/initializeMatchId',
     }),
   },
 };

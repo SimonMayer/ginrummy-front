@@ -8,7 +8,7 @@ const authService = {
         return response.data;
     },
     async signOutAndRedirect() {
-        await store.dispatch('auth/interactions/signOut');
+        await store.dispatch('authentication/interactions/signOut');
         router.push('/');
     },
 };

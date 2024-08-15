@@ -26,7 +26,7 @@ export default {
   name: 'NavigationMenu',
   computed: {
     ...mapGetters({
-      isAuthenticated: 'auth/user/isAuthenticated',
+      isAuthenticated: 'authentication/user/isAuthenticated',
     }),
   },
   methods: {

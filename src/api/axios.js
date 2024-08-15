@@ -12,7 +12,7 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(config => {
-    const accessToken = store.getters['auth/tokens/restAccessToken'];
+    const accessToken = store.getters['authentication/tokens/restAccessToken'];
     if (accessToken) {
         config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
@@ -33,8 +33,8 @@ apiClient.interceptors.response.use(response => {
     if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
-            await store.dispatch('auth/tokens/refreshRestAccessToken');
-            const newRestAccessToken = store.getters['auth/tokens/restAccessToken'];
+            await store.dispatch('authentication/tokens/refreshRestAccessToken');
+            const newRestAccessToken = store.getters['authentication/tokens/restAccessToken'];
             originalRequest.headers['Authorization'] = `Bearer ${newRestAccessToken}`;
             return axios(originalRequest);
         } catch (refreshError) {

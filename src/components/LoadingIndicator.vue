@@ -13,7 +13,7 @@ export default {
   name: 'LoadingIndicator',
   computed: {
     ...mapGetters({
-      loading: 'trackers/loading/loading',
+      loading: 'sessionState/loading/loading',
     }),
   },
 };

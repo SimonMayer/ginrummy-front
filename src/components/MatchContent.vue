@@ -34,10 +34,10 @@ export default {
   mixins: [matchPhaseMixin],
   computed: {
     ...mapGetters({
-      maxPlayers: 'gameConfig/maxPlayers',
-      minPlayers: 'gameConfig/minPlayers',
-      players: 'trackers/derived/players/playersMatchData',
-      loading: 'trackers/loading/loading'
+      players: 'sessionState/derived/players/playersMatchData',
+      loading: 'sessionState/loading/loading',
+      maxPlayers: 'storage/gameConfig/maxPlayers',
+      minPlayers: 'storage/gameConfig/minPlayers',
     }),
     canStartMatch() {
       return this.match && this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
@@ -48,11 +48,11 @@ export default {
   },
   methods: {
     ...mapActions({
-      setError: 'error/setError',
-      fetchGameConfig: 'gameConfig/fetchGameConfig',
-      fetchMatch: 'matches/matches/fetchMatch',
-      fetchPlayersMatchData: 'players/match/fetchPlayersMatchData',
-      setLoading: 'trackers/loading/setLoading',
+      setError: 'sessionState/error/setError',
+      setLoading: 'sessionState/loading/setLoading',
+      fetchGameConfig: 'storage/gameConfig/fetchGameConfig',
+      fetchMatch: 'storage/matches/matches/fetchMatch',
+      fetchPlayersMatchData: 'storage/players/match/fetchPlayersMatchData',
     }),
     async startMatch() {
       if (!this.loading) {

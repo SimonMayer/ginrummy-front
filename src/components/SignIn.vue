@@ -22,9 +22,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      signIn: 'auth/interactions/signIn',
-      setError: 'error/setError',
-      setLoading: 'trackers/loading/setLoading',
+      signIn: 'authentication/interactions/signIn',
+      setError: 'sessionState/error/setError',
+      setLoading: 'sessionState/loading/setLoading',
     }),
     async handleSignIn() {
       const isAuthenticated = await this.signIn({username: this.username, password: this.password});

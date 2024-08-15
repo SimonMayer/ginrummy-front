@@ -22,7 +22,7 @@ export default {
   name: 'MatchList',
   computed: {
     ...mapGetters({
-      matchList: 'matches/list/matchList',
+      matchList: 'storage/matches/list/matchList',
     }),
     sortedMatchList() {
       return this.matchList.slice().sort((a, b) => new Date(b.create_time) - new Date(a.create_time));
@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchMatchList: 'matches/list/fetchMatchList',
+      fetchMatchList: 'storage/matches/list/fetchMatchList',
     }),
     formatDateTime,
   },

@@ -3,11 +3,11 @@ import {mapGetters} from 'vuex';
 export default {
     computed: {
         ...mapGetters({
-            getMatchById: 'matches/matches/getMatchById',
-            currentRoundId: 'trackers/derived/rounds/currentRoundId',
-            latestRoundId: 'trackers/derived/rounds/latestRoundId',
-            matchId: 'trackers/matchPhase/getMatchId',
-            visibleRoundId: 'trackers/derived/rounds/visibleRoundId',
+            getMatchById: 'storage/matches/matches/getMatchById',
+            currentRoundId: 'sessionState/derived/rounds/currentRoundId',
+            latestRoundId: 'sessionState/derived/rounds/latestRoundId',
+            matchId: 'sessionState/matchPhase/getMatchId',
+            visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
         }),
         match() {
             return this.getMatchById(this.matchId);

@@ -42,10 +42,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      handCards: 'trackers/derived/hand/currentHandCards',
-      hasCurrentTurn: 'trackers/permissions/core/isCurrentUserTurn',
-      playerMatchData: 'trackers/derived/players/selfPlayerMatchData',
-      playerRoundData: 'trackers/derived/players/visibleSelfPlayerRoundData',
+      handCards: 'sessionState/derived/hand/currentHandCards',
+      hasCurrentTurn: 'sessionState/permissions/core/isCurrentUserTurn',
+      playerMatchData: 'sessionState/derived/players/selfPlayerMatchData',
+      playerRoundData: 'sessionState/derived/players/visibleSelfPlayerRoundData',
     }),
     username() {
       return this.playerMatchData.username;

@@ -1,153 +1,157 @@
 import {createStore} from 'vuex';
-import authInteractions from '@/store/modules/auth/interactions';
-import authTokens from '@/store/modules/auth/tokens';
-import authUser from '@/store/modules/auth/user';
+import authenticationInteractions from '@/store/modules/authentication/interactions';
+import authenticationTokens from '@/store/modules/authentication/tokens';
+import authenticationUser from '@/store/modules/authentication/user';
 
-import cardsCards from '@/store/modules/cards/cards';
+import sessionStateDerivedDiscardPile from '@/store/modules/sessionState/derived/discardPile';
+import sessionStateDerivedDraw from '@/store/modules/sessionState/derived/draw';
+import sessionStateDerivedHand from '@/store/modules/sessionState/derived/hand';
+import sessionStateDerivedPlayers from '@/store/modules/sessionState/derived/players';
+import sessionStateDerivedRounds from '@/store/modules/sessionState/derived/rounds';
+import sessionStateDerivedSelected from '@/store/modules/sessionState/derived/selected';
+import sessionStateDerivedStockPile from '@/store/modules/sessionState/derived/stockPile';
+import sessionStateDerivedTurns from '@/store/modules/sessionState/derived/turns';
+import sessionStatePermissionsCore from '@/store/modules/sessionState/permissions/core';
+import sessionStatePermissionsDiscard from '@/store/modules/sessionState/permissions/discard';
+import sessionStatePermissionsDraw from '@/store/modules/sessionState/permissions/draw';
+import sessionStatePermissionsMelds from '@/store/modules/sessionState/permissions/melds';
+import sessionStateError from '@/store/modules/sessionState/error';
+import sessionStateFetch from '@/store/modules/sessionState/fetch';
+import sessionStateLoading from '@/store/modules/sessionState/loading';
+import sessionStateMatchPhase from '@/store/modules/sessionState/matchPhase';
+import sessionStateSelections from '@/store/modules/sessionState/selections';
 
-import matchesList from '@/store/modules/matches/list';
-import matchesMatches from '@/store/modules/matches/matches';
+import storageCardsCards from '@/store/modules/storage/cards/cards';
+import storageMatchesList from '@/store/modules/storage/matches/list';
+import storageMatchesMatches from '@/store/modules/storage/matches/matches';
+import storagePlayersMatch from '@/store/modules/storage/players/match';
+import storagePlayersRound from '@/store/modules/storage/players/round';
+import storagePlayersNonSelf from '@/store/modules/storage/players/nonSelf';
+import storagePlayersSelf from '@/store/modules/storage/players/self';
+import storageRegistryMatchAction from '@/store/modules/storage/registry/matchAction';
+import storageRegistryMatchRound from '@/store/modules/storage/registry/matchRound';
+import storageRegistryRoundTurn from '@/store/modules/storage/registry/roundTurn';
+import storageRoundsDiscardPiles from '@/store/modules/storage/rounds/discardPiles';
+import storageRoundsMelds from '@/store/modules/storage/rounds/melds';
+import storageRoundsStockPiles from '@/store/modules/storage/rounds/stockPiles';
+import storageSseConnection from '@/store/modules/storage/sse/connection';
+import storageSseDataProcessor from '@/store/modules/storage/sse/dataProcessor';
+import storageTurnsActions from '@/store/modules/storage/turns/actions';
+import storageTurnsTurns from '@/store/modules/storage/turns/turns';
+import storageGameConfig from '@/store/modules/storage/gameConfig';
+import storageHands from '@/store/modules/storage/hands';
+import storageSearch from '@/store/modules/storage/search';
 
-import playersMatch from '@/store/modules/players/match';
-import playersRound from '@/store/modules/players/round';
-import playersNonSelf from '@/store/modules/players/nonSelf';
-import playersSelf from '@/store/modules/players/self';
-
-import registryMatchAction from '@/store/modules/registry/matchAction';
-import registryMatchRound from '@/store/modules/registry/matchRound';
-import registryRoundTurn from '@/store/modules/registry/roundTurn';
-
-import roundsDiscardPiles from '@/store/modules/rounds/discardPiles';
-import roundsMelds from '@/store/modules/rounds/melds';
-import roundsStockPiles from '@/store/modules/rounds/stockPiles';
-
-import sseConnection from '@/store/modules/sse/connection';
-import sseDataProcessor from '@/store/modules/sse/dataProcessor';
-
-import trackersDerivedDiscardPile from '@/store/modules/trackers/derived/discardPile';
-import trackersDerivedDraw from '@/store/modules/trackers/derived/draw';
-import trackersDerivedHand from '@/store/modules/trackers/derived/hand';
-import trackersDerivedPlayers from '@/store/modules/trackers/derived/players';
-import trackersDerivedRounds from '@/store/modules/trackers/derived/rounds';
-import trackersDerivedSelected from '@/store/modules/trackers/derived/selected';
-import trackersDerivedStockPile from '@/store/modules/trackers/derived/stockPile';
-import trackersDerivedTurns from '@/store/modules/trackers/derived/turns';
-import trackersPermissionsCore from '@/store/modules/trackers/permissions/core';
-import trackersPermissionsDiscard from '@/store/modules/trackers/permissions/discard';
-import trackersPermissionsDraw from '@/store/modules/trackers/permissions/draw';
-import trackersPermissionsMelds from '@/store/modules/trackers/permissions/melds';
-import trackersFetch from '@/store/modules/trackers/fetch';
-import trackersLoading from '@/store/modules/trackers/loading';
-import trackersMatchPhase from '@/store/modules/trackers/matchPhase';
-import trackersSelections from '@/store/modules/trackers/selections';
-
-import turnsActions from '@/store/modules/turns/actions';
-import turnsTurns from '@/store/modules/turns/turns';
-
-import error from '@/store/modules/error';
-import fetchHandler from '@/store/modules/fetchHandler';
-import gameConfig from '@/store/modules/gameConfig';
-import hands from '@/store/modules/hands';
-import search from '@/store/modules/search';
+import utilsFetchHandler from '@/store/modules/utils/fetchHandler';
 
 const store = createStore({
     modules: {
-        auth: {
+        authentication: {
             namespaced: true,
             modules: {
-                interactions: authInteractions,
-                user: authUser,
-                tokens: authTokens,
+                interactions: authenticationInteractions,
+                user: authenticationUser,
+                tokens: authenticationTokens,
             },
         },
-        cards: {
+        storage: {
             namespaced: true,
             modules: {
-                cards: cardsCards,
+                cards: {
+                    namespaced: true,
+                    modules: {
+                        cards: storageCardsCards,
+                    },
+                },
+                gameConfig: storageGameConfig,
+                hands: storageHands,
+                matches: {
+                    namespaced: true,
+                    modules: {
+                        list: storageMatchesList,
+                        matches: storageMatchesMatches,
+                    },
+                },
+                players: {
+                    namespaced: true,
+                    modules: {
+                        match: storagePlayersMatch,
+                        round: storagePlayersRound,
+                        nonSelf: storagePlayersNonSelf,
+                        self: storagePlayersSelf,
+                    },
+                },
+                registry: {
+                    namespaced: true,
+                    modules: {
+                        matchAction: storageRegistryMatchAction,
+                        matchRound: storageRegistryMatchRound,
+                        roundTurn: storageRegistryRoundTurn,
+                    },
+                },
+                rounds: {
+                    namespaced: true,
+                    modules: {
+                        discardPiles: storageRoundsDiscardPiles,
+                        melds: storageRoundsMelds,
+                        stockPiles: storageRoundsStockPiles,
+                    },
+                },
+                search: storageSearch,
+                sse: {
+                    namespaced: true,
+                    modules: {
+                        connection: storageSseConnection,
+                        dataProcessor: storageSseDataProcessor,
+                    },
+                },
+                turns: {
+                    namespaced: true,
+                    modules: {
+                        actions: storageTurnsActions,
+                        turns: storageTurnsTurns,
+                    },
+                },
             },
         },
-        error,
-        fetchHandler,
-        gameConfig,
-        hands,
-        matches: {
-            namespaced: true,
-            modules: {
-                list: matchesList,
-                matches: matchesMatches,
-            },
-        },
-        players: {
-            namespaced: true,
-            modules: {
-                match: playersMatch,
-                round: playersRound,
-                nonSelf: playersNonSelf,
-                self: playersSelf,
-            },
-        },
-        registry: {
-            namespaced: true,
-            modules: {
-                matchAction: registryMatchAction,
-                matchRound: registryMatchRound,
-                roundTurn: registryRoundTurn,
-            },
-        },
-        rounds: {
-            namespaced: true,
-            modules: {
-                discardPiles: roundsDiscardPiles,
-                melds: roundsMelds,
-                stockPiles: roundsStockPiles,
-            },
-        },
-        search,
-        sse: {
-            namespaced: true,
-            modules: {
-                connection: sseConnection,
-                dataProcessor: sseDataProcessor,
-            },
-        },
-        trackers: {
+        sessionState: {
             namespaced: true,
             modules: {
                 derived: {
                     namespaced: true,
                     modules: {
-                        discardPile: trackersDerivedDiscardPile,
-                        draw: trackersDerivedDraw,
-                        hand: trackersDerivedHand,
-                        players: trackersDerivedPlayers,
-                        rounds: trackersDerivedRounds,
-                        selected: trackersDerivedSelected,
-                        stockPile: trackersDerivedStockPile,
-                        turns: trackersDerivedTurns,
+                        discardPile: sessionStateDerivedDiscardPile,
+                        draw: sessionStateDerivedDraw,
+                        hand: sessionStateDerivedHand,
+                        players: sessionStateDerivedPlayers,
+                        rounds: sessionStateDerivedRounds,
+                        selected: sessionStateDerivedSelected,
+                        stockPile: sessionStateDerivedStockPile,
+                        turns: sessionStateDerivedTurns,
                     },
                 },
-                fetch: trackersFetch,
-                loading: trackersLoading,
-                matchPhase: trackersMatchPhase,
+                error: sessionStateError,
+                fetch: sessionStateFetch,
+                loading: sessionStateLoading,
+                matchPhase: sessionStateMatchPhase,
                 permissions: {
                     namespaced: true,
                     modules: {
-                        core: trackersPermissionsCore,
-                        discard: trackersPermissionsDiscard,
-                        draw: trackersPermissionsDraw,
-                        melds: trackersPermissionsMelds,
+                        core: sessionStatePermissionsCore,
+                        discard: sessionStatePermissionsDiscard,
+                        draw: sessionStatePermissionsDraw,
+                        melds: sessionStatePermissionsMelds,
                     },
                 },
-                selections: trackersSelections,
+                selections: sessionStateSelections,
             },
         },
-        turns: {
+        utils: {
             namespaced: true,
             modules: {
-                actions: turnsActions,
-                turns: turnsTurns,
-            },
-        },
+                fetchHandler: utilsFetchHandler,
+            }
+        }
     },
 });
 

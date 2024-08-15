@@ -13,8 +13,8 @@ export default {
   name: 'CreateMatch',
   methods: {
     ...mapActions({
-      setError: 'error/setError',
-      setLoading: 'trackers/loading/setLoading',
+      setError: 'sessionState/error/setError',
+      setLoading: 'sessionState/loading/setLoading',
     }),
     async createMatch() {
       this.setLoading(true);

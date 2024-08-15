@@ -15,8 +15,8 @@ export default {
   name: 'ErrorBox',
   computed: {
     ...mapGetters({
-      error: 'error/error',
-      errorTitle: 'error/errorTitle',
+      error: 'sessionState/error/error',
+      errorTitle: 'sessionState/error/errorTitle',
     }),
     hasError() {
       return !!this.error;
@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      clearError: 'error/clearError',
+      clearError: 'sessionState/error/clearError',
     }),
   },
 };

@@ -15,7 +15,7 @@ class SseService {
     }
 
     async setUrl() {
-        const token = await store.getters['auth/tokens/sseAccessToken'];
+        const token = await store.getters['authentication/tokens/sseAccessToken'];
         const url = new URL(`${BASE_URL}${this.endpoint}`);
 
         for (const [key, value] of Object.entries(this.params)) {
@@ -30,7 +30,7 @@ class SseService {
         if (this.retryCount < this.maxRetries) {
             this.retryCount++;
             try {
-                await store.dispatch('auth/tokens/refreshSseAccessToken');
+                await store.dispatch('authentication/tokens/refreshSseAccessToken');
                 setTimeout(() => this.connect(onMessage, onError), this.retryDelay);
             } catch (refreshError) {
                 if (onError) {

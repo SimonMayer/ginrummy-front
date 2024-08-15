@@ -88,7 +88,6 @@
         <div class="self-player-container">
           <SelfMatchPlayer
               v-if="visibleRoundId && selfPlayerMatchData"
-              :key="selfPlayerMatchData.user_id"
               :selectable="isHandSelectable"
               class="self-player"
           />
@@ -131,51 +130,50 @@ export default {
   },
   computed: {
     ...mapGetters({
-      gameConfig: 'gameConfig/gameConfig',
-      getCardsByHandId: 'hands/getCardsByHandId',
-      getMatchById: 'matches/matches/getMatchById',
-      getNonSelfPlayersMatchDataByMatchId: 'players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
-      getSelfPlayerMatchDataByMatchId: 'players/self/getSelfPlayerMatchDataByMatchId',
-      getPlayerRoundDataByRoundAndPlayerIds: 'players/round/getPlayerRoundDataByRoundAndPlayerIds',
-      getMeldsByRoundId: 'rounds/melds/getMeldsByRoundId',
-      currentDiscardPileCardIds: 'trackers/derived/discardPile/currentDiscardPileCardIds',
-      currentTopDiscardPileCard: 'trackers/derived/discardPile/currentTopDiscardPileCard',
-      currentTopDiscardPileCardId: 'trackers/derived/discardPile/currentTopDiscardPileCardId',
-      hasDrawActionInCurrentTurn: 'trackers/derived/draw/hasDrawActionInCurrentTurn',
-      currentHandCardIds: 'trackers/derived/hand/currentHandCardIds',
-      hasAllHandCardsSelected: 'trackers/derived/selected/hasAllHandCardsSelected',
-      hasNoDiscardPileCardsSelected: 'trackers/derived/selected/hasNoDiscardPileCardsSelected',
-      hasNoHandCardsSelected: 'trackers/derived/selected/hasNoHandCardsSelected',
-      hasOneDiscardPileCardSelected: 'trackers/derived/selected/hasOneDiscardPileCardSelected',
-      hasOneHandCardSelected: 'trackers/derived/selected/hasOneHandCardSelected',
-      hasSelectedMeldOrCards: 'trackers/derived/selected/hasSelectedMeldOrCards',
-      isAnyDiscardPileCardSelected: 'trackers/derived/selected/isAnyDiscardPileCardSelected',
-      isAnyDiscardPileCardSelectedBelowTop: 'trackers/derived/selected/isAnyDiscardPileCardSelectedBelowTop',
-      isOnlyTopDiscardPileCardSelected: 'trackers/derived/selected/isOnlyTopDiscardPileCardSelected',
-      lowestSelectedCardIdInDiscardPile: 'trackers/derived/selected/lowestSelectedCardIdInDiscardPile',
-      selectedDiscardPileCardCount: 'trackers/derived/selected/selectedDiscardPileCardCount',
-      selectedDiscardPileCardIds: 'trackers/derived/selected/selectedDiscardPileCardIds',
-      selectedDiscardPileCards: 'trackers/derived/selected/selectedDiscardPileCards',
-      selectedHandCardCount: 'trackers/derived/selected/selectedHandCardCount',
-      selectedHandCardIds: 'trackers/derived/selected/selectedHandCardIds',
-      selectedHandCards: 'trackers/derived/selected/selectedHandCards',
-      selectedMeld: 'trackers/derived/selected/selectedMeld',
-      selectedMeldCards: 'trackers/derived/selected/selectedMeldCards',
-      currentStockPileSize: 'trackers/derived/stockPile/currentStockPileSize',
-      canAct: 'trackers/permissions/core/canAct',
-      canDiscard: 'trackers/permissions/discard/canDiscard',
-      canDraw: 'trackers/permissions/draw/canDraw',
-      canDrawMultiple: 'trackers/permissions/draw/canDrawMultiple',
-      canDrawMultipleFromDiscardPile: 'trackers/permissions/draw/canDrawMultipleFromDiscardPile',
-      canDrawOne: 'trackers/permissions/draw/canDrawOne',
-      canDrawOneFromDiscardPile: 'trackers/permissions/draw/canDrawOneFromDiscardPile',
-      canDrawOneFromStockPile: 'trackers/permissions/draw/canDrawOneFromStockPile',
-      canExtendMeldFromHand: 'trackers/permissions/melds/canExtendMeldFromHand',
-      canPlayMeldFromHand: 'trackers/permissions/melds/canPlayMeldFromHand',
-      canPlayRunFromHand: 'trackers/permissions/melds/canPlayRunFromHand',
-      canPlaySetFromHand: 'trackers/permissions/melds/canPlaySetFromHand',
-      selectedMeldId: 'trackers/selections/selectedMeldId',
-      loading: 'trackers/loading/loading',
+      currentDiscardPileCardIds: 'sessionState/derived/discardPile/currentDiscardPileCardIds',
+      currentTopDiscardPileCard: 'sessionState/derived/discardPile/currentTopDiscardPileCard',
+      currentTopDiscardPileCardId: 'sessionState/derived/discardPile/currentTopDiscardPileCardId',
+      hasDrawActionInCurrentTurn: 'sessionState/derived/draw/hasDrawActionInCurrentTurn',
+      currentRoundHandId: 'sessionState/derived/hand/currentHandId',
+      currentHandCardIds: 'sessionState/derived/hand/currentHandCardIds',
+      hasAllHandCardsSelected: 'sessionState/derived/selected/hasAllHandCardsSelected',
+      hasNoDiscardPileCardsSelected: 'sessionState/derived/selected/hasNoDiscardPileCardsSelected',
+      hasNoHandCardsSelected: 'sessionState/derived/selected/hasNoHandCardsSelected',
+      hasOneDiscardPileCardSelected: 'sessionState/derived/selected/hasOneDiscardPileCardSelected',
+      hasOneHandCardSelected: 'sessionState/derived/selected/hasOneHandCardSelected',
+      hasSelectedMeldOrCards: 'sessionState/derived/selected/hasSelectedMeldOrCards',
+      isAnyDiscardPileCardSelected: 'sessionState/derived/selected/isAnyDiscardPileCardSelected',
+      isAnyDiscardPileCardSelectedBelowTop: 'sessionState/derived/selected/isAnyDiscardPileCardSelectedBelowTop',
+      isOnlyTopDiscardPileCardSelected: 'sessionState/derived/selected/isOnlyTopDiscardPileCardSelected',
+      lowestSelectedCardIdInDiscardPile: 'sessionState/derived/selected/lowestSelectedCardIdInDiscardPile',
+      selectedDiscardPileCardCount: 'sessionState/derived/selected/selectedDiscardPileCardCount',
+      selectedDiscardPileCardIds: 'sessionState/derived/selected/selectedDiscardPileCardIds',
+      selectedDiscardPileCards: 'sessionState/derived/selected/selectedDiscardPileCards',
+      selectedHandCardCount: 'sessionState/derived/selected/selectedHandCardCount',
+      selectedHandCardIds: 'sessionState/derived/selected/selectedHandCardIds',
+      selectedHandCards: 'sessionState/derived/selected/selectedHandCards',
+      selectedMeld: 'sessionState/derived/selected/selectedMeld',
+      selectedMeldCards: 'sessionState/derived/selected/selectedMeldCards',
+      currentStockPileSize: 'sessionState/derived/stockPile/currentStockPileSize',
+      canAct: 'sessionState/permissions/core/canAct',
+      canDiscard: 'sessionState/permissions/discard/canDiscard',
+      canDraw: 'sessionState/permissions/draw/canDraw',
+      canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
+      canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
+      canDrawOne: 'sessionState/permissions/draw/canDrawOne',
+      canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
+      canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
+      canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
+      canPlayMeldFromHand: 'sessionState/permissions/melds/canPlayMeldFromHand',
+      canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
+      canPlaySetFromHand: 'sessionState/permissions/melds/canPlaySetFromHand',
+      selectedMeldId: 'sessionState/selections/selectedMeldId',
+      loading: 'sessionState/loading/loading',
+      gameConfig: 'storage/gameConfig/gameConfig',
+      getNonSelfPlayersMatchDataByMatchId: 'storage/players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
+      getSelfPlayerMatchDataByMatchId: 'storage/players/self/getSelfPlayerMatchDataByMatchId',
+      getPlayerRoundDataByRoundAndPlayerIds: 'storage/players/round/getPlayerRoundDataByRoundAndPlayerIds',
+      getMeldsByRoundId: 'storage/rounds/melds/getMeldsByRoundId',
     }),
     allowMeldsFromRotation() {
       return this.gameConfig.allowMeldsFromRotation;
@@ -189,23 +187,11 @@ export default {
     visibleRoundMelds() {
       return this.getMeldsByRoundId(this.visibleRoundId);
     },
-    currentRoundHandId() {
-      return this.selfPlayerCurrentRoundData?.hand?.hand_id;
-    },
     nonSelfPlayersMatchData() {
       return this.getNonSelfPlayersMatchDataByMatchId(this.matchId);
     },
     selfPlayerMatchData() {
       return this.getSelfPlayerMatchDataByMatchId(this.matchId);
-    },
-    selfPlayerCurrentRoundData() {
-      if (!this.selfPlayerMatchData || !this.currentRoundId) {
-        return null;
-      }
-      return this.getPlayerRoundDataByRoundAndPlayerIds({
-        roundId: this.currentRoundId,
-        playerId: this.selfPlayerMatchData.user_id,
-      });
     },
     isHandSelectable() {
       return this.canDrawMultiple || (this.canAct && this.hasDrawActionInCurrentTurn);
@@ -213,18 +199,18 @@ export default {
   },
   methods: {
     ...mapActions({
-      unselectAllCards: 'trackers/selections/unselectAllCards',
-      setError: 'error/setError',
-      addCardIdsToHand: 'hands/addCardIdsToHand',
-      removeCardIdsFromHand: 'hands/removeCardIdsFromHand',
-      fetchPlayersRoundData: 'players/round/fetchPlayersRoundData',
-      setLatestActionId: 'registry/matchAction/setLatestActionId',
-      setCurrentRoundId: 'registry/matchRound/setCurrentRoundId',
-      fetchCurrentTurn: 'registry/roundTurn/fetchCurrentTurn',
-      removeTopDiscardPileCard: 'rounds/discardPiles/removeTopDiscardPileCard',
-      initializeSse: 'sse/connection/initializeSse',
-      cleanupSse: 'sse/connection/cleanupSse',
-      setLoading: 'trackers/loading/setLoading',
+      unselectAllCards: 'sessionState/selections/unselectAllCards',
+      setError: 'sessionState/error/setError',
+      addCardIdsToHand: 'storage/hands/addCardIdsToHand',
+      removeCardIdsFromHand: 'storage/hands/removeCardIdsFromHand',
+      fetchPlayersRoundData: 'storage/players/round/fetchPlayersRoundData',
+      setLatestActionId: 'storage/registry/matchAction/setLatestActionId',
+      setCurrentRoundId: 'storage/registry/matchRound/setCurrentRoundId',
+      fetchCurrentTurn: 'storage/registry/roundTurn/fetchCurrentTurn',
+      removeTopDiscardPileCard: 'storage/rounds/discardPiles/removeTopDiscardPileCard',
+      initializeSse: 'storage/sse/connection/initializeSse',
+      cleanupSse: 'storage/sse/connection/cleanupSse',
+      setLoading: 'sessionState/loading/setLoading',
     }),
     async performAction(action, errorMessage) {
       await this.setLoading(true);

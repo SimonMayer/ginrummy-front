@@ -25,8 +25,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      visibleCards: 'trackers/derived/discardPile/visibleDiscardPileCards',
-      selectableCards: 'trackers/derived/discardPile/selectableDiscardPileCards',
+      visibleCards: 'sessionState/derived/discardPile/visibleDiscardPileCards',
+      selectableCards: 'sessionState/derived/discardPile/selectableDiscardPileCards',
     }),
     isEmpty() {
       return this.visibleCards?.length === 0;

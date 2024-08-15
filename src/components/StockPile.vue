@@ -21,8 +21,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      size: 'trackers/derived/stockPile/visibleStockPileSize',
-      canDrawOneFromStockPile: 'trackers/permissions/draw/canDrawOneFromStockPile',
+      size: 'sessionState/derived/stockPile/visibleStockPileSize',
+      canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
     }),
     isEmpty() {
       return this.size === 0;
