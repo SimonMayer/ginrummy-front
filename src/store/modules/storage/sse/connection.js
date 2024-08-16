@@ -34,6 +34,8 @@ const actions = {
                     console.error('SSE error:', error);
                 },
             );
+
+            return sseService;
         } catch (error) {
             console.error('Failed to initialize SSE:', error);
         }

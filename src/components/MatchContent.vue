@@ -3,7 +3,7 @@
     <MatchTable/>
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
     <ItemSearch
-        v-if="!match.start_time && players.length < maxPlayers"
+        v-if="canAddPlayerToMatch"
         :placeholder="'Search for a player…'"
         :searchFunction="searchUsers"
         :displayProperty="'username'"
@@ -18,7 +18,6 @@
 <script>
 import MatchTable from '@/components/MatchTable.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
-import matchesService from '@/services/matchesService';
 import usersService from '@/services/usersService';
 import {mapActions, mapGetters} from 'vuex';
 import matchPhaseMixin from '@/mixins/matchPhaseMixin';
@@ -34,15 +33,15 @@ export default {
     ...mapGetters({
       players: 'sessionState/derived/players/playersMatchData',
       maxPlayers: 'storage/gameConfig/maxPlayers',
+      canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
       canStartMatch: 'sessionState/permissions/match/canStartMatch',
     }),
   },
   methods: {
     ...mapActions({
-      logError: 'sessionState/indicators/errorLog/addLogEntry',
-      fetchMatch: 'storage/matches/matches/fetchMatch',
-      fetchPlayersMatchData: 'storage/players/matchData/fetchPlayersMatchData',
+      addPlayer: 'interactions/matches/players/addPlayer',
       startMatch: 'interactions/matches/start/startMatch',
+      logError: 'sessionState/indicators/errorLog/addLogEntry',
     }),
 
     async searchUsers(term) {
@@ -51,18 +50,6 @@ export default {
       } catch (error) {
         this.logError({title: 'Failed to search users!', error: error});
         return [];
-      }
-    },
-    async addPlayer(user) {
-      if (this.players.length < this.maxPlayers) {
-        try {
-          await matchesService.addPlayers(this.matchId, [user.user_id]);
-          await this.fetchPlayersMatchData({matchId: this.matchId, forceFetch: true});
-        } catch (error) {
-          this.logError({title: 'Failed to add player!', error: error});
-        }
-      } else {
-        alert('Maximum number of players reached.');
       }
     },
   },

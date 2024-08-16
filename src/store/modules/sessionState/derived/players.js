@@ -1,7 +1,10 @@
 const getters = {
     playersMatchData(state, getters, rootState, rootGetters) {
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
-        return rootGetters['storage/players/matchData/getPlayersMatchDataByMatchId'](matchId) || null;
+        return rootGetters['storage/players/matchData/getPlayersMatchDataByMatchId'](matchId) || [];
+    },
+    playerCount(state, getters) {
+        return getters.playersMatchData.length;
     },
     selfPlayerMatchData(state, getters, rootState, rootGetters) {
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
