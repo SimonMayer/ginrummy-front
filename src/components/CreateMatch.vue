@@ -13,18 +13,20 @@ export default {
   name: 'CreateMatch',
   methods: {
     ...mapActions({
-      setError: 'sessionState/error/setError',
-      setLoading: 'sessionState/loading/setLoading',
+      logError: 'sessionState/indicators/errorLog/addLogEntry',
+      recordLoadingStart: 'sessionState/indicators/loading/recordLoadingStart',
+      recordLoadingEnd: 'sessionState/indicators/loading/recordLoadingEnd',
     }),
     async createMatch() {
-      this.setLoading(true);
+      const key = 'createMatch';
+      this.recordLoadingStart(key);
       try {
         const response = await apiClient.post('/matches'); // todo — use a service
         alert(`Match created! Match ID: ${response.data.match_id}`);
       } catch (error) {
-        this.setError({title: 'Failed to create match', error});
+        this.logError({title: 'Failed to create match', error});
       } finally {
-        this.setLoading(false);
+        this.recordLoadingEnd(key);
       }
     },
   },

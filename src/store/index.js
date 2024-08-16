@@ -10,13 +10,13 @@ import sessionStateDerivedRounds from '@/store/modules/sessionState/derived/roun
 import sessionStateDerivedSelectedItems from '@/store/modules/sessionState/derived/selectedItems';
 import sessionStateDerivedStockPile from '@/store/modules/sessionState/derived/stockPile';
 import sessionStateDerivedTurn from '@/store/modules/sessionState/derived/turn';
+import sessionStateIndicatorsFetch from '@/store/modules/sessionState/indicators/fetch';
+import sessionStateIndicatorsErrorLog from '@/store/modules/sessionState/indicators/errorLog';
+import sessionStateIndicatorsLoading from '@/store/modules/sessionState/indicators/loading';
 import sessionStatePermissionsCore from '@/store/modules/sessionState/permissions/core';
 import sessionStatePermissionsDiscard from '@/store/modules/sessionState/permissions/discard';
 import sessionStatePermissionsDraw from '@/store/modules/sessionState/permissions/draw';
 import sessionStatePermissionsMelds from '@/store/modules/sessionState/permissions/melds';
-import sessionStateError from '@/store/modules/sessionState/error';
-import sessionStateFetchRecords from '@/store/modules/sessionState/fetchRecords';
-import sessionStateLoading from '@/store/modules/sessionState/loading';
 import sessionStateMatchIdentifier from '@/store/modules/sessionState/matchIdentifier';
 import sessionStateSelections from '@/store/modules/sessionState/selections';
 
@@ -135,9 +135,14 @@ const store = createStore({
                         turn: sessionStateDerivedTurn,
                     },
                 },
-                error: sessionStateError,
-                fetchRecords: sessionStateFetchRecords,
-                loading: sessionStateLoading,
+                indicators: {
+                    namespaced: true,
+                    modules: {
+                        fetch: sessionStateIndicatorsFetch,
+                        errorLog: sessionStateIndicatorsErrorLog,
+                        loading: sessionStateIndicatorsLoading,
+                    },
+                },
                 matchIdentifier: sessionStateMatchIdentifier,
                 permissions: {
                     namespaced: true,

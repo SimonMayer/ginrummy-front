@@ -2,7 +2,8 @@ import authService from '@/services/authService';
 
 const actions = {
     async signIn({dispatch, rootGetters}, {username, password}) {
-        dispatch('sessionState/loading/setLoading', true, {root: true});
+        const key = 'signIn';
+        dispatch('sessionState/indicators/loading/recordLoadingStart', key, {root: true});
 
         try {
             const data = await authService.signIn(username, password);
@@ -12,10 +13,10 @@ const actions = {
             await dispatch('authentication/user/setUserId', data.user_id, {root: true});
             await dispatch('authentication/user/setAuthenticated', true, {root: true});
         } catch (error) {
-            dispatch('sessionState/error/setError', {title: 'Sign in failed!', error}, {root: true});
+            dispatch('sessionState/indicators/errorLog/addLogEntry', {title: 'Sign in failed!', error}, {root: true});
             await dispatch('signOut');
         } finally {
-            dispatch('sessionState/loading/setLoading', false, {root: true});
+            dispatch('sessionState/indicators/loading/recordLoadingEnd', key, {root: true});
         }
 
         return rootGetters['authentication/user/isAuthenticated'];

@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div v-if="loading" class="loading-overlay">
+    <div v-if="isLoading" class="loading-overlay">
       <div class="spinner"></div>
     </div>
   </transition>
@@ -13,7 +13,7 @@ export default {
   name: 'LoadingIndicator',
   computed: {
     ...mapGetters({
-      loading: 'sessionState/loading/loading',
+      isLoading: 'sessionState/indicators/loading/isLoading',
     }),
   },
 };

@@ -3,7 +3,7 @@
     <div class="error-box">
       <div class="title">{{ errorTitle }}</div>
       <div v-if="errorMessage" class="message">{{ errorMessage }}</div>
-      <div class="close-button" @click="clearError"></div>
+      <div class="close-button" @click="clearLogEntries"></div>
     </div>
   </div>
 </template>
@@ -15,11 +15,16 @@ export default {
   name: 'ErrorBox',
   computed: {
     ...mapGetters({
-      error: 'sessionState/error/error',
-      errorTitle: 'sessionState/error/errorTitle',
+      logEntry: 'sessionState/indicators/errorLog/getLatestLogEntry',
     }),
     hasError() {
-      return !!this.error;
+      return !!this.logEntry;
+    },
+    error() {
+      return this.logEntry?.error || null;
+    },
+    errorTitle() {
+      return this.logEntry?.title || null;
     },
     errorMessage() {
       return this.error ? (this.error.response?.data?.error || this.error.message || '') : '';
@@ -27,7 +32,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      clearError: 'sessionState/error/clearError',
+      clearLogEntries: 'sessionState/indicators/errorLog/clearLogEntries',
     }),
   },
 };

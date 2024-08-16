@@ -199,8 +199,10 @@ export default {
   },
   methods: {
     ...mapActions({
+      logError: 'sessionState/indicators/errorLog/addLogEntry',
+      recordLoadingStart: 'sessionState/indicators/loading/recordLoadingStart',
+      recordLoadingEnd: 'sessionState/indicators/loading/recordLoadingEnd',
       unselectAllCards: 'sessionState/selections/unselectAllCards',
-      setError: 'sessionState/error/setError',
       addCardIdsToHand: 'storage/hands/addCardIdsToHand',
       removeCardIdsFromHand: 'storage/hands/removeCardIdsFromHand',
       fetchPlayersRoundData: 'storage/players/round/fetchPlayersRoundData',
@@ -210,16 +212,15 @@ export default {
       removeTopDiscardPileCard: 'storage/rounds/discardPiles/removeTopDiscardPileCard',
       initializeSse: 'storage/sse/connection/initializeSse',
       cleanupSse: 'storage/sse/connection/cleanupSse',
-      setLoading: 'sessionState/loading/setLoading',
     }),
-    async performAction(action, errorMessage) {
-      await this.setLoading(true);
+    async performAction(key, action, errorMessage) {
+        this.recordLoadingStart(key);
       try {
         await action();
       } catch (error) {
-        await this.setError({title: errorMessage, error: error});
+        await this.logError({title: errorMessage, error: error});
       } finally {
-        await this.setLoading(false);
+        this.recordLoadingEnd(key);
       }
     },
     async handleDrawFromStockPileClick() {
@@ -232,7 +233,7 @@ export default {
       if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile) || !this.canDraw) {
         return;
       }
-      await this.performAction(async () => {
+      await this.performAction('drawOne', async () => {
         let cardId;
         if (pileType === 'stock') {
           cardId = this.currentStockPileSize > 0
@@ -250,7 +251,7 @@ export default {
       if (!this.canDrawMultipleFromDiscardPile) {
         return;
       }
-      await this.performAction(async () => {
+      await this.performAction('drawMultiple', async () => {
         const handCardIds = this.selectedHandCardIds;
         const newHandCardIds = await turnsService.drawMultipleFromDiscardPile(
             this.matchId,
@@ -267,7 +268,7 @@ export default {
       if (!this.canDiscard) {
         return;
       }
-      await this.performAction(async () => {
+      await this.performAction('discard', async () => {
         const cardId = this.selectedHandCardIds[0];
         await turnsService.discardCard(this.matchId, cardId);
         await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: [cardId]});
@@ -279,7 +280,7 @@ export default {
         return;
       }
       const meldType = this.canPlaySetFromHand ? 'set' : 'run';
-      await this.performAction(async () => {
+      await this.performAction('playMeld', async () => {
         const cardIds = this.selectedHandCardIds;
         await turnsService.playMeld(this.matchId, cardIds, meldType);
         await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
@@ -290,7 +291,7 @@ export default {
       if (!this.canExtendMeldFromHand) {
         return;
       }
-      await this.performAction(async () => {
+      await this.performAction('extendMeld', async () => {
         const cardIds = this.selectedHandCardIds;
         await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
         await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
@@ -298,7 +299,7 @@ export default {
       }, 'Failed to extend meld!');
     },
     async handleStartNewRound() {
-      await this.performAction(async () => {
+      await this.performAction('startNewRound', async () => {
         const roundId = await roundsService.startRound(this.matchId);
         await this.setCurrentRoundId({matchId: this.matchId, roundId: roundId});
         await this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId});

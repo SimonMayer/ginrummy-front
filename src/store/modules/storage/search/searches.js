@@ -28,15 +28,15 @@ const actions = {
         }
     },
     async performSearch({commit, dispatch}, {key, term, searchFunction}) {
-        dispatch('sessionState/loading/setLoading', true, {root: true});
+        dispatch('sessionState/indicators/loading/recordLoadingStart', key, {root: true});
         commit('SET_SEARCH_TERM', {key, term});
         try {
             const results = await searchFunction(term);
             commit('SET_SEARCH_RESULTS', {key, results});
         } catch (error) {
-            dispatch('sessionState/error/setError', {title: 'Search failed!', error}, {root: true});
+            dispatch('sessionState/indicators/errorLog/addLogEntry', {title: 'Search failed!', error}, {root: true});
         } finally {
-            dispatch('sessionState/loading/setLoading', false, {root: true});
+            dispatch('sessionState/indicators/loading/recordLoadingEnd', key, {root: true});
         }
     },
 };

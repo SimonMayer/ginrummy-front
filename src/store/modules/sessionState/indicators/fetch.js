@@ -1,18 +1,18 @@
 const state = {
-    lastFetched: {},
-    isFetching: {},
+    lastFetchedTimestamps: {},
+    isFetchingFlags: {},
 };
 
 const mutations = {
     RECORD_FETCH_ATTEMPT(state, key) {
-        state.isFetching[key] = true;
+        state.isFetchingFlags[key] = true;
     },
     RECORD_SUCCESSFUL_FETCH(state, key) {
-        state.lastFetched[key] = Date.now();
-        state.isFetching[key] = false;
+        state.lastFetchedTimestamps[key] = Date.now();
+        state.isFetchingFlags[key] = false;
     },
     RECORD_FAILED_FETCH(state, key) {
-        state.isFetching[key] = false;
+        state.isFetchingFlags[key] = false;
     },
 };
 
@@ -27,21 +27,16 @@ const actions = {
         commit('RECORD_FAILED_FETCH', key);
     },
     shouldFetch({state}, {key, timeout, forceFetch}) {
-        const isFetching = state.isFetching[key];
-        const lastFetched = state.lastFetched[key];
+        const isFetchingFlags = state.isFetchingFlags[key];
+        const lastFetchedTimestamp = state.lastFetchedTimestamps[key];
 
         if (forceFetch) {
             return true;
-        } else if (isFetching || (lastFetched && (Date.now() - lastFetched < timeout))) {
+        } else if (isFetchingFlags || (lastFetchedTimestamp && (Date.now() - lastFetchedTimestamp < timeout))) {
             return false;
         }
         return true;
     },
-};
-
-const getters = {
-    getLastFetched: (state) => (key) => state.lastFetched[key],
-    getFetchingStatus: (state) => (key) => state.isFetching[key],
 };
 
 export default {
@@ -49,5 +44,4 @@ export default {
     state,
     mutations,
     actions,
-    getters,
 };

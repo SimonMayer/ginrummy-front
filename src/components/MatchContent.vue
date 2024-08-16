@@ -48,23 +48,25 @@ export default {
   },
   methods: {
     ...mapActions({
-      setError: 'sessionState/error/setError',
-      setLoading: 'sessionState/loading/setLoading',
+      logError: 'sessionState/indicators/errorLog/addLogEntry',
+      recordLoadingStart: 'sessionState/indicators/loading/recordLoadingStart',
+      recordLoadingEnd: 'sessionState/indicators/loading/recordLoadingEnd',
       fetchGameConfig: 'storage/gameConfig/fetchGameConfig',
       fetchMatch: 'storage/matches/matches/fetchMatch',
       fetchPlayersMatchData: 'storage/players/match/fetchPlayersMatchData',
     }),
     async startMatch() {
       if (!this.loading) {
-        this.setLoading(true);
+        const key = `startMatch_${this.matchId}`;
+        this.recordLoadingStart(key);
         try {
           await matchesService.startMatch(this.matchId);
           await this.$refs.matchTable.loadAllData(true);
           this.fetchMatch({matchId: this.matchId, forceFetch: true});
         } catch (error) {
-          this.setError({title: 'Failed to start match!', error: error});
+          this.logError({title: 'Failed to start match!', error: error});
         } finally {
-          this.setLoading(false);
+          this.recordLoadingEnd(key);
         }
       }
     },
@@ -72,7 +74,7 @@ export default {
       try {
         return await usersService.searchUsers(term);
       } catch (error) {
-        this.setError({title: 'Failed to search users!', error: error});
+        this.logError({title: 'Failed to search users!', error: error});
         return [];
       }
     },
@@ -82,7 +84,7 @@ export default {
           await matchesService.addPlayers(this.matchId, [user.user_id]);
           await this.fetchPlayersMatchData({matchId: this.matchId, forceFetch: true});
         } catch (error) {
-          this.setError({title: 'Failed to add player!', error: error});
+          this.logError({title: 'Failed to add player!', error: error});
         }
       } else {
         alert('Maximum number of players reached.');

@@ -54,7 +54,7 @@ const actions = {
         commit('ADD_CARD', card);
 
         const key = generateKey(card.card_id);
-        dispatch('sessionState/fetchRecords/recordSuccess', key, {root: true});
+        dispatch('sessionState/indicators/fetch/recordSuccess', key, {root: true});
     },
 };
 
