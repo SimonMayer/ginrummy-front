@@ -1,17 +1,17 @@
 <template>
   <div class="match-dashboard">
-    <MatchContent v-if="isMatchLoaded"/>
+    <MatchTable v-if="isMatchLoaded"/>
   </div>
 </template>
 
 <script>
-import MatchContent from '@/components/MatchContent.vue';
+import MatchTable from '@/components/MatchTable.vue';
 import {mapActions} from 'vuex';
 
 export default {
   name: 'MatchDashboard',
   components: {
-    MatchContent,
+    MatchTable,
   },
   data() {
     return {

@@ -1,5 +1,5 @@
 <template>
-  <div class="match-table" v-if="match && match.start_time">
+  <div class="match-table" v-if="match">
     <div class="game-section full-width">
       <div v-if="visibleRoundId" class="non-self-players-container">
         <NonSelfMatchPlayer
@@ -26,8 +26,22 @@
               :cards="meld.cards"
           />
         </div>
-        <div v-if="!currentRoundId" class="buttons-container">
+        <div v-if="match.start_time && !currentRoundId" class="buttons-container">
           <button @click="handleStartNewRound">Start new round</button>
+        </div>
+        <div v-if="canStartMatch" class="buttons-container">
+          <button @click="startMatch">Start Match</button>
+        </div>
+        <div v-if="canAddPlayerToMatch" class="buttons-container">
+          <ItemSearch
+              :placeholder="'Search for a player…'"
+              :searchFunction="searchUsers"
+              :displayProperty="'username'"
+              :excludeItems="players"
+              :excludeProperty="'user_id'"
+              :searchKey="'userSearch'"
+              @item-selected="addPlayer"
+          />
         </div>
         <GameButtonContainer v-if="currentRoundId"
             :buttonConfigs="[
@@ -108,10 +122,12 @@ import roundsService from '@/services/roundsService';
 import turnsService from '@/services/turnsService';
 import {mapActions, mapGetters} from 'vuex';
 import matchPhaseMixin from '@/mixins/matchPhaseMixin';
+import ItemSearch from '@/components/ItemSearch.vue';
 
 export default {
   name: 'MatchTable',
   components: {
+    ItemSearch,
     GameButtonContainer,
     PlayedMeld,
     StockPile,
@@ -135,6 +151,7 @@ export default {
       currentTopDiscardPileCardId: 'sessionState/derived/discardPile/currentTopDiscardPileCardId',
       currentRoundHandId: 'sessionState/derived/hand/currentHandId',
       currentHandCardIds: 'sessionState/derived/hand/currentHandCardIds',
+      players: 'sessionState/derived/players/playersMatchData',
       hasAllHandCardsSelected: 'sessionState/derived/selectedItems/hasAllHandCardsSelected',
       hasNoDiscardPileCardsSelected: 'sessionState/derived/selectedItems/hasNoDiscardPileCardsSelected',
       hasNoHandCardsSelected: 'sessionState/derived/selectedItems/hasNoHandCardsSelected',
@@ -163,6 +180,8 @@ export default {
       canDrawOne: 'sessionState/permissions/draw/canDrawOne',
       canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
       canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
+      canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
+      canStartMatch: 'sessionState/permissions/match/canStartMatch',
       canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
       canPlayMeldFromHand: 'sessionState/permissions/melds/canPlayMeldFromHand',
       canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
@@ -198,6 +217,9 @@ export default {
   },
   methods: {
     ...mapActions({
+      addPlayer: 'interactions/matches/players/addPlayer',
+      startMatch: 'interactions/matches/start/startMatch',
+      searchUsers: 'interactions/searches/users/searchUsers',
       logError: 'sessionState/indicators/errorLog/addLogEntry',
       recordLoadingStart: 'sessionState/indicators/loading/recordLoadingStart',
       recordLoadingEnd: 'sessionState/indicators/loading/recordLoadingEnd',
