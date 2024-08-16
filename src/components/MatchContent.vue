@@ -18,7 +18,6 @@
 <script>
 import MatchTable from '@/components/MatchTable.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
-import usersService from '@/services/usersService';
 import {mapActions, mapGetters} from 'vuex';
 import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 
@@ -32,7 +31,6 @@ export default {
   computed: {
     ...mapGetters({
       players: 'sessionState/derived/players/playersMatchData',
-      maxPlayers: 'storage/gameConfig/maxPlayers',
       canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
       canStartMatch: 'sessionState/permissions/match/canStartMatch',
     }),
@@ -42,16 +40,8 @@ export default {
       addPlayer: 'interactions/matches/players/addPlayer',
       startMatch: 'interactions/matches/start/startMatch',
       logError: 'sessionState/indicators/errorLog/addLogEntry',
+      searchUsers: 'interactions/searches/users/searchUsers',
     }),
-
-    async searchUsers(term) {
-      try {
-        return await usersService.searchUsers(term);
-      } catch (error) {
-        this.logError({title: 'Failed to search users!', error: error});
-        return [];
-      }
-    },
   },
 };
 </script>
