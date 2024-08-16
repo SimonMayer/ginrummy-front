@@ -1,7 +1,7 @@
 <template>
   <div class="match-table" v-if="match">
     <div class="game-section full-width">
-      <div v-if="visibleRoundId" class="non-self-players-container">
+      <div class="non-self-players-container">
         <NonSelfMatchPlayer
             v-for="playerMatchData in nonSelfPlayersMatchData"
             :key="playerMatchData.user_id"
@@ -32,7 +32,7 @@
         <div v-if="canStartMatch" class="buttons-container">
           <button @click="startMatch">Start Match</button>
         </div>
-        <div v-if="canAddPlayerToMatch" class="buttons-container">
+        <div v-if="canAddPlayerToMatch" class="search-container">
           <ItemSearch
               :placeholder="'Search for a player…'"
               :searchFunction="searchUsers"
@@ -101,7 +101,7 @@
         />
         <div class="self-player-container">
           <SelfMatchPlayer
-              v-if="visibleRoundId && selfPlayerMatchData"
+              v-if="selfPlayerMatchData"
               :selectable="isHandSelectable"
               class="self-player"
           />
@@ -392,17 +392,20 @@ export default {
     gap: var(--base-margin);
   }
 
-  .melds-container {
+  .buttons-container,
+  .melds-container,
+  .search-container {
     display: flex;
-    flex-flow: row wrap;
     gap: var(--base-margin);
     justify-content: center;
   }
 
-  .buttons-container {
-    display: flex;
-    gap: var(--base-margin);
-    justify-content: center;
+  .melds-container {
+    flex-flow: row wrap;
+  }
+
+  .buttons-container,
+  .search-container {
     width: 100%;
   }
 
