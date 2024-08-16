@@ -17,7 +17,7 @@ const actions = {
 };
 
 const getters = {
-    getMatchId: (state) => state.matchId,
+    matchId: (state) => state.matchId,
 };
 
 export default {

@@ -168,7 +168,6 @@ export default {
       canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
       canPlaySetFromHand: 'sessionState/permissions/melds/canPlaySetFromHand',
       selectedMeldId: 'sessionState/selections/selectedMeldId',
-      loading: 'sessionState/loading/loading',
       gameConfig: 'storage/gameConfig/gameConfig',
       getNonSelfPlayersMatchDataByMatchId: 'storage/players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
       getSelfPlayerMatchDataByMatchId: 'storage/players/self/getSelfPlayerMatchDataByMatchId',

@@ -1,7 +1,8 @@
 import {createStore} from 'vuex';
 import authentication from '@/store/modules/authentication/_index';
-import storage from '@/store/modules/storage/_index';
+import interactions from '@/store/modules/interactions/_index';
 import sessionState from '@/store/modules/sessionState/_index';
+import storage from '@/store/modules/storage/_index';
 import utils from '@/store/modules/utils/_index';
 
 const store = createStore({
@@ -10,13 +11,17 @@ const store = createStore({
             namespaced: true,
             modules: authentication,
         },
-        storage: {
+        interactions: {
             namespaced: true,
-            modules: storage,
+            modules: interactions,
         },
         sessionState: {
             namespaced: true,
             modules: sessionState,
+        },
+        storage: {
+            namespaced: true,
+            modules: storage,
         },
         utils: {
             namespaced: true,

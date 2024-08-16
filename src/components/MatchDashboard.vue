@@ -19,6 +19,7 @@ export default {
     };
   },
   async created() {
+    this.fetchGameConfig({});
     const response = await this.initializeMatchId(this.$route);
     if (!response.fetchRequired || response.isSuccess) {
       this.isMatchLoaded = true;
@@ -27,6 +28,7 @@ export default {
   methods: {
     ...mapActions({
       initializeMatchId: 'sessionState/matchIdentifier/initializeMatchId',
+      fetchGameConfig: 'storage/gameConfig/fetchGameConfig',
     }),
   },
 };

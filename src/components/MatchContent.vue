@@ -1,8 +1,6 @@
 <template>
   <div class="match-content" v-if="match">
-    <MatchTable
-        ref="matchTable"
-    />
+    <MatchTable/>
     <button v-if="canStartMatch" @click="startMatch">Start Match</button>
     <ItemSearch
         v-if="!match.start_time && players.length < maxPlayers"
@@ -35,41 +33,18 @@ export default {
   computed: {
     ...mapGetters({
       players: 'sessionState/derived/players/playersMatchData',
-      loading: 'sessionState/loading/loading',
       maxPlayers: 'storage/gameConfig/maxPlayers',
-      minPlayers: 'storage/gameConfig/minPlayers',
+      canStartMatch: 'sessionState/permissions/match/canStartMatch',
     }),
-    canStartMatch() {
-      return this.match && this.match.create_time && this.players.length >= this.minPlayers && this.players.length <= this.maxPlayers && !this.match.start_time;
-    },
-  },
-  async created() {
-    await this.fetchGameConfig({});
   },
   methods: {
     ...mapActions({
       logError: 'sessionState/indicators/errorLog/addLogEntry',
-      recordLoadingStart: 'sessionState/indicators/loading/recordLoadingStart',
-      recordLoadingEnd: 'sessionState/indicators/loading/recordLoadingEnd',
-      fetchGameConfig: 'storage/gameConfig/fetchGameConfig',
       fetchMatch: 'storage/matches/matches/fetchMatch',
       fetchPlayersMatchData: 'storage/players/matchData/fetchPlayersMatchData',
+      startMatch: 'interactions/matches/start/startMatch',
     }),
-    async startMatch() {
-      if (!this.loading) {
-        const key = `startMatch_${this.matchId}`;
-        this.recordLoadingStart(key);
-        try {
-          await matchesService.startMatch(this.matchId);
-          await this.$refs.matchTable.loadAllData(true);
-          this.fetchMatch({matchId: this.matchId, forceFetch: true});
-        } catch (error) {
-          this.logError({title: 'Failed to start match!', error: error});
-        } finally {
-          this.recordLoadingEnd(key);
-        }
-      }
-    },
+
     async searchUsers(term) {
       try {
         return await usersService.searchUsers(term);
