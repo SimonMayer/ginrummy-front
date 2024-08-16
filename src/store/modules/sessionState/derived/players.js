@@ -1,7 +1,7 @@
 const getters = {
     playersMatchData(state, getters, rootState, rootGetters) {
         const matchId = rootGetters['sessionState/matchIdentifier/getMatchId'];
-        return rootGetters['storage/players/match/getPlayersMatchDataByMatchId'](matchId) || null;
+        return rootGetters['storage/players/matchData/getPlayersMatchDataByMatchId'](matchId) || null;
     },
     selfPlayerMatchData(state, getters, rootState, rootGetters) {
         const matchId = rootGetters['sessionState/matchIdentifier/getMatchId'];

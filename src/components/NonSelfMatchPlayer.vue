@@ -40,9 +40,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getPlayerMatchDataByMatchAndPlayerIds: 'storage/players/match/getPlayerMatchDataByMatchAndPlayerIds',
-      getPlayerRoundDataByRoundAndPlayerIds: 'storage/players/round/getPlayerRoundDataByRoundAndPlayerIds',
-      isCurrentTurnForPlayer: 'storage/players/round/isCurrentTurnForPlayer',
+      getPlayerMatchDataByMatchAndPlayerIds: 'storage/players/matchData/getPlayerMatchDataByMatchAndPlayerIds',
+      getPlayerRoundDataByRoundAndPlayerIds: 'storage/players/roundData/getPlayerRoundDataByRoundAndPlayerIds',
+      isCurrentTurnForPlayer: 'storage/players/roundData/isCurrentTurnForPlayer',
     }),
     playerMatchData() {
       return this.getPlayerMatchDataByMatchAndPlayerIds({matchId: this.matchId, playerId: this.userId});

@@ -172,7 +172,7 @@ export default {
       gameConfig: 'storage/gameConfig/gameConfig',
       getNonSelfPlayersMatchDataByMatchId: 'storage/players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
       getSelfPlayerMatchDataByMatchId: 'storage/players/self/getSelfPlayerMatchDataByMatchId',
-      getPlayerRoundDataByRoundAndPlayerIds: 'storage/players/round/getPlayerRoundDataByRoundAndPlayerIds',
+      getPlayerRoundDataByRoundAndPlayerIds: 'storage/players/roundData/getPlayerRoundDataByRoundAndPlayerIds',
       getMeldsByRoundId: 'storage/rounds/melds/getMeldsByRoundId',
     }),
     allowMeldsFromRotation() {
@@ -205,7 +205,7 @@ export default {
       unselectAllCards: 'sessionState/selections/unselectAllCards',
       addCardIdsToHand: 'storage/hands/addCardIdsToHand',
       removeCardIdsFromHand: 'storage/hands/removeCardIdsFromHand',
-      fetchPlayersRoundData: 'storage/players/round/fetchPlayersRoundData',
+      fetchPlayersRoundData: 'storage/players/roundData/fetchPlayersRoundData',
       setLatestActionId: 'storage/registry/matchActions/setLatestActionId',
       setCurrentRoundId: 'storage/registry/matchRounds/setCurrentRoundId',
       fetchCurrentTurn: 'storage/registry/roundTurns/fetchCurrentTurn',

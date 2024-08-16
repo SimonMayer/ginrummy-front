@@ -53,7 +53,7 @@ export default {
       recordLoadingEnd: 'sessionState/indicators/loading/recordLoadingEnd',
       fetchGameConfig: 'storage/gameConfig/fetchGameConfig',
       fetchMatch: 'storage/matches/matches/fetchMatch',
-      fetchPlayersMatchData: 'storage/players/match/fetchPlayersMatchData',
+      fetchPlayersMatchData: 'storage/players/matchData/fetchPlayersMatchData',
     }),
     async startMatch() {
       if (!this.loading) {

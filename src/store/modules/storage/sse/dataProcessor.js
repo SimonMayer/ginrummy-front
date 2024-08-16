@@ -47,7 +47,7 @@ const actions = {
             await dispatch('storage/rounds/melds/fetchMelds', {roundId: latestRoundId, forceFetch: true}, {root: true});
         }
         if (roundChanged || turnChanged || cardsDrawn || cardsMelded) {
-            await dispatch('storage/players/round/fetchPlayersRoundData', {
+            await dispatch('storage/players/roundData/fetchPlayersRoundData', {
                 roundId: latestRoundId,
                 forceFetch: !roundChanged || betweenRounds,
             }, {root: true});

@@ -27,7 +27,7 @@ const actions = {
                 onSuccess: async (match) => {
                     commit('SET_MATCH', {matchId, match});
                     const responses = {};
-                    responses.fetchPlayersMatchData = await dispatch('storage/players/match/fetchPlayersMatchData', {matchId, forceFetch}, {root: true});
+                    responses.fetchPlayersMatchData = await dispatch('storage/players/matchData/fetchPlayersMatchData', {matchId, forceFetch}, {root: true});
                     responses.setCurrentRoundId = await dispatch('storage/registry/matchRounds/setCurrentRoundId', {
                         matchId: matchId,
                         roundId: match.current_round_id,
