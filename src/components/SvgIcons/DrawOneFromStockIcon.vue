@@ -1,22 +1,22 @@
 <template>
   <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 32 32"
-      width="48"
-      height="48"
       :fill="fillColor"
       :stroke="strokeColor"
-      stroke-width="1"
+      height="48"
       stroke-linecap="round"
       stroke-linejoin="round"
+      stroke-width="1"
+      viewBox="0 0 32 32"
+      width="48"
+      xmlns="http://www.w3.org/2000/svg"
   >
-    <IconCard :x="10.1" :y="5.5" :rotationAngle="90"/>
-    <IconCard :x="9.8" :y="5" :rotationAngle="90"/>
-    <IconCard :x="9.5" :y="4.5" :rotationAngle="90"/>
-    <IconCard :x="9.2" :y="4" :rotationAngle="90"/>
-    <IconCard :x="8.9" :y="3.5" :rotationAngle="90"/>
-    <IconCard :x="8.6" :y="3" :rotationAngle="90"/>
-    <IconCard :x="13" :y="12" :rotationAngle="90" :fillColor="fillColor" :strokeColor="sharpIndicatorColor"/>
+    <IconCard :rotationAngle="90" :x="10.1" :y="5.5"/>
+    <IconCard :rotationAngle="90" :x="9.8" :y="5"/>
+    <IconCard :rotationAngle="90" :x="9.5" :y="4.5"/>
+    <IconCard :rotationAngle="90" :x="9.2" :y="4"/>
+    <IconCard :rotationAngle="90" :x="8.9" :y="3.5"/>
+    <IconCard :rotationAngle="90" :x="8.6" :y="3"/>
+    <IconCard :fillColor="fillColor" :rotationAngle="90" :strokeColor="sharpIndicatorColor" :x="13" :y="12"/>
 
     <IconArrow :color="strongIndicatorColor" :rotationAngle="180" :tipCoordinateX="25" :tipCoordinateY="25"/>
   </svg>

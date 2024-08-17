@@ -1,6 +1,6 @@
 <template>
   <div class="stock-pile-container">
-    <div class="stock-pile" :class="{ disabled: disabled, empty: isEmpty }" @click="handleClick">
+    <div :class="{ disabled: disabled, empty: isEmpty }" class="stock-pile" @click="handleClick">
       <HiddenCard v-for="n in size" :key="n" class="stock-card-item"/>
       <div v-if="isEmpty" class="empty-placeholder">
         <div class="icon">↻</div>

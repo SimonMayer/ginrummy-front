@@ -1,19 +1,33 @@
 <template>
   <nav>
     <div class="nav-links">
-      <router-link v-if="isAuthenticated" to="/create-match" custom
-                   v-slot="{ href, navigate, isActive, isExactActive }">
-        <a :href="href" @click="navigate" :class="{ active: isActive, exactActive: isExactActive }">Create Match</a>
+      <router-link
+          v-if="isAuthenticated"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+          custom
+          to="/create-match"
+      >
+        <a :class="{ active: isActive, exactActive: isExactActive }" :href="href" @click="navigate">Create Match</a>
       </router-link>
-      <router-link v-if="isAuthenticated" to="/matches" custom v-slot="{ href, navigate, isActive, isExactActive }">
-        <a :href="href" @click="navigate" :class="{ active: isActive, exactActive: isExactActive }">Your Matches</a>
+      <router-link
+          v-if="isAuthenticated"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+          custom
+          to="/matches"
+      >
+        <a :class="{ active: isActive, exactActive: isExactActive }" :href="href" @click="navigate">Your Matches</a>
       </router-link>
     </div>
     <div class="auth-links">
-      <router-link v-if="!isAuthenticated" to="/" custom v-slot="{ href, navigate, isActive, isExactActive }">
-        <a :href="href" @click="navigate" :class="{ active: isActive, exactActive: isExactActive }">Sign In</a>
+      <router-link
+          v-if="!isAuthenticated"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+          custom
+          to="/"
+      >
+        <a :class="{ active: isActive, exactActive: isExactActive }" :href="href" @click="navigate">Sign In</a>
       </router-link>
-      <a v-if="isAuthenticated" @click.prevent="handleSignOut" href="#" class="sign-out">Sign Out</a>
+      <a v-if="isAuthenticated" class="sign-out" href="#" @click.prevent="handleSignOut">Sign Out</a>
     </div>
   </nav>
 </template>

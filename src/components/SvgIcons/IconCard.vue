@@ -1,14 +1,14 @@
 <template>
   <rect
-      :x="x"
-      :y="y"
-      :width="width"
+      :fill="fillColor ? fillColor : undefined"
       :height="height"
       :rx="radius"
       :ry="radius"
-      :fill="fillColor ? fillColor : undefined"
       :stroke="strokeColor ? strokeColor : undefined"
       :transform="transform"
+      :width="width"
+      :x="x"
+      :y="y"
   />
 </template>
 

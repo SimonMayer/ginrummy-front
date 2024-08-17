@@ -1,28 +1,33 @@
 <template>
   <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 32 32"
-      width="48"
-      height="48"
       :fill="fillColor"
       :stroke="strokeColor"
-      stroke-width="1"
+      height="48"
       stroke-linecap="round"
       stroke-linejoin="round"
+      stroke-width="1"
+      viewBox="0 0 32 32"
+      width="48"
+      xmlns="http://www.w3.org/2000/svg"
   >
-    <IconCard :x="3" :y="6" :rotationAngle="-8"/>
-    <IconCard :x="6" :y="2" :rotationAngle="-4" :fill="strokeColor" :strokeColor="fillColor"/>
-    <IconCard :x="9" :y="2" :rotationAngle="0" :fill="strokeColor" :strokeColor="fillColor"/>
-    <IconCard :x="11" :y="6" :rotationAngle="4"/>
-    <IconCard :x="14" :y="3" :rotationAngle="8" :fill="strokeColor" :strokeColor="fillColor"/>
-    <IconCard :x="17" :y="8" :rotationAngle="12"/>
+    <IconCard :rotationAngle="-8" :x="3" :y="6"/>
+    <IconCard :fill="strokeColor" :rotationAngle="-4" :strokeColor="fillColor" :x="6" :y="2"/>
+    <IconCard :fill="strokeColor" :rotationAngle="0" :strokeColor="fillColor" :x="9" :y="2"/>
+    <IconCard :rotationAngle="4" :x="11" :y="6"/>
+    <IconCard :fill="strokeColor" :rotationAngle="8" :strokeColor="fillColor" :x="14" :y="3"/>
+    <IconCard :rotationAngle="12" :x="17" :y="8"/>
 
-    <circle cx="16" cy="19" r="10"
-            :fill="strongIndicatorColor" fill-opacity="0.8"
-            :stroke="sharpIndicatorColor" stroke-width="1"
+    <circle
+        :fill="strongIndicatorColor"
+        :stroke="sharpIndicatorColor"
+        cx="16"
+        cy="19"
+        fill-opacity="0.8"
+        r="10"
+        stroke-width="1"
     />
-    <line x1="12" y1="15" x2="20" y2="23" :stroke="sharpIndicatorColor" stroke-width="2"/>
-    <line x1="20" y1="15" x2="12" y2="23" :stroke="sharpIndicatorColor" stroke-width="2"/>
+    <line :stroke="sharpIndicatorColor" stroke-width="2" x1="12" x2="20" y1="15" y2="23"/>
+    <line :stroke="sharpIndicatorColor" stroke-width="2" x1="20" x2="12" y1="15" y2="23"/>
   </svg>
 </template>
 

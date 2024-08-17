@@ -1,19 +1,19 @@
 <template>
   <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 32 32"
-      width="48"
-      height="48"
       :fill="fillColor"
       :stroke="strokeColor"
-      stroke-width="1"
+      height="48"
       stroke-linecap="round"
       stroke-linejoin="round"
+      stroke-width="1"
+      viewBox="0 0 32 32"
+      width="48"
+      xmlns="http://www.w3.org/2000/svg"
   >
-    <IconCard :x="3" :y="5" :rotationAngle="-8"/>
-    <IconCard :x="7" :y="5" :rotationAngle="-2"/>
-    <IconCard :x="12" :y="6" :rotationAngle="4"/>
-    <IconCard :x="17" :y="13" :rotationAngle="10" :fillColor="fillColor" :strokeColor="sharpIndicatorColor"/>
+    <IconCard :rotationAngle="-8" :x="3" :y="5"/>
+    <IconCard :rotationAngle="-2" :x="7" :y="5"/>
+    <IconCard :rotationAngle="4" :x="12" :y="6"/>
+    <IconCard :fillColor="fillColor" :rotationAngle="10" :strokeColor="sharpIndicatorColor" :x="17" :y="13"/>
 
     <IconArrow :color="strongIndicatorColor" :rotationAngle="10" :tipCoordinateX="21" :tipCoordinateY="17"/>
   </svg>

@@ -3,18 +3,18 @@
     <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
       <div v-if="buttonConfig.addSeparatorBefore" class="button-separator"></div>
       <GameButton
-          @button:press="buttonConfig.pressHandler"
           :isDisabled="buttonConfig.isDisabled"
-          :labelEnabled="buttonConfig.labelEnabled"
           :labelDisabled="buttonConfig.labelDisabled"
+          :labelEnabled="buttonConfig.labelEnabled"
+          @button:press="buttonConfig.pressHandler"
       >
         <template #icon="{ mutedLightToSecondary, mutedLightToWhite, mutedMidToAccent, mutedMidToMutedLight}">
           <component
               :is="iconMap[buttonConfig.icon]"
               :fillColor="mutedLightToWhite"
+              :sharpIndicatorColor="mutedMidToAccent"
               :strokeColor="mutedMidToMutedLight"
               :strongIndicatorColor="mutedLightToSecondary"
-              :sharpIndicatorColor="mutedMidToAccent"
           />
         </template>
       </GameButton>

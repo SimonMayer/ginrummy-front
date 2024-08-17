@@ -1,28 +1,28 @@
 <template>
   <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 32 32"
-      width="48"
-      height="48"
       :fill="fillColor"
       :stroke="strokeColor"
-      stroke-width="1"
+      height="48"
       stroke-linecap="round"
       stroke-linejoin="round"
+      stroke-width="1"
+      viewBox="0 0 32 32"
+      width="48"
+      xmlns="http://www.w3.org/2000/svg"
   >
     <!-- Faint placeholder for the meld -->
-    <rect x="2" y="4"
-          :width="18" :height="18"
+    <rect :fill="fillColor" :height="18"
           :rx="2" :ry="2"
-          :fill="fillColor" fill-opacity="0.8"
-          :stroke="sharpIndicatorColor" stroke-dasharray="2"
+          :stroke="sharpIndicatorColor" :width="18"
+          fill-opacity="0.8" stroke-dasharray="2"
+          x="2" y="4"
     />
 
     <IconArrow :color="strongIndicatorColor" :rotationAngle="20" :tipCoordinateX="4" :tipCoordinateY="8"/>
 
-    <IconCard :x="9" :y="12" :rotationAngle="-8"/>
-    <IconCard :x="13" :y="12" :rotationAngle="-2"/>
-    <IconCard :x="17" :y="13" :rotationAngle="4"/>
+    <IconCard :rotationAngle="-8" :x="9" :y="12"/>
+    <IconCard :rotationAngle="-2" :x="13" :y="12"/>
+    <IconCard :rotationAngle="4" :x="17" :y="13"/>
   </svg>
 </template>
 

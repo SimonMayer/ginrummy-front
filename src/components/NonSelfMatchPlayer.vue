@@ -8,7 +8,7 @@
         <NamePlate :name="username"/>
       </div>
       <div class="score">
-        <ScoreBoard :totalScore="totalScore" :roundScore="roundScore"/>
+        <ScoreBoard :roundScore="roundScore" :totalScore="totalScore"/>
       </div>
     </div>
     <div class="highlight-container">

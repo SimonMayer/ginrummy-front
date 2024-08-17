@@ -1,18 +1,19 @@
 <template>
   <button
-      @click="handleClick"
       :disabled="isDisabled"
       aria-label="{{ label }}"
+      @click="handleClick"
   >
     <span class="button-tooltip">
       <span v-if="isDisabled" class="unavailable-note">Action unavailable: </span>
       {{ label }}
     </span>
-    <slot name="icon"
-          :mutedLightToSecondary="mutedLightToSecondary"
-          :mutedLightToWhite="mutedLightToWhite"
-          :mutedMidToAccent="mutedMidToAccent"
-          :mutedMidToMutedLight="mutedMidToMutedLight"
+    <slot
+        :mutedLightToSecondary="mutedLightToSecondary"
+        :mutedLightToWhite="mutedLightToWhite"
+        :mutedMidToAccent="mutedMidToAccent"
+        :mutedMidToMutedLight="mutedMidToMutedLight"
+        name="icon"
     />
   </button>
 </template>

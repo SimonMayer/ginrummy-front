@@ -31,34 +31,38 @@ const actions = {
         const turnChanged = newCurrentTurnId !== rootGetters['storage/registry/roundTurns/getCurrentTurnByRoundId'](currentRoundId)?.id;
         const cardsDrawn = ['draw'].includes(data.action.action_type);
         const cardsMelded = ['play_meld', 'extend_meld'].includes(data.action.action_type);
+        const cardDiscarded = ['discard'].includes(data.action.action_type);
 
         if (!betweenRounds && (roundChanged || turnChanged)) {
-            await dispatch('storage/registry/roundTurns/fetchCurrentTurn', {
-                matchId,
-                roundId: currentRoundId,
-                forceFetch: true,
-            }, {root: true});
+            await dispatch(
+                'storage/registry/roundTurns/fetchCurrentTurn',
+                {matchId, roundId: currentRoundId, forceFetch: true},
+                {root: true},
+            );
         }
-        if (!betweenRounds && (turnChanged || cardsDrawn)) {
-            await dispatch('storage/rounds/discardPiles/fetchDiscardPile', {
-                roundId: latestRoundId,
-                forceFetch: true,
-            }, {root: true});
+        if (cardDiscarded || cardsDrawn) {
+            await dispatch(
+                'storage/rounds/discardPiles/fetchDiscardPile',
+                {roundId: latestRoundId, forceFetch: true},
+                {root: true},
+            );
         }
-        if (!betweenRounds && cardsDrawn) {
-            await dispatch('storage/rounds/stockPiles/fetchStockPileData', {
-                roundId: latestRoundId,
-                forceFetch: true,
-            }, {root: true});
+        if (cardsDrawn) {
+            await dispatch(
+                'storage/rounds/stockPiles/fetchStockPileData',
+                {roundId: latestRoundId, forceFetch: true},
+                {root: true},
+            );
         }
         if (cardsMelded) {
             await dispatch('storage/rounds/melds/fetchMelds', {roundId: latestRoundId, forceFetch: true}, {root: true});
         }
-        if (roundChanged || turnChanged || cardsDrawn || cardsMelded) {
-            await dispatch('storage/players/roundData/fetchPlayersRoundData', {
-                roundId: latestRoundId,
-                forceFetch: !roundChanged || betweenRounds,
-            }, {root: true});
+        if (roundChanged || turnChanged || cardsDrawn || cardsMelded || cardDiscarded) {
+            await dispatch(
+                'storage/players/roundData/fetchPlayersRoundData',
+                {roundId: latestRoundId, forceFetch: !roundChanged || betweenRounds},
+                {root: true},
+            );
         }
     },
 };

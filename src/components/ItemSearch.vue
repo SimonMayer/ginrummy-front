@@ -1,8 +1,8 @@
 <template>
   <div class="item-search">
-    <input v-model="searchInput" @input="onSearchInput" :placeholder="placeholder"/>
+    <input v-model="searchInput" :placeholder="placeholder" @input="onSearchInput"/>
     <ul v-if="filteredResults.length">
-      <li v-for="item in filteredResults" :key="item.id" @click="selectItem(item)" class="search-item">
+      <li v-for="item in filteredResults" :key="item.id" class="search-item" @click="selectItem(item)">
         {{ item[displayProperty] }}
       </li>
     </ul>

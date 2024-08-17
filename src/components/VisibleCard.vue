@@ -1,14 +1,14 @@
 <template>
   <div
-      class="card visible-card"
-      :class="{ selected: isSelected }"
-      @click="handleClick"
       v-if="cardData"
+      :class="{ selected: isSelected }"
+      class="card visible-card"
+      @click="handleClick"
   >
     <div :class="['card-content', rankClass, suitClass]">
-      <CardCorner class="top-left" :rank="displayRank" :suit="suitEmoji"/>
+      <CardCorner :rank="displayRank" :suit="suitEmoji" class="top-left"/>
       <CardPattern :suitEmoji="suitEmoji" :suitRepeat="suitRepeat"/>
-      <CardCorner class="bottom-right" :rank="displayRank" :suit="suitEmoji"/>
+      <CardCorner :rank="displayRank" :suit="suitEmoji" class="bottom-right"/>
     </div>
   </div>
 </template>

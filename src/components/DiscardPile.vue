@@ -1,7 +1,6 @@
 <template>
   <div class="discard-pile">
     <VisibleCard
-        ref="visibleCards"
         v-for="card in visibleCards"
         :key="card.card_id"
         :cardProp="card"

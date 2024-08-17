@@ -1,11 +1,10 @@
 <template>
-  <div class="match-table" v-if="match">
+  <div v-if="match" class="match-table">
     <div class="game-section full-width">
       <div class="non-self-players-container">
         <NonSelfMatchPlayer
             v-for="playerMatchData in nonSelfPlayersMatchData"
             :key="playerMatchData.user_id"
-            :ref="'player-' + playerMatchData.user_id"
             :userId="playerMatchData.user_id"
             class="non-self-player"
         />
@@ -20,10 +19,10 @@
         <div class="melds-container">
           <PlayedMeld
               v-for="meld in visibleRoundMelds"
-              :key="meld.meld_id"
               :id="meld.meld_id"
-              :type="meld.meld_type"
+              :key="meld.meld_id"
               :cards="meld.cards"
+              :type="meld.meld_type"
           />
         </div>
         <div v-if="match.start_time && !currentRoundId" class="buttons-container">
@@ -34,11 +33,11 @@
         </div>
         <div v-if="canAddPlayerToMatch" class="search-container">
           <ItemSearch
-              :placeholder="'Search for a player…'"
-              :searchFunction="searchUsers"
               :displayProperty="'username'"
               :excludeItems="players"
               :excludeProperty="'user_id'"
+              :placeholder="'Search for a player…'"
+              :searchFunction="searchUsers"
               :searchKey="'userSearch'"
               @item-selected="addPlayer"
           />

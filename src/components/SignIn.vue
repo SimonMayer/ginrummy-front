@@ -3,7 +3,7 @@
     <h1>Sign in</h1>
     <form @submit.prevent="handleSignIn">
       <input v-model="username" placeholder="Username"/>
-      <input v-model="password" type="password" placeholder="Password"/>
+      <input v-model="password" placeholder="Password" type="password"/>
       <button type="submit">Sign in</button>
     </form>
   </div>

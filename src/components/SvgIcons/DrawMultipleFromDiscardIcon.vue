@@ -1,20 +1,20 @@
 <template>
   <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 32 32"
-      width="48"
-      height="48"
       :fill="fillColor"
       :stroke="strokeColor"
-      stroke-width="1"
+      height="48"
       stroke-linecap="round"
       stroke-linejoin="round"
+      stroke-width="1"
+      viewBox="0 0 32 32"
+      width="48"
+      xmlns="http://www.w3.org/2000/svg"
   >
-    <IconCard :x="10" :y="0" :rotationAngle="90"/>
-    <IconCard :x="10" :y="3" :rotationAngle="90"/>
-    <IconCard :x="10" :y="6" :rotationAngle="90"/>
-    <IconCard :x="13" :y="13" :rotationAngle="90" :fillColor="fillColor" :strokeColor="sharpIndicatorColor"/>
-    <IconCard :x="13" :y="16" :rotationAngle="90" :fillColor="fillColor" :strokeColor="sharpIndicatorColor"/>
+    <IconCard :rotationAngle="90" :x="10" :y="0"/>
+    <IconCard :rotationAngle="90" :x="10" :y="3"/>
+    <IconCard :rotationAngle="90" :x="10" :y="6"/>
+    <IconCard :fillColor="fillColor" :rotationAngle="90" :strokeColor="sharpIndicatorColor" :x="13" :y="13"/>
+    <IconCard :fillColor="fillColor" :rotationAngle="90" :strokeColor="sharpIndicatorColor" :x="13" :y="16"/>
 
     <IconArrow :color="strongIndicatorColor" :rotationAngle="180" :tipCoordinateX="25" :tipCoordinateY="28"/>
   </svg>
