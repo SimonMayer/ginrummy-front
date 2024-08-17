@@ -26,7 +26,7 @@
           />
         </div>
         <div v-if="match.start_time && !currentRoundId" class="buttons-container">
-          <button @click="handleStartNewRound">Start new round</button>
+          <button @click="startRound">Start new round</button>
         </div>
         <div v-if="canStartMatch" class="buttons-container">
           <button @click="startMatch">Start Match</button>
@@ -114,7 +114,6 @@ import StockPile from '@/components/StockPile.vue';
 import DiscardPile from '@/components/DiscardPile.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
-import roundsService from '@/services/roundsService';
 import turnsService from '@/services/turnsService';
 import {mapActions, mapGetters} from 'vuex';
 import matchPhaseMixin from '@/mixins/matchPhaseMixin';
@@ -217,6 +216,7 @@ export default {
     ...mapActions({
       addPlayer: 'interactions/matches/players/addPlayer',
       startMatch: 'interactions/matches/start/startMatch',
+      startRound: 'interactions/rounds/start/startRound',
       searchUsers: 'interactions/searches/users/searchUsers',
       logError: 'sessionState/indicators/errorLog/addLogEntry',
       recordLoadingStart: 'sessionState/indicators/loading/recordLoadingStart',
@@ -323,16 +323,6 @@ export default {
           await this.unselectAllCards();
         },
         errorTitle: 'Failed to extend meld!',
-      });
-    },
-    async handleStartNewRound() {
-      await this.handleInteraction({
-        key: 'startNewRound',
-        interaction: async () => {
-          const roundId = await roundsService.startRound(this.matchId);
-          await this.setCurrentRoundId({matchId: this.matchId, roundId: roundId});
-        },
-        errorTitle: 'Failed to start new round!',
       });
     },
   },
