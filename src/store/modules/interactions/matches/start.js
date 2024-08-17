@@ -17,19 +17,6 @@ const actions = {
                 { root: true }
             );
 
-            const currentRoundId = rootGetters['sessionState/derived/rounds/currentRoundId'];
-            response.responses.fetchCurrentTurn = await dispatch(
-                'storage/registry/roundTurns/fetchCurrentTurn',
-                { matchId, roundId: currentRoundId, forceFetch: true },
-                { root: true }
-            );
-
-            response.responses.fetchPlayersRoundData = await dispatch(
-                'storage/players/roundData/fetchPlayersRoundData',
-                { roundId: currentRoundId, forceFetch: true },
-                { root: true }
-            );
-
             response.responses.initializeSse = await dispatch('storage/sse/connection/initializeSse', matchId, { root: true });
             response.isSuccess = true;
         } catch (error) {

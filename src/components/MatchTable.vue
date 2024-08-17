@@ -100,11 +100,7 @@
             ]"
         />
         <div class="self-player-container">
-          <SelfMatchPlayer
-              v-if="selfPlayerMatchData"
-              :selectable="isHandSelectable"
-              class="self-player"
-          />
+          <SelfMatchPlayer v-if="selfPlayerMatchData" :selectable="isHandSelectable" class="self-player"/>
         </div>
       </div>
     </div>
@@ -138,11 +134,13 @@ export default {
   mixins: [
     matchPhaseMixin,
   ],
-  async created() {
-    await this.loadAllData(false);
+  async mounted() {
+    if (this.match.start_time) {
+      await this.initializeSse(this.matchId);
+    }
   },
-  beforeUnmount() {
-    this.cleanupSse(this.matchId);
+  async beforeUnmount() {
+    await this.cleanupSse(this.matchId);
   },
   computed: {
     ...mapGetters({
@@ -235,7 +233,7 @@ export default {
       cleanupSse: 'storage/sse/connection/cleanupSse',
     }),
     async performAction(key, action, errorMessage) {
-        this.recordLoadingStart(key);
+      this.recordLoadingStart(key);
       try {
         await action();
       } catch (error) {
@@ -326,11 +324,6 @@ export default {
         await this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId});
         await this.fetchPlayersRoundData({roundId: this.currentRoundId});
       }, 'Failed to start new round!');
-    },
-    async loadAllData(forceFetch = false) {
-      await this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId, forceFetch: forceFetch});
-      await this.fetchPlayersRoundData({roundId: this.latestRoundId, forceFetch: forceFetch});
-      await this.initializeSse(this.matchId);
     },
   },
 };

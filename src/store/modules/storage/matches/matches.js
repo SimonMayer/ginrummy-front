@@ -26,21 +26,43 @@ const actions = {
                 fetchFunction: () => matchesService.getMatchDetails(matchId),
                 onSuccess: async (match) => {
                     commit('SET_MATCH', {matchId, match});
+                    const currentRoundId = match.current_round_id;
+                    const latestRoundId = match.latest_round_id;
                     const responses = {};
-                    responses.fetchPlayersMatchData = await dispatch('storage/players/matchData/fetchPlayersMatchData', {matchId, forceFetch}, {root: true});
-                    responses.setCurrentRoundId = await dispatch('storage/registry/matchRounds/setCurrentRoundId', {
-                        matchId: matchId,
-                        roundId: match.current_round_id,
-                    }, {root: true});
-                    responses.setLatestRoundId = await dispatch('storage/registry/matchRounds/setLatestRoundId', {
-                        matchId: matchId,
-                        roundId: match.latest_round_id,
-                    }, {root: true});
-                    dispatch('storage/registry/matchRounds/setAllRoundIds', {
-                        matchId: matchId,
-                        roundId: match.all_round_ids,
-                    }, {root: true});
-
+                    responses.fetchPlayersMatchData = await dispatch(
+                        'storage/players/matchData/fetchPlayersMatchData',
+                        {matchId, forceFetch},
+                        {root: true},
+                    );
+                    responses.setCurrentRoundId = await dispatch(
+                        'storage/registry/matchRounds/setCurrentRoundId',
+                        {matchId, roundId: currentRoundId},
+                        {root: true},
+                    );
+                    responses.setLatestRoundId = await dispatch(
+                        'storage/registry/matchRounds/setLatestRoundId',
+                        {matchId, roundId: latestRoundId},
+                        {root: true},
+                    );
+                    if (currentRoundId) {
+                        responses.fetchCurrentTurn = await dispatch(
+                            'storage/registry/roundTurns/fetchCurrentTurn',
+                            {matchId, roundId: currentRoundId},
+                            {root: true},
+                        );
+                    }
+                    if (latestRoundId) {
+                        responses.fetchPlayersRoundData = await dispatch(
+                            'storage/players/roundData/fetchPlayersRoundData',
+                            {roundId: latestRoundId},
+                            {root: true},
+                        );
+                    }
+                    dispatch(
+                        'storage/registry/matchRounds/setAllRoundIds',
+                        {matchId, roundIds: match.all_round_ids},
+                        {root: true},
+                    );
                     return responses;
                 },
                 timeout: FETCH_MATCH_TIMEOUT,
