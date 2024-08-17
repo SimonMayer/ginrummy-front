@@ -83,7 +83,7 @@ const actions = {
         for (const cardId of hand.cardIds) {
             cardResponses.push(await dispatch('storage/cards/cards/fetchCard', {cardId}, {root: true}));
         }
-        return cardResponses
+        return cardResponses;
     },
     async addCardIdsToHand({commit, dispatch}, {handId, cardIds}) {
         const cardResponses = [];
@@ -91,7 +91,7 @@ const actions = {
             cardResponses.push(await dispatch('storage/cards/cards/fetchCard', {cardId}, {root: true}));
             commit('ADD_CARD_ID_TO_HAND', {handId, cardId});
         }
-        return cardResponses
+        return cardResponses;
     },
     removeCardIdsFromHand({commit}, {handId, cardIds}) {
         commit('REMOVE_CARD_IDS_FROM_HAND', {handId, cardIds});

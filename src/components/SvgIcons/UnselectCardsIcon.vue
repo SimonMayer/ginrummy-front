@@ -17,7 +17,10 @@
     <IconCard :x="14" :y="3" :rotationAngle="8" :fill="strokeColor" :strokeColor="fillColor"/>
     <IconCard :x="17" :y="8" :rotationAngle="12"/>
 
-    <circle cx="16" cy="19" r="10" :fill="strongIndicatorColor" :stroke="sharpIndicatorColor" fill-opacity="0.8" stroke-width="1"/>
+    <circle cx="16" cy="19" r="10"
+            :fill="strongIndicatorColor" fill-opacity="0.8"
+            :stroke="sharpIndicatorColor" stroke-width="1"
+    />
     <line x1="12" y1="15" x2="20" y2="23" :stroke="sharpIndicatorColor" stroke-width="2"/>
     <line x1="20" y1="15" x2="12" y2="23" :stroke="sharpIndicatorColor" stroke-width="2"/>
   </svg>

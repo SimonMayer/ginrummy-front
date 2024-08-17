@@ -11,7 +11,12 @@
       stroke-linejoin="round"
   >
     <!-- Faint placeholder for the meld -->
-    <rect x="2" y="4" :width="18" :height="18" :rx="2" :ry="2" fill-opacity="0.8" stroke-dasharray="2" :stroke="sharpIndicatorColor" :fill="fillColor"/>
+    <rect x="2" y="4"
+          :width="18" :height="18"
+          :rx="2" :ry="2"
+          :fill="fillColor" fill-opacity="0.8"
+          :stroke="sharpIndicatorColor" stroke-dasharray="2"
+    />
 
     <IconArrow :color="strongIndicatorColor" :rotationAngle="20" :tipCoordinateX="4" :tipCoordinateY="8"/>
 

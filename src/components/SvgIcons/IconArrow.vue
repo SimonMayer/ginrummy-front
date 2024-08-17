@@ -1,8 +1,20 @@
 <template>
   <g>
-    <line :x1="tipCoordinateX" :y1="tipCoordinateY" :x2="centerTailX" :y2="centerTailY" :transform="transform" :stroke="color" stroke-width="1.5"/>
-    <line :x1="tipCoordinateX" :y1="tipCoordinateY" :x2="rightTailX" :y2="rightTailY" :transform="transform"  :stroke="color" stroke-width="1.5"/>
-    <line :x1="tipCoordinateX" :y1="tipCoordinateY" :x2="leftTailX" :y2="leftTailY" :transform="transform"  :stroke="color" stroke-width="1.5"/>
+    <line :x1="tipCoordinateX" :y1="tipCoordinateY"
+          :x2="centerTailX" :y2="centerTailY"
+          :transform="transform"
+          :stroke="color" stroke-width="1.5"
+    />
+    <line :x1="tipCoordinateX" :y1="tipCoordinateY"
+          :x2="rightTailX" :y2="rightTailY"
+          :transform="transform"
+          :stroke="color" stroke-width="1.5"
+    />
+    <line :x1="tipCoordinateX" :y1="tipCoordinateY"
+          :x2="leftTailX" :y2="leftTailY"
+          :transform="transform"
+          :stroke="color" stroke-width="1.5"
+    />
   </g>
 </template>
 

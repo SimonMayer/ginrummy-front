@@ -40,7 +40,6 @@ export default {
   computed: {
     transform() {
       return `translate(0,0) rotate(${this.rotationAngle}, ${this.x + (this.width / 2)}, ${this.y + (this.height / 2)})`;
-       // return `rotate(${this.rotationAngle}, ${this.x}, ${this.y})`;
     },
   },
   data() {

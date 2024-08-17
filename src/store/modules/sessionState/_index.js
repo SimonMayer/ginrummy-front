@@ -7,16 +7,16 @@ import selections from '@/store/modules/sessionState/selections';
 export default {
     derived: {
         namespaced: true,
-        modules: derived
+        modules: derived,
     },
     indicators: {
         namespaced: true,
-        modules: indicators
+        modules: indicators,
     },
     matchIdentifier,
     permissions: {
         namespaced: true,
-        modules: permissions
+        modules: permissions,
     },
     selections,
 };

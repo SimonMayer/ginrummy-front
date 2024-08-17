@@ -1,4 +1,4 @@
-import {setLocalStorage, getLocalStorage} from '@/utils/localStorage';
+import {getLocalStorage, setLocalStorage} from '@/utils/localStorage';
 import authService from '@/services/authService';
 import tokenService from '@/services/tokenService';
 

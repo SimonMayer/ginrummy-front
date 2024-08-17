@@ -36,7 +36,7 @@ const getters = {
         const minimumMeldSize = rootGetters['storage/gameConfig/minimumMeldSize'];
         const runOrders = rootGetters['storage/gameConfig/runOrders'];
 
-        return getters.canDrawMultiple  &&
+        return getters.canDrawMultiple &&
             rootGetters['sessionState/derived/selectedItems/isAnyDiscardPileCardSelectedBelowTop'] &&
             futureMeldedCardCount < (handCardLength + drawnCardsLength) &&
             currentAndFutureMeldedCards.length >= minimumMeldSize &&

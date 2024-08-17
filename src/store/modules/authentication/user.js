@@ -1,4 +1,4 @@
-import {setLocalStorage, getLocalStorage} from '@/utils/localStorage';
+import {getLocalStorage, setLocalStorage} from '@/utils/localStorage';
 
 const state = {
     isAuthenticated: !!getLocalStorage('rest_access_token'),

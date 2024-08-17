@@ -16,7 +16,7 @@
 <script>
 import CardCorner from '@/components/CardCorner.vue';
 import CardPattern from '@/components/CardPattern.vue';
-import {getSuitEmoji, getDisplayRank, getSuitRepeat} from '@/utils/cardUtils';
+import {getDisplayRank, getSuitEmoji, getSuitRepeat} from '@/utils/cardUtils';
 import cardsService from '@/services/cardsService';
 import {mapActions, mapGetters} from 'vuex';
 

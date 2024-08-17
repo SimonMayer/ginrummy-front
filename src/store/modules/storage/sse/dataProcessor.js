@@ -11,10 +11,18 @@ const actions = {
             }, {root: true});
         }
 
-        await dispatch('storage/turns/turns/appendActionToTurn', {turnId: data.turn_id, action: data.action}, {root: true});
+        await dispatch(
+            'storage/turns/turns/appendActionToTurn',
+            {turnId: data.turn_id, action: data.action},
+            {root: true},
+        );
 
         const roundChanged = newCurrentRoundId !== rootGetters['storage/registry/matchRounds/getCurrentRoundIdByMatchId'](matchId);
-        await dispatch('storage/registry/matchRounds/setCurrentRoundId', {matchId, roundId: newCurrentRoundId}, {root: true});
+        await dispatch(
+            'storage/registry/matchRounds/setCurrentRoundId',
+            {matchId, roundId: newCurrentRoundId},
+            {root: true},
+        );
 
         const currentRoundId = newCurrentRoundId;
         const latestRoundId = await rootGetters['storage/registry/matchRounds/getLatestRoundIdByMatchId'](matchId);

@@ -1,7 +1,11 @@
 const actions = {
     async handleFetch({dispatch}, {key, timeout, forceFetch, fetchFunction, onSuccess, errorTitle}) {
         const response = {key};
-        const shouldFetch = await dispatch('sessionState/indicators/fetch/shouldFetch', {key, timeout, forceFetch}, {root: true});
+        const shouldFetch = await dispatch(
+            'sessionState/indicators/fetch/shouldFetch',
+            {key, timeout, forceFetch},
+            {root: true},
+        );
         response.fetchRequired = shouldFetch;
         if (!shouldFetch) {
             return response;

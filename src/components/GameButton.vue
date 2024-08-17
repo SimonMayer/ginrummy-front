@@ -70,11 +70,6 @@ button {
   padding: 0;
 
   .button-tooltip {
-    .unavailable-note {
-      display: block;
-      font-weight: bold;
-    }
-
     position: absolute;
     width: 1px;
     height: 1px;
@@ -83,6 +78,11 @@ button {
     overflow: hidden;
     clip-path: inset(50%);
     border: 0;
+
+    .unavailable-note {
+      display: block;
+      font-weight: bold;
+    }
   }
 }
 

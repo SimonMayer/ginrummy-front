@@ -43,7 +43,8 @@
               @item-selected="addPlayer"
           />
         </div>
-        <GameButtonContainer v-if="currentRoundId"
+        <GameButtonContainer
+            v-if="currentRoundId"
             :buttonConfigs="[
                 {
                   icon: 'DrawOneFromStockIcon',

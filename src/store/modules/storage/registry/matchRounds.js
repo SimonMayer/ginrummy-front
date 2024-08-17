@@ -38,12 +38,12 @@ const actions = {
         responses.fetchDiscardPile = await dispatch(
             'storage/rounds/discardPiles/fetchDiscardPile',
             {roundId},
-            {root: true}
+            {root: true},
         );
         responses.fetchStockPileData = await dispatch(
             'storage/rounds/stockPiles/fetchStockPileData',
             {roundId},
-            {root: true}
+            {root: true},
         );
         responses.fetchMelds = await dispatch('storage/rounds/melds/fetchMelds', {roundId}, {root: true});
         responses.fetchPlayersRoundData = await dispatch(
@@ -67,12 +67,12 @@ const actions = {
         responses.fetchDiscardPile = await dispatch(
             'storage/rounds/discardPiles/fetchDiscardPile',
             {roundId},
-            {root: true}
+            {root: true},
         );
         responses.fetchStockPileData = await dispatch(
             'storage/rounds/stockPiles/fetchStockPileData',
             {roundId},
-            {root: true}
+            {root: true},
         );
         responses.fetchMelds = await dispatch('storage/rounds/melds/fetchMelds', {roundId}, {root: true});
         responses.fetchPlayersRoundData = await dispatch(

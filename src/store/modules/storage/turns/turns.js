@@ -49,7 +49,11 @@ const actions = {
             return;
         }
 
-        const isAppendableAction = await dispatch('storage/turns/actions/isAppendableAction', {turnId, action}, {root: true});
+        const isAppendableAction = await dispatch(
+            'storage/turns/actions/isAppendableAction',
+            {turnId, action},
+            {root: true},
+        );
         if (!isAppendableAction) {
             return;
         }
