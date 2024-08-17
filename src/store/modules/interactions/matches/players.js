@@ -10,12 +10,10 @@ const actions = {
             return;
         }
 
-        const key = `addPlayer_${matchId}_${user.user_id}`;
-
         return await dispatch(
             'utils/interactionHandler/handleInteraction',
             {
-                key,
+                key: `addPlayer_${matchId}_${user.user_id}`,
                 interaction: async () => {
                     const result = {};
                     result.addPlayers = await matchesService.addPlayers(matchId, [user.user_id]);

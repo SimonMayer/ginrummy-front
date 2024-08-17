@@ -12,7 +12,7 @@
     </div>
     <div class="game-section row">
       <div class="game-column pile-container">
-        <StockPile v-if="visibleRoundId" @draw:stock-pile="handleDrawFromStockPileClick"/>
+        <StockPile v-if="visibleRoundId" @draw:stock-pile="drawOneFromStockPile"/>
         <DiscardPile v-if="visibleRoundId"/>
       </div>
       <div class="game-column">
@@ -50,21 +50,21 @@
                   isDisabled: !canDrawOneFromStockPile,
                   labelDisabled: 'Draw one card from the stock pile',
                   labelEnabled: 'Draw one card from the stock pile',
-                  pressHandler: handleDrawFromStockPileClick,
+                  pressHandler: drawOneFromStockPile,
                 },
                 {
                   icon: 'DrawOneFromDiscardIcon',
                   isDisabled: !canDrawOneFromDiscardPile,
                   labelDisabled: 'Draw one card from the discard pile',
                   labelEnabled: 'Draw one card from the discard pile',
-                  pressHandler: handleDrawOneFromDiscardPileClick,
+                  pressHandler: drawOneFromDiscardPile,
                 },
                 {
                   icon: 'DrawMultipleFromDiscardIcon',
                   isDisabled: !canDrawMultipleFromDiscardPile,
                   labelDisabled: 'Draw multiple cards to play or extend a meld',
                   labelEnabled: 'Draw multiple cards to play or extend a meld',
-                  pressHandler: handleDrawMultipleFromDiscardPileClick,
+                  pressHandler: drawMultipleFromDiscardPile,
                 },
                 {
                   addSeparatorBefore: true,
@@ -72,14 +72,14 @@
                   isDisabled: !canPlaySetFromHand && !canPlayRunFromHand,
                   labelDisabled: 'Play a meld',
                   labelEnabled: 'Play a meld from the selected cards',
-                  pressHandler: handlePlayMeldClick,
+                  pressHandler: playMeld,
                 },
                 {
                   icon: 'ExtendMeldIcon',
                   isDisabled: !canExtendMeldFromHand,
                   labelDisabled: 'Extend a meld',
                   labelEnabled: 'Extend the selected meld',
-                  pressHandler: handleExtendMeldClick,
+                  pressHandler: extendMeld,
                 },
                 {
                   addSeparatorBefore: true,
@@ -87,7 +87,7 @@
                   isDisabled: !canDiscard,
                   labelDisabled: 'Discard one card from your hand',
                   labelEnabled: 'Discard one card from your hand',
-                  pressHandler: handleDiscardClick,
+                  pressHandler: discardCard,
                 },
                 {
                   addSeparatorBefore: true,
@@ -114,7 +114,6 @@ import StockPile from '@/components/StockPile.vue';
 import DiscardPile from '@/components/DiscardPile.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
-import turnsService from '@/services/turnsService';
 import {mapActions, mapGetters} from 'vuex';
 import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 import ItemSearch from '@/components/ItemSearch.vue';
@@ -143,62 +142,24 @@ export default {
   },
   computed: {
     ...mapGetters({
-      currentDiscardPileCardIds: 'sessionState/derived/discardPile/currentDiscardPileCardIds',
-      currentTopDiscardPileCard: 'sessionState/derived/discardPile/currentTopDiscardPileCard',
-      currentTopDiscardPileCardId: 'sessionState/derived/discardPile/currentTopDiscardPileCardId',
-      currentRoundHandId: 'sessionState/derived/hand/currentHandId',
-      currentHandCardIds: 'sessionState/derived/hand/currentHandCardIds',
       players: 'sessionState/derived/players/playersMatchData',
-      hasAllHandCardsSelected: 'sessionState/derived/selectedItems/hasAllHandCardsSelected',
-      hasNoDiscardPileCardsSelected: 'sessionState/derived/selectedItems/hasNoDiscardPileCardsSelected',
-      hasNoHandCardsSelected: 'sessionState/derived/selectedItems/hasNoHandCardsSelected',
-      hasOneDiscardPileCardSelected: 'sessionState/derived/selectedItems/hasOneDiscardPileCardSelected',
-      hasOneHandCardSelected: 'sessionState/derived/selectedItems/hasOneHandCardSelected',
       hasSelectedMeldOrCards: 'sessionState/derived/selectedItems/hasSelectedMeldOrCards',
-      isAnyDiscardPileCardSelected: 'sessionState/derived/selectedItems/isAnyDiscardPileCardSelected',
-      isAnyDiscardPileCardSelectedBelowTop: 'sessionState/derived/selectedItems/isAnyDiscardPileCardSelectedBelowTop',
-      isOnlyTopDiscardPileCardSelected: 'sessionState/derived/selectedItems/isOnlyTopDiscardPileCardSelected',
-      lowestSelectedCardIdInDiscardPile: 'sessionState/derived/selectedItems/lowestSelectedCardIdInDiscardPile',
-      selectedDiscardPileCardCount: 'sessionState/derived/selectedItems/selectedDiscardPileCardCount',
-      selectedDiscardPileCardIds: 'sessionState/derived/selectedItems/selectedDiscardPileCardIds',
-      selectedDiscardPileCards: 'sessionState/derived/selectedItems/selectedDiscardPileCards',
-      selectedHandCardCount: 'sessionState/derived/selectedItems/selectedHandCardCount',
-      selectedHandCardIds: 'sessionState/derived/selectedItems/selectedHandCardIds',
-      selectedHandCards: 'sessionState/derived/selectedItems/selectedHandCards',
-      selectedMeld: 'sessionState/derived/selectedItems/selectedMeld',
-      selectedMeldCards: 'sessionState/derived/selectedItems/selectedMeldCards',
-      currentStockPileSize: 'sessionState/derived/stockPile/currentStockPileSize',
       hasDrawActionInCurrentTurn: 'sessionState/derived/turn/hasDrawActionInCurrentTurn',
       canAct: 'sessionState/permissions/core/canAct',
       canDiscard: 'sessionState/permissions/discard/canDiscard',
-      canDraw: 'sessionState/permissions/draw/canDraw',
       canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
       canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
-      canDrawOne: 'sessionState/permissions/draw/canDrawOne',
       canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
       canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
       canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
       canStartMatch: 'sessionState/permissions/match/canStartMatch',
       canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
-      canPlayMeldFromHand: 'sessionState/permissions/melds/canPlayMeldFromHand',
       canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
       canPlaySetFromHand: 'sessionState/permissions/melds/canPlaySetFromHand',
-      selectedMeldId: 'sessionState/selections/selectedMeldId',
-      gameConfig: 'storage/gameConfig/gameConfig',
       getNonSelfPlayersMatchDataByMatchId: 'storage/players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
       getSelfPlayerMatchDataByMatchId: 'storage/players/self/getSelfPlayerMatchDataByMatchId',
-      getPlayerRoundDataByRoundAndPlayerIds: 'storage/players/roundData/getPlayerRoundDataByRoundAndPlayerIds',
       getMeldsByRoundId: 'storage/rounds/melds/getMeldsByRoundId',
     }),
-    allowMeldsFromRotation() {
-      return this.gameConfig.allowMeldsFromRotation;
-    },
-    minimumMeldSize() {
-      return this.gameConfig.minimumMeldSize;
-    },
-    runOrders() {
-      return this.gameConfig.runOrders;
-    },
     visibleRoundMelds() {
       return this.getMeldsByRoundId(this.visibleRoundId);
     },
@@ -218,113 +179,16 @@ export default {
       startMatch: 'interactions/matches/start/startMatch',
       startRound: 'interactions/rounds/start/startRound',
       searchUsers: 'interactions/searches/users/searchUsers',
-      logError: 'sessionState/indicators/errorLog/addLogEntry',
-      recordLoadingStart: 'sessionState/indicators/loading/recordLoadingStart',
-      recordLoadingEnd: 'sessionState/indicators/loading/recordLoadingEnd',
+      discardCard: 'interactions/turns/discard/discardCard',
+      drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
+      drawOneFromDiscardPile: 'interactions/turns/draw/drawOneFromDiscardPile',
+      drawMultipleFromDiscardPile: 'interactions/turns/draw/drawMultipleFromDiscardPile',
+      extendMeld: 'interactions/turns/melds/extendMeld',
+      playMeld: 'interactions/turns/melds/playMeld',
       unselectAllCards: 'sessionState/selections/unselectAllCards',
-      addCardIdsToHand: 'storage/hands/addCardIdsToHand',
-      removeCardIdsFromHand: 'storage/hands/removeCardIdsFromHand',
-      setCurrentRoundId: 'storage/registry/matchRounds/setCurrentRoundId',
-      removeTopDiscardPileCard: 'storage/rounds/discardPiles/removeTopDiscardPileCard',
       initializeSse: 'storage/sse/connection/initializeSse',
       cleanupSse: 'storage/sse/connection/cleanupSse',
-      handleInteraction: 'utils/interactionHandler/handleInteraction',
     }),
-    async handleDrawFromStockPileClick() {
-      await this.handleDrawOneFromPileClick('stock');
-    },
-    async handleDrawOneFromDiscardPileClick() {
-      await this.handleDrawOneFromPileClick('discard');
-    },
-    async handleDrawOneFromPileClick(pileType) {
-      if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile) || !this.canDraw) {
-        return;
-      }
-      await this.handleInteraction({
-        key: 'drawOne',
-        interaction: async () => {
-          let cardId;
-          if (pileType === 'stock') {
-            cardId = this.currentStockPileSize > 0
-                ? await turnsService.drawFromStockPile(this.matchId)
-                : await turnsService.drawFromEmptyStockPile(this.matchId);
-          } else if (pileType === 'discard') {
-            cardId = await turnsService.drawOneFromDiscardPile(this.matchId);
-            await this.removeTopDiscardPileCard({matchId: this.matchId});
-          }
-          await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: [cardId]});
-          await this.unselectAllCards();
-        },
-        errorTitle: `Failed to draw from ${pileType} pile!`,
-      });
-    },
-    async handleDrawMultipleFromDiscardPileClick() {
-      if (!this.canDrawMultipleFromDiscardPile) {
-        return;
-      }
-      await this.handleInteraction({
-        key: 'drawMultiple',
-        interaction: async () => {
-          const handCardIds = this.selectedHandCardIds;
-          const newHandCardIds = await turnsService.drawMultipleFromDiscardPile(
-              this.matchId,
-              this.selectedDiscardPileCardIds,
-              handCardIds,
-              this.selectedMeldId,
-          );
-          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: handCardIds});
-          await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: newHandCardIds});
-          await this.unselectAllCards();
-        },
-        errorTitle: 'Failed to draw multiple from discard pile!',
-      });
-    },
-    async handleDiscardClick() {
-      if (!this.canDiscard) {
-        return;
-      }
-      await this.handleInteraction({
-        key: 'discard',
-        interaction: async () => {
-          const cardId = this.selectedHandCardIds[0];
-          await turnsService.discardCard(this.matchId, cardId);
-          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: [cardId]});
-          await this.unselectAllCards();
-        },
-        errorTitle: 'Failed to discard card!',
-      });
-    },
-    async handlePlayMeldClick() {
-      if (!this.canPlaySetFromHand && !this.canPlayRunFromHand) {
-        return;
-      }
-      const meldType = this.canPlaySetFromHand ? 'set' : 'run';
-      await this.handleInteraction({
-        key: 'playMeld',
-        interaction: async () => {
-          const cardIds = this.selectedHandCardIds;
-          await turnsService.playMeld(this.matchId, cardIds, meldType);
-          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
-          await this.unselectAllCards();
-        },
-        errorTitle: 'Failed to play meld!',
-      });
-    },
-    async handleExtendMeldClick() {
-      if (!this.canExtendMeldFromHand) {
-        return;
-      }
-      await this.handleInteraction({
-        key: 'extendMeld',
-        interaction: async () => {
-          const cardIds = this.selectedHandCardIds;
-          await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
-          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
-          await this.unselectAllCards();
-        },
-        errorTitle: 'Failed to extend meld!',
-      });
-    },
   },
 };
 </script>

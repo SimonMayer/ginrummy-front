@@ -2,11 +2,10 @@ import usersService from '@/services/usersService';
 
 const actions = {
     async searchUsers({dispatch}, term) {
-        const key = `searchUsers_${term}`;
         return await dispatch(
             'utils/interactionHandler/handleInteraction',
             {
-                key,
+                key: `searchUsers_${term}`,
                 interaction: async () => {
                     return await usersService.searchUsers(term);
                 },

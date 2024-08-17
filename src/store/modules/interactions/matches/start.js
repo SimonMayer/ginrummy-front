@@ -3,12 +3,11 @@ import matchesService from '@/services/matchesService';
 const actions = {
     async startMatch({dispatch, rootGetters}) {
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
-        const key = `startMatch_${matchId}`;
 
         return await dispatch(
             'utils/interactionHandler/handleInteraction',
             {
-                key,
+                key: `startMatch_${matchId}`,
                 interaction: async () => {
                     const result = {};
                     result.startMatch = await matchesService.startMatch(matchId);

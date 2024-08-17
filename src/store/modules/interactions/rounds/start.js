@@ -3,12 +3,11 @@ import roundsService from '@/services/roundsService';
 const actions = {
     async startRound({dispatch, rootGetters}) {
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
-        const key = `startRound_${matchId}`;
 
         return await dispatch(
             'utils/interactionHandler/handleInteraction',
             {
-                key,
+                key: `startRound_${matchId}`,
                 interaction: async () => {
                     const result = {};
                     const roundId = await roundsService.startRound(matchId);
