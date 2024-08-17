@@ -35,9 +35,27 @@ const actions = {
         commit('SET_LATEST_ROUND_ID', {matchId, roundId});
         commit('ADD_TO_ALL_ROUND_IDS', {matchId, roundId});
         const responses = {};
-        responses.fetchDiscardPile = await dispatch('storage/rounds/discardPiles/fetchDiscardPile', {roundId}, {root: true});
-        responses.fetchStockPileData = await dispatch('storage/rounds/stockPiles/fetchStockPileData', {roundId}, {root: true});
+        responses.fetchDiscardPile = await dispatch(
+            'storage/rounds/discardPiles/fetchDiscardPile',
+            {roundId},
+            {root: true}
+        );
+        responses.fetchStockPileData = await dispatch(
+            'storage/rounds/stockPiles/fetchStockPileData',
+            {roundId},
+            {root: true}
+        );
         responses.fetchMelds = await dispatch('storage/rounds/melds/fetchMelds', {roundId}, {root: true});
+        responses.fetchPlayersRoundData = await dispatch(
+            'storage/players/roundData/fetchPlayersRoundData',
+            {roundId},
+            {root: true},
+        );
+        responses.fetchCurrentTurn = await dispatch(
+            'storage/registry/roundTurns/fetchCurrentTurn',
+            {matchId, roundId},
+            {root: true},
+        );
         return responses;
     },
     async setLatestRoundId({commit, dispatch}, {matchId, roundId}) {
@@ -46,9 +64,22 @@ const actions = {
             return;
         }
         const responses = {};
-        responses.fetchDiscardPile = await dispatch('storage/rounds/discardPiles/fetchDiscardPile', {roundId}, {root: true});
-        responses.fetchStockPileData = await dispatch('storage/rounds/stockPiles/fetchStockPileData', {roundId}, {root: true});
+        responses.fetchDiscardPile = await dispatch(
+            'storage/rounds/discardPiles/fetchDiscardPile',
+            {roundId},
+            {root: true}
+        );
+        responses.fetchStockPileData = await dispatch(
+            'storage/rounds/stockPiles/fetchStockPileData',
+            {roundId},
+            {root: true}
+        );
         responses.fetchMelds = await dispatch('storage/rounds/melds/fetchMelds', {roundId}, {root: true});
+        responses.fetchPlayersRoundData = await dispatch(
+            'storage/players/roundData/fetchPlayersRoundData',
+            {roundId},
+            {root: true},
+        );
         return responses;
     },
     setAllRoundIds({commit}, {matchId, roundIds}) {

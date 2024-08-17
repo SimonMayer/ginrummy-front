@@ -44,20 +44,6 @@ const actions = {
                         {matchId, roundId: latestRoundId},
                         {root: true},
                     );
-                    if (currentRoundId) {
-                        responses.fetchCurrentTurn = await dispatch(
-                            'storage/registry/roundTurns/fetchCurrentTurn',
-                            {matchId, roundId: currentRoundId},
-                            {root: true},
-                        );
-                    }
-                    if (latestRoundId) {
-                        responses.fetchPlayersRoundData = await dispatch(
-                            'storage/players/roundData/fetchPlayersRoundData',
-                            {roundId: latestRoundId},
-                            {root: true},
-                        );
-                    }
                     dispatch(
                         'storage/registry/matchRounds/setAllRoundIds',
                         {matchId, roundIds: match.all_round_ids},

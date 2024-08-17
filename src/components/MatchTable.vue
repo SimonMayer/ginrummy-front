@@ -224,10 +224,7 @@ export default {
       unselectAllCards: 'sessionState/selections/unselectAllCards',
       addCardIdsToHand: 'storage/hands/addCardIdsToHand',
       removeCardIdsFromHand: 'storage/hands/removeCardIdsFromHand',
-      fetchPlayersRoundData: 'storage/players/roundData/fetchPlayersRoundData',
-      setLatestActionId: 'storage/registry/matchActions/setLatestActionId',
       setCurrentRoundId: 'storage/registry/matchRounds/setCurrentRoundId',
-      fetchCurrentTurn: 'storage/registry/roundTurns/fetchCurrentTurn',
       removeTopDiscardPileCard: 'storage/rounds/discardPiles/removeTopDiscardPileCard',
       initializeSse: 'storage/sse/connection/initializeSse',
       cleanupSse: 'storage/sse/connection/cleanupSse',
@@ -318,12 +315,14 @@ export default {
       }, 'Failed to extend meld!');
     },
     async handleStartNewRound() {
-      await this.performAction('startNewRound', async () => {
-        const roundId = await roundsService.startRound(this.matchId);
-        await this.setCurrentRoundId({matchId: this.matchId, roundId: roundId});
-        await this.fetchCurrentTurn({matchId: this.matchId, roundId: this.currentRoundId});
-        await this.fetchPlayersRoundData({roundId: this.currentRoundId});
-      }, 'Failed to start new round!');
+      await this.performAction(
+          'startNewRound',
+          async () => {
+            const roundId = await roundsService.startRound(this.matchId);
+            await this.setCurrentRoundId({matchId: this.matchId, roundId: roundId});
+          },
+          'Failed to start new round!',
+      );
     },
   },
 };
