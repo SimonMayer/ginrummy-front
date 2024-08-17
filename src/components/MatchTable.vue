@@ -228,17 +228,8 @@ export default {
       removeTopDiscardPileCard: 'storage/rounds/discardPiles/removeTopDiscardPileCard',
       initializeSse: 'storage/sse/connection/initializeSse',
       cleanupSse: 'storage/sse/connection/cleanupSse',
+      handleInteraction: 'utils/interactionHandler/handleInteraction',
     }),
-    async performAction(key, action, errorMessage) {
-      this.recordLoadingStart(key);
-      try {
-        await action();
-      } catch (error) {
-        await this.logError({title: errorMessage, error: error});
-      } finally {
-        this.recordLoadingEnd(key);
-      }
-    },
     async handleDrawFromStockPileClick() {
       await this.handleDrawOneFromPileClick('stock');
     },
@@ -249,80 +240,100 @@ export default {
       if ((pileType === 'discard' && !this.canDrawOneFromDiscardPile) || !this.canDraw) {
         return;
       }
-      await this.performAction('drawOne', async () => {
-        let cardId;
-        if (pileType === 'stock') {
-          cardId = this.currentStockPileSize > 0
-              ? await turnsService.drawFromStockPile(this.matchId)
-              : await turnsService.drawFromEmptyStockPile(this.matchId);
-        } else if (pileType === 'discard') {
-          cardId = await turnsService.drawOneFromDiscardPile(this.matchId);
-          await this.removeTopDiscardPileCard({matchId: this.matchId});
-        }
-        await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: [cardId]});
-        await this.unselectAllCards();
-      }, `Failed to draw from ${pileType} pile!`);
+      await this.handleInteraction({
+        key: 'drawOne',
+        interaction: async () => {
+          let cardId;
+          if (pileType === 'stock') {
+            cardId = this.currentStockPileSize > 0
+                ? await turnsService.drawFromStockPile(this.matchId)
+                : await turnsService.drawFromEmptyStockPile(this.matchId);
+          } else if (pileType === 'discard') {
+            cardId = await turnsService.drawOneFromDiscardPile(this.matchId);
+            await this.removeTopDiscardPileCard({matchId: this.matchId});
+          }
+          await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: [cardId]});
+          await this.unselectAllCards();
+        },
+        errorTitle: `Failed to draw from ${pileType} pile!`,
+      });
     },
     async handleDrawMultipleFromDiscardPileClick() {
       if (!this.canDrawMultipleFromDiscardPile) {
         return;
       }
-      await this.performAction('drawMultiple', async () => {
-        const handCardIds = this.selectedHandCardIds;
-        const newHandCardIds = await turnsService.drawMultipleFromDiscardPile(
-            this.matchId,
-            this.selectedDiscardPileCardIds,
-            handCardIds,
-            this.selectedMeldId,
-        );
-        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: handCardIds});
-        await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: newHandCardIds});
-        await this.unselectAllCards();
-      }, `Failed to draw multiple from discard pile!`);
+      await this.handleInteraction({
+        key: 'drawMultiple',
+        interaction: async () => {
+          const handCardIds = this.selectedHandCardIds;
+          const newHandCardIds = await turnsService.drawMultipleFromDiscardPile(
+              this.matchId,
+              this.selectedDiscardPileCardIds,
+              handCardIds,
+              this.selectedMeldId,
+          );
+          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: handCardIds});
+          await this.addCardIdsToHand({handId: this.currentRoundHandId, cardIds: newHandCardIds});
+          await this.unselectAllCards();
+        },
+        errorTitle: 'Failed to draw multiple from discard pile!',
+      });
     },
     async handleDiscardClick() {
       if (!this.canDiscard) {
         return;
       }
-      await this.performAction('discard', async () => {
-        const cardId = this.selectedHandCardIds[0];
-        await turnsService.discardCard(this.matchId, cardId);
-        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: [cardId]});
-        await this.unselectAllCards();
-      }, 'Failed to discard card!');
+      await this.handleInteraction({
+        key: 'discard',
+        interaction: async () => {
+          const cardId = this.selectedHandCardIds[0];
+          await turnsService.discardCard(this.matchId, cardId);
+          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: [cardId]});
+          await this.unselectAllCards();
+        },
+        errorTitle: 'Failed to discard card!',
+      });
     },
     async handlePlayMeldClick() {
       if (!this.canPlaySetFromHand && !this.canPlayRunFromHand) {
         return;
       }
       const meldType = this.canPlaySetFromHand ? 'set' : 'run';
-      await this.performAction('playMeld', async () => {
-        const cardIds = this.selectedHandCardIds;
-        await turnsService.playMeld(this.matchId, cardIds, meldType);
-        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
-        await this.unselectAllCards();
-      }, `Failed to play meld!`);
+      await this.handleInteraction({
+        key: 'playMeld',
+        interaction: async () => {
+          const cardIds = this.selectedHandCardIds;
+          await turnsService.playMeld(this.matchId, cardIds, meldType);
+          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
+          await this.unselectAllCards();
+        },
+        errorTitle: 'Failed to play meld!',
+      });
     },
     async handleExtendMeldClick() {
       if (!this.canExtendMeldFromHand) {
         return;
       }
-      await this.performAction('extendMeld', async () => {
-        const cardIds = this.selectedHandCardIds;
-        await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
-        await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
-        await this.unselectAllCards();
-      }, 'Failed to extend meld!');
+      await this.handleInteraction({
+        key: 'extendMeld',
+        interaction: async () => {
+          const cardIds = this.selectedHandCardIds;
+          await turnsService.extendMeld(this.matchId, this.selectedMeldId, cardIds);
+          await this.removeCardIdsFromHand({handId: this.currentRoundHandId, cardIds: cardIds});
+          await this.unselectAllCards();
+        },
+        errorTitle: 'Failed to extend meld!',
+      });
     },
     async handleStartNewRound() {
-      await this.performAction(
-          'startNewRound',
-          async () => {
-            const roundId = await roundsService.startRound(this.matchId);
-            await this.setCurrentRoundId({matchId: this.matchId, roundId: roundId});
-          },
-          'Failed to start new round!',
-      );
+      await this.handleInteraction({
+        key: 'startNewRound',
+        interaction: async () => {
+          const roundId = await roundsService.startRound(this.matchId);
+          await this.setCurrentRoundId({matchId: this.matchId, roundId: roundId});
+        },
+        errorTitle: 'Failed to start new round!',
+      });
     },
   },
 };
