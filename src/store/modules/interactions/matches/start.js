@@ -1,32 +1,40 @@
 import matchesService from '@/services/matchesService';
 
 const actions = {
-    async startMatch({ dispatch, rootGetters }) {
+    async startMatch({dispatch, rootGetters}) {
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const key = `startMatch_${matchId}`;
-        const response = {key, responses: {}};
 
-        dispatch('sessionState/indicators/loading/recordLoadingStart', key, { root: true });
-        try {
-            response.responses.startMatch = await matchesService.startMatch(matchId);
+        return await dispatch(
+            'utils/interactionHandler/handleInteraction',
+            {
+                key,
+                interaction: async () => {
+                    const result = {};
+                    result.startMatch = await matchesService.startMatch(matchId);
 
-            response.responses.fetchMatch = await dispatch('storage/matches/matches/fetchMatch', { matchId, forceFetch: true }, { root: true });
-            response.responses.fetchPlayersMatchData = await dispatch(
-                'storage/players/matchData/fetchPlayersMatchData',
-                { matchId, forceFetch: true },
-                { root: true }
-            );
+                    result.fetchMatch = await dispatch(
+                        'storage/matches/matches/fetchMatch',
+                        {matchId, forceFetch: true},
+                        {root: true},
+                    );
+                    result.fetchPlayersMatchData = await dispatch(
+                        'storage/players/matchData/fetchPlayersMatchData',
+                        {matchId, forceFetch: true},
+                        {root: true},
+                    );
 
-            response.responses.initializeSse = await dispatch('storage/sse/connection/initializeSse', matchId, { root: true });
-            response.isSuccess = true;
-        } catch (error) {
-            dispatch('sessionState/errorLog/addLogEntry', { title: 'Failed to start match!', error }, { root: true });
-            response.isSuccess = false;
-            response.error = error;
-        } finally {
-            dispatch('sessionState/indicators/loading/recordLoadingEnd', key, { root: true });
-        }
-        return response;
+                    result.initializeSse = await dispatch(
+                        'storage/sse/connection/initializeSse',
+                        matchId,
+                        {root: true},
+                    );
+                    return result;
+                },
+                errorTitle: 'Failed to start match!',
+            },
+            {root: true},
+        );
     },
 };
 

@@ -31,8 +31,9 @@ const actions = {
         dispatch('sessionState/indicators/loading/recordLoadingStart', key, {root: true});
         commit('SET_SEARCH_TERM', {key, term});
         try {
-            const results = await searchFunction(term);
-            commit('SET_SEARCH_RESULTS', {key, results});
+            const response = await searchFunction(term);
+            const searchResults = response.result || [];
+            commit('SET_SEARCH_RESULTS', {key, results: searchResults});
         } catch (error) {
             dispatch('sessionState/indicators/errorLog/addLogEntry', {title: 'Search failed!', error}, {root: true});
         } finally {
