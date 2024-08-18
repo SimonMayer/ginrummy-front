@@ -9,7 +9,7 @@ const getters = {
     },
     canPlayMeld(state, getters, rootState, rootGetters) {
         return rootGetters['sessionState/permissions/core/canAct'] &&
-            !rootGetters['sessionState/selections/selectedMeldId'] &&
+            !rootGetters['sessionState/uiOperations/selections/selectedMeldId'] &&
             getters.canMeldOnThisRotation;
     },
     canPlayMeldFromHand(state, getters, rootState, rootGetters) {
@@ -37,7 +37,7 @@ const getters = {
             getters.canMeldOnThisRotation;
     },
     canExtendMeld(state, getters, rootState, rootGetters) {
-        return getters.canSelectMelds && rootGetters['sessionState/selections/selectedMeldId'];
+        return getters.canSelectMelds && rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
     },
     canExtendMeldFromHand(state, getters, rootState, rootGetters) {
         const cards = [

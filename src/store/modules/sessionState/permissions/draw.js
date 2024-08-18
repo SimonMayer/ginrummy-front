@@ -8,7 +8,7 @@ const getters = {
     canDrawOne(state, getters, rootState, rootGetters) {
         return getters.canDraw &&
             rootGetters['sessionState/derived/selectedItems/hasNoHandCardsSelected'] &&
-            !rootGetters['sessionState/selections/selectedMeldId'];
+            !rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
     },
     canDrawOneFromStockPile(state, getters, rootState, rootGetters) {
         return getters.canDrawOne && rootGetters['sessionState/derived/selectedItems/hasNoDiscardPileCardsSelected'];

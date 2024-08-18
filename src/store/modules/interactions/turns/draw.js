@@ -16,7 +16,7 @@ const actions = {
                         ? await turnsService.drawFromStockPile(matchId)
                         : await turnsService.drawFromEmptyStockPile(matchId);
                     await dispatch('storage/hands/addCardIdsToHand', {handId, cardIds: [cardId]}, {root: true});
-                    await dispatch('sessionState/selections/unselectAllCards', {}, {root: true});
+                    await dispatch('sessionState/uiOperations/selections/unselectAllCards', {}, {root: true});
                     return {cardId};
                 },
                 errorTitle: 'Failed to draw from stock pile!',
@@ -42,7 +42,7 @@ const actions = {
                         {root: true},
                     );
                     await dispatch('storage/hands/addCardIdsToHand', {handId, cardIds: [cardId]}, {root: true});
-                    await dispatch('sessionState/selections/unselectAllCards', {}, {root: true});
+                    await dispatch('sessionState/uiOperations/selections/unselectAllCards', {}, {root: true});
                     return {cardId};
                 },
                 errorTitle: 'Failed to draw from discard pile!',
@@ -66,14 +66,14 @@ const actions = {
                         matchId,
                         rootGetters['sessionState/derived/selectedItems/selectedDiscardPileCardIds'],
                         handCardIds,
-                        rootGetters['sessionState/selections/selectedMeldId'],
+                        rootGetters['sessionState/uiOperations/selections/selectedMeldId'],
                     );
                     await dispatch('storage/hands/removeCardIdsFromHand', {
                         handId,
                         cardIds: handCardIds,
                     }, {root: true});
                     await dispatch('storage/hands/addCardIdsToHand', {handId, cardIds: newHandCardIds}, {root: true});
-                    await dispatch('sessionState/selections/unselectAllCards', {}, {root: true});
+                    await dispatch('sessionState/uiOperations/selections/unselectAllCards', {}, {root: true});
                     return {newHandCardIds};
                 },
                 errorTitle: 'Failed to draw multiple from discard pile!',

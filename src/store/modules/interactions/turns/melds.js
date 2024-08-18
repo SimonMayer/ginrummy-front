@@ -8,7 +8,7 @@ const actions = {
 
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const cardIds = rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'];
-        const meldId = rootGetters['sessionState/selections/selectedMeldId'];
+        const meldId = rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];
 
         return await dispatch(
@@ -19,7 +19,7 @@ const actions = {
                     const result = {};
                     result.extendMeld = await turnsService.extendMeld(matchId, meldId, cardIds);
                     await dispatch('storage/hands/removeCardIdsFromHand', {handId, cardIds}, {root: true});
-                    await dispatch('sessionState/selections/unselectAllCards', {}, {root: true});
+                    await dispatch('sessionState/uiOperations/selections/unselectAllCards', {}, {root: true});
                     return result;
                 },
                 errorTitle: 'Failed to extend meld!',
@@ -48,7 +48,7 @@ const actions = {
                     const result = {};
                     result.playMeld = await turnsService.playMeld(matchId, cardIds, meldType);
                     await dispatch('storage/hands/removeCardIdsFromHand', {handId, cardIds}, {root: true});
-                    await dispatch('sessionState/selections/unselectAllCards', {}, {root: true});
+                    await dispatch('sessionState/uiOperations/selections/unselectAllCards', {}, {root: true});
                     return result;
                 },
                 errorTitle: 'Failed to play meld!',

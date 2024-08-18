@@ -24,7 +24,7 @@ const actions = {
                         {handId: handId, cardIds: [cardId]},
                         {root: true},
                     );
-                    await dispatch('sessionState/selections/unselectAllCards', {}, {root: true});
+                    await dispatch('sessionState/uiOperations/selections/unselectAllCards', {}, {root: true});
                     return result;
                 },
                 errorTitle: 'Failed to discard card!',

@@ -1,7 +1,7 @@
 const getters = {
     selectedHandCardIds(state, getters, rootState, rootGetters) {
         const handCardIds = rootGetters['sessionState/derived/hand/currentHandCardIds'] || [];
-        const selectedCardIds = rootGetters['sessionState/selections/getSelectedCardIds'];
+        const selectedCardIds = rootGetters['sessionState/uiOperations/selections/getSelectedCardIds'];
 
         return handCardIds.filter(cardId => selectedCardIds.includes(cardId));
     },
@@ -23,7 +23,7 @@ const getters = {
     },
     selectedDiscardPileCardIds(state, getters, rootState, rootGetters) {
         const discardPileCardIds = rootGetters['sessionState/derived/discardPile/currentDiscardPileCardIds'];
-        const selectedCardIds = rootGetters['sessionState/selections/getSelectedCardIds'];
+        const selectedCardIds = rootGetters['sessionState/uiOperations/selections/getSelectedCardIds'];
 
         return discardPileCardIds.filter(cardId => selectedCardIds.includes(cardId));
     },
@@ -60,7 +60,7 @@ const getters = {
         return lowestCardIndex !== -1 ? discardPileCardIds.length - lowestCardIndex : 0;
     },
     selectedMeld(state, getters, rootState, rootGetters) {
-        const selectedMeldId = rootGetters['sessionState/selections/selectedMeldId'];
+        const selectedMeldId = rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
         return rootGetters['storage/rounds/melds/getMeldById'](selectedMeldId);
     },
     selectedMeldCards(state, getters) {
@@ -71,7 +71,7 @@ const getters = {
         return [...getters.selectedMeldCards, ...getters.selectedHandCards, ...getters.selectedDiscardPileCards];
     },
     hasSelectedMeldOrCards(state, getters, rootState, rootGetters) {
-        return !!rootGetters['sessionState/selections/selectedMeldId'] ||
+        return !!rootGetters['sessionState/uiOperations/selections/selectedMeldId'] ||
             getters.selectedDiscardPileCardCount > 0 ||
             getters.selectedHandCardCount > 0;
     },

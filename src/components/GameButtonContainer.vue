@@ -114,7 +114,7 @@ export default {
       drawMultipleFromDiscardPile: 'interactions/turns/draw/drawMultipleFromDiscardPile',
       extendMeld: 'interactions/turns/melds/extendMeld',
       playMeld: 'interactions/turns/melds/playMeld',
-      unselectAllCards: 'sessionState/selections/unselectAllCards',
+      unselectAllCards: 'sessionState/uiOperations/selections/unselectAllCards',
     }),
   },
 };

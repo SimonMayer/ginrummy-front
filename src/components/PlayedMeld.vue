@@ -41,7 +41,7 @@ export default {
     ...mapGetters({
       runOrders: 'storage/gameConfig/runOrders',
       selectable: 'sessionState/permissions/melds/canSelectMelds',
-      selectedMeldId: 'sessionState/selections/selectedMeldId',
+      selectedMeldId: 'sessionState/uiOperations/selections/selectedMeldId',
     }),
     isSelected() {
       return this.selectedMeldId === this.id;
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      toggleSelectedMeldId: 'sessionState/selections/toggleSelectedMeldId',
+      toggleSelectedMeldId: 'sessionState/uiOperations/selections/toggleSelectedMeldId',
     }),
     handleClick() {
       if (this.selectable) {
