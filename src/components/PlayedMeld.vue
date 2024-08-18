@@ -1,5 +1,8 @@
 <template>
-  <div :class="['meld', type, { 'selected': isSelected, 'selectable': selectable }]" @click="handleClick">
+  <div
+      :class="['meld', type, `size-${sortedCards.length}`, { 'selected': isSelected, 'selectable': selectable }]"
+      @click="handleClick"
+  >
     <VisibleCard
         v-for="card in sortedCards"
         :key="card.card_id"
@@ -64,11 +67,30 @@ export default {
 @import '@/assets/globalVariables';
 @import '@/assets/cards/variables.css';
 
-@mixin fan-shape($num-cards, $span, $offset-rotation) {
-  @for $i from 1 through $num-cards {
-    $rotation: (($i - calc($num-cards / 2)) * calc($span / $num-cards) + $offset-rotation);
-    .card:nth-child(#{$i}) {
-      transform: rotate($rotation);
+@mixin fan-shape($maximumCardCount, $span, $rotationOffset, $shownFirstCards, $shownFinalCards, $innerCardRotationFactor) {
+  $uncompactedMeldSize: $shownFirstCards + $shownFinalCards + 2;
+  $defaultCardRotation: calc($span / $maximumCardCount);
+  $innerCardRotation: $defaultCardRotation * $innerCardRotationFactor;
+  $rotation: 0;
+
+  @for $meldSize from 1 through $maximumCardCount {
+    $preFinalCards: $meldSize - $shownFinalCards;
+    @for $card from 1 through $meldSize {
+
+      @if $meldSize <= $uncompactedMeldSize {
+        $rotation: ($card * $defaultCardRotation) + $rotationOffset;
+      } @else {
+        $firstCardRotations: min($card, ($shownFirstCards + 1)) * $defaultCardRotation;
+        $innerCardRotations: max(min($card, ($preFinalCards + 1)) - ($shownFirstCards + 1), 0) * $innerCardRotation;
+        $finalCardRotations: max($card - ($preFinalCards + 1), 0) * $defaultCardRotation;
+        $rotation: $firstCardRotations + $innerCardRotations + $finalCardRotations + $rotationOffset;
+      }
+
+      &.size-#{$meldSize} {
+        .card:nth-child(#{$card}) {
+          transform: rotate($rotation);
+        }
+      }
     }
   }
 }
@@ -78,6 +100,54 @@ export default {
   display: flex;
   justify-content: right;
   align-items: flex-start;
+  width: calc(var(--card-width) * 0.8);
+  height: var(--card-height);
+  padding-top: calc(var(--card-width) * 0.12);
+  padding-bottom: calc(var(--card-width) * 0.1);
+  padding-left: calc((var(--card-width) * 0.2) + (var(--card-height) * 0.27));
+
+  &.size-4 {
+    padding-right: calc(var(--card-width) * 0.02);
+  }
+
+  &.size-5 {
+    padding-right: calc(var(--card-width) * 0.18);
+  }
+
+  &.size-6 {
+    padding-right: calc(var(--card-width) * 0.06);
+  }
+
+  &.size-7 {
+    padding-right: calc(var(--card-width) * 0.12);
+  }
+
+  &.size-8 {
+    padding-right: calc(var(--card-width) * 0.18);
+  }
+
+  &.size-9 {
+    padding-right: calc(var(--card-width) * 0.24);
+  }
+
+  &.size-10 {
+    padding-right: calc(var(--card-width) * 0.30);
+  }
+
+  &.size-11 {
+    padding-right: calc(var(--card-width) * 0.36);
+    padding-bottom: calc(var(--card-width) * 0.15);
+  }
+
+  &.size-12 {
+    padding-right: calc(var(--card-width) * 0.42);
+    padding-bottom: calc(var(--card-width) * 0.18);
+  }
+
+  &.size-13 {
+    padding-right: calc(var(--card-width) * 0.48);
+    padding-bottom: calc(var(--card-width) * 0.22);
+  }
 
   &.selected {
     .card {
@@ -91,21 +161,15 @@ export default {
 
   .card {
     position: absolute;
-    transform-origin: bottom left;
+    transform-origin: 20% 150%;
   }
 
   &.run {
-    width: calc(var(--card-width) * 1.7);
-    height: calc(var(--card-height) + calc(var(--card-width) * 0.5));
-    padding: calc(var(--card-height) / 6) calc(var(--card-width) * 0.5) 0 0;
-    @include fan-shape(13, 90deg, 10);
+    @include fan-shape(13, 56.5deg, -20, 2, 1, 0.4);
   }
 
   &.set {
-    width: calc(var(--card-width) + (var(--card-height) / 4));
-    height: calc(var(--card-height) + (var(--card-width) / 4));
-    padding: calc(var(--card-height) / 10) calc(var(--card-width) / 5) 0 0;
-    @include fan-shape(4, 30deg, -5);
+    @include fan-shape(4, 20deg, -20, 2, 1, 1);
   }
 }
 </style>
