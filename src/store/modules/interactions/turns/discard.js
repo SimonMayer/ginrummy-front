@@ -8,7 +8,9 @@ const actions = {
 
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];
-        const selectedHandCardIds = rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'];
+        const cardId = rootGetters['sessionState/derived/selectedItems/selectedHandCardCount'] === 1
+            ? rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'][0]
+            : rootGetters['sessionState/derived/hand/currentHandCardIds'][0];
 
         return await dispatch(
             'utils/interactionHandler/handleInteraction',
@@ -16,7 +18,6 @@ const actions = {
                 key: `discard_${matchId}`,
                 interaction: async () => {
                     const result = {};
-                    const cardId = selectedHandCardIds[0];
                     result.discardCard = await turnsService.discardCard(matchId, cardId);
                     await dispatch(
                         'storage/hands/removeCardIdsFromHand',
