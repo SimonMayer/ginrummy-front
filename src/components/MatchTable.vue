@@ -144,6 +144,7 @@ export default {
     gap: var(--base-margin);
     height: 100%;
     position: relative;
+    padding-right: calc(var(--card-height) * 0.25);
 
     .stock-pile-container, .discard-pile {
       transform-origin: top left;
