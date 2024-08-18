@@ -16,8 +16,8 @@
           v-for="card in handCards"
           :key="card.card_id"
           :cardProp="card"
-          :class="['card', { selectable: selectable }]"
-          :selectable="selectable"
+          :class="['card', { selectable: canSelectHandCards }]"
+          :selectable="canSelectHandCards"
       />
     </div>
   </div>
@@ -36,15 +36,13 @@ export default {
     ScoreBoard,
     VisibleCard,
   },
-  props: {
-    selectable: Boolean,
-  },
   computed: {
     ...mapGetters({
-      handCards: 'sessionState/derived/hand/currentHandCards',
-      hasCurrentTurn: 'sessionState/permissions/core/isCurrentUserTurn',
+      handCards: 'sessionState/derived/hand/visibleHandCards',
       playerMatchData: 'sessionState/derived/players/selfPlayerMatchData',
       playerRoundData: 'sessionState/derived/players/visibleSelfPlayerRoundData',
+      hasCurrentTurn: 'sessionState/permissions/core/isCurrentUserTurn',
+      canSelectHandCards: 'sessionState/permissions/hand/canSelectHandCards',
     }),
     username() {
       return this.playerMatchData.username;

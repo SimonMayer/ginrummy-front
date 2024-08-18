@@ -1,5 +1,5 @@
 <template>
-  <div class="discard-pile">
+  <div v-if="visibleRoundId" class="discard-pile">
     <VisibleCard
         v-for="card in visibleCards"
         :key="card.card_id"
@@ -26,6 +26,7 @@ export default {
     ...mapGetters({
       visibleCards: 'sessionState/derived/discardPile/visibleDiscardPileCards',
       selectableCards: 'sessionState/derived/discardPile/selectableDiscardPileCards',
+      visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
     }),
     isEmpty() {
       return this.visibleCards?.length === 0;

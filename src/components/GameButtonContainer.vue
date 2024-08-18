@@ -1,5 +1,5 @@
 <template>
-  <div class="game-button-container" v-if="isVisibleRoundCurrent">
+  <div v-if="currentRoundId && isVisibleRoundCurrent" class="game-button-container">
     <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
       <div v-if="buttonConfig.addSeparatorBefore" class="button-separator"></div>
       <GameButton
@@ -38,6 +38,7 @@ export default {
   components: {GameButton},
   computed: {
     ...mapGetters({
+      currentRoundId: 'sessionState/derived/rounds/currentRoundId',
       isVisibleRoundCurrent: 'sessionState/derived/rounds/isVisibleRoundCurrent',
       hasSelectedMeldOrCards: 'sessionState/derived/selectedItems/hasSelectedMeldOrCards',
       canDiscard: 'sessionState/permissions/discard/canDiscard',
@@ -103,7 +104,7 @@ export default {
           pressHandler: this.unselectAllCards,
         },
       ];
-    }
+    },
   },
   methods: {
     ...mapActions({
@@ -114,8 +115,8 @@ export default {
       extendMeld: 'interactions/turns/melds/extendMeld',
       playMeld: 'interactions/turns/melds/playMeld',
       unselectAllCards: 'sessionState/selections/unselectAllCards',
-    })
-  }
+    }),
+  },
 };
 </script>
 

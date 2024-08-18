@@ -3,6 +3,9 @@ const getters = {
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         return rootGetters['storage/matches/matches/getMatchById'](matchId);
     },
+    hasStarted(state, getters) {
+        return !!getters.match.start_time;
+    },
 };
 
 export default {

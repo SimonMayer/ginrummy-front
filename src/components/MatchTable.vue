@@ -12,20 +12,20 @@
     </div>
     <div class="game-section row">
       <div class="game-column pile-container">
-        <StockPile v-if="visibleRoundId" @draw:stock-pile="drawOneFromStockPile"/>
-        <DiscardPile v-if="visibleRoundId"/>
+        <StockPile/>
+        <DiscardPile/>
       </div>
       <div class="game-column">
         <div class="melds-container">
           <PlayedMeld
-              v-for="meld in visibleRoundMelds"
+              v-for="meld in visibleMelds"
               :id="meld.meld_id"
               :key="meld.meld_id"
               :cards="meld.cards"
               :type="meld.meld_type"
           />
         </div>
-        <div v-if="match.start_time && !currentRoundId" class="buttons-container">
+        <div v-if="matchHasStarted && !currentRoundId" class="buttons-container">
           <button @click="startRound">Start new round</button>
         </div>
         <div v-if="canStartMatch" class="buttons-container">
@@ -44,7 +44,7 @@
         </div>
         <GameButtonContainer/>
         <div class="self-player-container">
-          <SelfMatchPlayer v-if="selfPlayerMatchData" :selectable="isHandSelectable" class="self-player"/>
+          <SelfMatchPlayer class="self-player"/>
         </div>
       </div>
     </div>
@@ -59,7 +59,6 @@ import DiscardPile from '@/components/DiscardPile.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
 import {mapActions, mapGetters} from 'vuex';
-import matchPhaseMixin from '@/mixins/matchPhaseMixin';
 import ItemSearch from '@/components/ItemSearch.vue';
 
 export default {
@@ -73,11 +72,8 @@ export default {
     SelfMatchPlayer,
     NonSelfMatchPlayer,
   },
-  mixins: [
-    matchPhaseMixin,
-  ],
   async mounted() {
-    if (this.match.start_time) {
+    if (this.matchHasStarted) {
       await this.initializeSse(this.matchId);
     }
   },
@@ -86,28 +82,19 @@ export default {
   },
   computed: {
     ...mapGetters({
+      visibleMelds: 'sessionState/derived/melds/visibleMelds',
+      matchHasStarted: 'sessionState/derived/match/hasStarted',
+      match: 'sessionState/derived/match/match',
       players: 'sessionState/derived/players/playersMatchData',
+      nonSelfPlayersMatchData: 'sessionState/derived/players/nonSelfPlayersMatchData',
+      currentRoundId: 'sessionState/derived/rounds/currentRoundId',
       hasDrawActionInCurrentTurn: 'sessionState/derived/turn/hasDrawActionInCurrentTurn',
+      matchId: 'sessionState/matchIdentifier/matchId',
       canAct: 'sessionState/permissions/core/canAct',
       canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
       canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
       canStartMatch: 'sessionState/permissions/match/canStartMatch',
-      getNonSelfPlayersMatchDataByMatchId: 'storage/players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
-      getSelfPlayerMatchDataByMatchId: 'storage/players/self/getSelfPlayerMatchDataByMatchId',
-      getMeldsByRoundId: 'storage/rounds/melds/getMeldsByRoundId',
     }),
-    visibleRoundMelds() {
-      return this.getMeldsByRoundId(this.visibleRoundId);
-    },
-    nonSelfPlayersMatchData() {
-      return this.getNonSelfPlayersMatchDataByMatchId(this.matchId);
-    },
-    selfPlayerMatchData() {
-      return this.getSelfPlayerMatchDataByMatchId(this.matchId);
-    },
-    isHandSelectable() {
-      return this.canDrawMultiple || (this.canAct && this.hasDrawActionInCurrentTurn);
-    },
   },
   methods: {
     ...mapActions({
@@ -115,7 +102,6 @@ export default {
       startMatch: 'interactions/matches/start/startMatch',
       startRound: 'interactions/rounds/start/startRound',
       searchUsers: 'interactions/searches/users/searchUsers',
-      drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
       initializeSse: 'storage/sse/connection/initializeSse',
       cleanupSse: 'storage/sse/connection/cleanupSse',
     }),

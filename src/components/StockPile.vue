@@ -1,5 +1,5 @@
 <template>
-  <div class="stock-pile-container">
+  <div v-if="visibleRoundId" class="stock-pile-container">
     <div :class="{ disabled: disabled, empty: isEmpty }" class="stock-pile" @click="handleClick">
       <HiddenCard v-for="n in size" :key="n" class="stock-card-item"/>
       <div v-if="isEmpty" class="empty-placeholder">
@@ -12,7 +12,7 @@
 
 <script>
 import HiddenCard from '@/components/HiddenCard.vue';
-import {mapGetters} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'StockPile',
@@ -21,6 +21,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
       size: 'sessionState/derived/stockPile/visibleStockPileSize',
       canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
     }),
@@ -32,9 +33,12 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
+    }),
     handleClick() {
       if (!this.disabled) {
-        this.$emit('draw:stock-pile');
+        this.drawOneFromStockPile();
       }
     },
   },
