@@ -42,63 +42,7 @@
               @item-selected="addPlayer"
           />
         </div>
-        <GameButtonContainer
-            v-if="currentRoundId"
-            :buttonConfigs="[
-                {
-                  icon: 'DrawOneFromStockIcon',
-                  isDisabled: !canDrawOneFromStockPile,
-                  labelDisabled: 'Draw one card from the stock pile',
-                  labelEnabled: 'Draw one card from the stock pile',
-                  pressHandler: drawOneFromStockPile,
-                },
-                {
-                  icon: 'DrawOneFromDiscardIcon',
-                  isDisabled: !canDrawOneFromDiscardPile,
-                  labelDisabled: 'Draw one card from the discard pile',
-                  labelEnabled: 'Draw one card from the discard pile',
-                  pressHandler: drawOneFromDiscardPile,
-                },
-                {
-                  icon: 'DrawMultipleFromDiscardIcon',
-                  isDisabled: !canDrawMultipleFromDiscardPile,
-                  labelDisabled: 'Draw multiple cards to play or extend a meld',
-                  labelEnabled: 'Draw multiple cards to play or extend a meld',
-                  pressHandler: drawMultipleFromDiscardPile,
-                },
-                {
-                  addSeparatorBefore: true,
-                  icon: 'PlayMeldIcon',
-                  isDisabled: !canPlaySetFromHand && !canPlayRunFromHand,
-                  labelDisabled: 'Play a meld',
-                  labelEnabled: 'Play a meld from the selected cards',
-                  pressHandler: playMeld,
-                },
-                {
-                  icon: 'ExtendMeldIcon',
-                  isDisabled: !canExtendMeldFromHand,
-                  labelDisabled: 'Extend a meld',
-                  labelEnabled: 'Extend the selected meld',
-                  pressHandler: extendMeld,
-                },
-                {
-                  addSeparatorBefore: true,
-                  icon: 'DiscardIcon',
-                  isDisabled: !canDiscard,
-                  labelDisabled: 'Discard one card from your hand',
-                  labelEnabled: 'Discard one card from your hand',
-                  pressHandler: discardCard,
-                },
-                {
-                  addSeparatorBefore: true,
-                  icon: 'UnselectCardsIcon',
-                  isDisabled: !hasSelectedMeldOrCards,
-                  labelDisabled: 'You don\'t have any cards or melds selected.',
-                  labelEnabled: 'Unselect all cards and melds',
-                  pressHandler: unselectAllCards,
-                },
-            ]"
-        />
+        <GameButtonContainer/>
         <div class="self-player-container">
           <SelfMatchPlayer v-if="selfPlayerMatchData" :selectable="isHandSelectable" class="self-player"/>
         </div>
@@ -143,19 +87,11 @@ export default {
   computed: {
     ...mapGetters({
       players: 'sessionState/derived/players/playersMatchData',
-      hasSelectedMeldOrCards: 'sessionState/derived/selectedItems/hasSelectedMeldOrCards',
       hasDrawActionInCurrentTurn: 'sessionState/derived/turn/hasDrawActionInCurrentTurn',
       canAct: 'sessionState/permissions/core/canAct',
-      canDiscard: 'sessionState/permissions/discard/canDiscard',
       canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
-      canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
-      canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
-      canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
       canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
       canStartMatch: 'sessionState/permissions/match/canStartMatch',
-      canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
-      canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
-      canPlaySetFromHand: 'sessionState/permissions/melds/canPlaySetFromHand',
       getNonSelfPlayersMatchDataByMatchId: 'storage/players/nonSelf/getNonSelfPlayersMatchDataByMatchId',
       getSelfPlayerMatchDataByMatchId: 'storage/players/self/getSelfPlayerMatchDataByMatchId',
       getMeldsByRoundId: 'storage/rounds/melds/getMeldsByRoundId',
@@ -179,13 +115,7 @@ export default {
       startMatch: 'interactions/matches/start/startMatch',
       startRound: 'interactions/rounds/start/startRound',
       searchUsers: 'interactions/searches/users/searchUsers',
-      discardCard: 'interactions/turns/discard/discardCard',
       drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
-      drawOneFromDiscardPile: 'interactions/turns/draw/drawOneFromDiscardPile',
-      drawMultipleFromDiscardPile: 'interactions/turns/draw/drawMultipleFromDiscardPile',
-      extendMeld: 'interactions/turns/melds/extendMeld',
-      playMeld: 'interactions/turns/melds/playMeld',
-      unselectAllCards: 'sessionState/selections/unselectAllCards',
       initializeSse: 'storage/sse/connection/initializeSse',
       cleanupSse: 'storage/sse/connection/cleanupSse',
     }),

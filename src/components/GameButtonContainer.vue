@@ -1,5 +1,5 @@
 <template>
-  <div class="game-button-container">
+  <div class="game-button-container" v-if="isVisibleRoundCurrent">
     <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
       <div v-if="buttonConfig.addSeparatorBefore" class="button-separator"></div>
       <GameButton
@@ -10,7 +10,7 @@
       >
         <template #icon="{ mutedLightToSecondary, mutedLightToWhite, mutedMidToAccent, mutedMidToMutedLight}">
           <component
-              :is="iconMap[buttonConfig.icon]"
+              :is="buttonConfig.icon"
               :fillColor="mutedLightToWhite"
               :sharpIndicatorColor="mutedMidToAccent"
               :strokeColor="mutedMidToMutedLight"
@@ -31,38 +31,91 @@ import DrawOneFromStockIcon from '@/components/SvgIcons/DrawOneFromStockIcon.vue
 import ExtendMeldIcon from '@/components/SvgIcons/ExtendMeldIcon.vue';
 import PlayMeldIcon from '@/components/SvgIcons/PlayMeldIcon.vue';
 import UnselectCardsIcon from '@/components/SvgIcons/UnselectCardsIcon.vue';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'GameButtonContainer',
   components: {GameButton},
-  props: {
-    buttonConfigs: {
-      type: Array,
-      required: true,
-      validator(value) {
-        return value.every(config =>
-            Object.prototype.hasOwnProperty.call(config, 'pressHandler') &&
-            Object.prototype.hasOwnProperty.call(config, 'isDisabled') &&
-            Object.prototype.hasOwnProperty.call(config, 'labelEnabled') &&
-            Object.prototype.hasOwnProperty.call(config, 'labelDisabled') &&
-            Object.prototype.hasOwnProperty.call(config, 'icon'),
-        );
-      },
-    },
-  },
   computed: {
-    iconMap() {
-      return {
-        DiscardIcon: DiscardIcon,
-        DrawMultipleFromDiscardIcon: DrawMultipleFromDiscardIcon,
-        DrawOneFromDiscardIcon: DrawOneFromDiscardIcon,
-        DrawOneFromStockIcon: DrawOneFromStockIcon,
-        ExtendMeldIcon: ExtendMeldIcon,
-        PlayMeldIcon: PlayMeldIcon,
-        UnselectCardsIcon: UnselectCardsIcon,
-      };
-    },
+    ...mapGetters({
+      isVisibleRoundCurrent: 'sessionState/derived/rounds/isVisibleRoundCurrent',
+      hasSelectedMeldOrCards: 'sessionState/derived/selectedItems/hasSelectedMeldOrCards',
+      canDiscard: 'sessionState/permissions/discard/canDiscard',
+      canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
+      canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
+      canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
+      canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
+      canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
+      canPlaySetFromHand: 'sessionState/permissions/melds/canPlaySetFromHand',
+    }),
+    buttonConfigs() {
+      return [
+        {
+          icon: DrawOneFromStockIcon,
+          isDisabled: !this.canDrawOneFromStockPile,
+          labelDisabled: 'Draw one card from the stock pile',
+          labelEnabled: 'Draw one card from the stock pile',
+          pressHandler: this.drawOneFromStockPile,
+        },
+        {
+          icon: DrawOneFromDiscardIcon,
+          isDisabled: !this.canDrawOneFromDiscardPile,
+          labelDisabled: 'Draw one card from the discard pile',
+          labelEnabled: 'Draw one card from the discard pile',
+          pressHandler: this.drawOneFromDiscardPile,
+        },
+        {
+          icon: DrawMultipleFromDiscardIcon,
+          isDisabled: !this.canDrawMultipleFromDiscardPile,
+          labelDisabled: 'Draw multiple cards to play or extend a meld',
+          labelEnabled: 'Draw multiple cards to play or extend a meld',
+          pressHandler: this.drawMultipleFromDiscardPile,
+        },
+        {
+          addSeparatorBefore: true,
+          icon: PlayMeldIcon,
+          isDisabled: !this.canPlaySetFromHand && !this.canPlayRunFromHand,
+          labelDisabled: 'Play a meld',
+          labelEnabled: 'Play a meld from the selected cards',
+          pressHandler: this.playMeld,
+        },
+        {
+          icon: ExtendMeldIcon,
+          isDisabled: !this.canExtendMeldFromHand,
+          labelDisabled: 'Extend a meld',
+          labelEnabled: 'Extend the selected meld',
+          pressHandler: this.extendMeld,
+        },
+        {
+          addSeparatorBefore: true,
+          icon: DiscardIcon,
+          isDisabled: !this.canDiscard,
+          labelDisabled: 'Discard one card from your hand',
+          labelEnabled: 'Discard one card from your hand',
+          pressHandler: this.discardCard,
+        },
+        {
+          addSeparatorBefore: true,
+          icon: UnselectCardsIcon,
+          isDisabled: !this.hasSelectedMeldOrCards,
+          labelDisabled: 'You don\'t have any cards or melds selected.',
+          labelEnabled: 'Unselect all cards and melds',
+          pressHandler: this.unselectAllCards,
+        },
+      ];
+    }
   },
+  methods: {
+    ...mapActions({
+      discardCard: 'interactions/turns/discard/discardCard',
+      drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
+      drawOneFromDiscardPile: 'interactions/turns/draw/drawOneFromDiscardPile',
+      drawMultipleFromDiscardPile: 'interactions/turns/draw/drawMultipleFromDiscardPile',
+      extendMeld: 'interactions/turns/melds/extendMeld',
+      playMeld: 'interactions/turns/melds/playMeld',
+      unselectAllCards: 'sessionState/selections/unselectAllCards',
+    })
+  }
 };
 </script>
 
