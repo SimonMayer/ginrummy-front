@@ -31,13 +31,13 @@ const getters = {
         const selectedHandCards = rootGetters['sessionState/derived/selectedItems/selectedHandCards'];
         return getters.canPlayMeldFromHand && meldsService.areAllCardsOfSameRank(selectedHandCards);
     },
-    canSelectMelds(state, getters, rootState, rootGetters) {
+    canExtendMelds(state, getters, rootState, rootGetters) {
         return rootGetters['sessionState/permissions/core/canAct'] &&
             rootGetters['sessionState/derived/players/currentSelfHasPlayedMeld'] &&
             getters.canMeldOnThisRotation;
     },
-    canExtendMeld(state, getters, rootState, rootGetters) {
-        return getters.canSelectMelds && rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
+    canExtendSelectedMeld(state, getters, rootState, rootGetters) {
+        return getters.canExtendMelds && rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
     },
     canExtendMeldFromHand(state, getters, rootState, rootGetters) {
         const cards = [
@@ -46,7 +46,7 @@ const getters = {
         ];
         const runOrders = rootGetters['storage/gameConfig/runOrders'];
 
-        return getters.canExtendMeld &&
+        return getters.canExtendSelectedMeld &&
             rootGetters['sessionState/derived/turn/hasDrawActionInCurrentTurn'] &&
             !rootGetters['sessionState/derived/selectedItems/hasNoHandCardsSelected'] &&
             !rootGetters['sessionState/derived/selectedItems/hasAllHandCardsSelected'] &&

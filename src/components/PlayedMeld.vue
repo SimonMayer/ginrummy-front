@@ -1,6 +1,6 @@
 <template>
   <div
-      :class="['meld', type, `size-${sortedCards.length}`, { 'selected': isSelected, 'selectable': selectable }]"
+      :class="['meld', type, `size-${sortedCards.length}`, { 'selected': isSelected, 'selectable': canExtendMelds }]"
       @click="handleClick"
   >
     <VisibleCard
@@ -40,7 +40,7 @@ export default {
   computed: {
     ...mapGetters({
       runOrders: 'storage/gameConfig/runOrders',
-      selectable: 'sessionState/permissions/melds/canSelectMelds',
+      canExtendMelds: 'sessionState/permissions/melds/canExtendMelds',
       selectedMeldId: 'sessionState/uiOperations/selections/selectedMeldId',
     }),
     isSelected() {
@@ -55,7 +55,7 @@ export default {
       toggleSelectedMeldId: 'sessionState/uiOperations/selections/toggleSelectedMeldId',
     }),
     handleClick() {
-      if (this.selectable) {
+      if (this.canExtendMelds) {
         this.toggleSelectedMeldId(this.id);
       }
     },
