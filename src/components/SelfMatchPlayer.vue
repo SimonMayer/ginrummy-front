@@ -34,10 +34,10 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from 'vuex';
 import NamePlate from '@/components/NamePlate.vue';
 import ScoreBoard from '@/components/ScoreBoard.vue';
 import VisibleCard from '@/components/VisibleCard.vue';
-import {mapActions, mapGetters} from 'vuex';
 import {dropRecipientMixin} from '@/mixins/dropRecipientMixin';
 
 export default {
@@ -57,7 +57,9 @@ export default {
       hasCurrentTurn: 'sessionState/permissions/core/isCurrentUserTurn',
       canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
       canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
+      canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
       canSelectHandCards: 'sessionState/permissions/hand/canSelectHandCards',
+      canExtendMelds: 'sessionState/permissions/melds/canExtendMelds',
       isCardSelected: 'sessionState/uiOperations/selections/isCardSelected',
     }),
     username() {
@@ -80,7 +82,9 @@ export default {
       drawOneFromDiscardPile: 'interactions/turns/draw/drawOneFromDiscardPile',
     }),
     canDragCard(cardId) {
-      return this.canDiscardByDragging && (this.isCardSelected(cardId) || this.selectedHandCardCount === 0);
+      return this.canDrawMultiple ||
+          this.canExtendMelds ||
+          (this.canDiscardByDragging && (this.isCardSelected(cardId) || this.selectedHandCardCount === 0));
     },
     async handleDrop() {
       if (this.canDrawOneFromDiscardPile) {

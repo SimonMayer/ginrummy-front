@@ -93,8 +93,6 @@ export default {
       currentRoundId: 'sessionState/derived/rounds/currentRoundId',
       hasDrawActionInCurrentTurn: 'sessionState/derived/turn/hasDrawActionInCurrentTurn',
       matchId: 'sessionState/matchIdentifier/matchId',
-      canAct: 'sessionState/permissions/core/canAct',
-      canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
       canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
       canStartMatch: 'sessionState/permissions/match/canStartMatch',
     }),

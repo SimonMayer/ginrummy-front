@@ -1,7 +1,7 @@
 <template>
   <div class="dragged-cards-image">
     <VisibleCard
-        v-for="card in allSelectedCards"
+        v-for="card in [...selectedDiscardPileCards, ...selectedHandCards]"
         :key="card.card_id"
         :cardProp="card"
         :class="'card'"
@@ -20,7 +20,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allSelectedCards: 'sessionState/derived/selectedItems/allSelectedCards',
+      selectedHandCards: 'sessionState/derived/selectedItems/selectedHandCards',
+      selectedDiscardPileCards: 'sessionState/derived/selectedItems/selectedDiscardPileCards',
       event: 'sessionState/uiOperations/dragState/event',
     }),
   },

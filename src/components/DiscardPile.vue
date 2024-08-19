@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import VisibleCard from '@/components/VisibleCard.vue';
 import {mapActions, mapGetters} from 'vuex';
+import VisibleCard from '@/components/VisibleCard.vue';
 import {dropRecipientMixin} from '@/mixins/dropRecipientMixin';
 
 export default {
@@ -40,6 +40,7 @@ export default {
       visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
       canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
       canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
+      canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
     }),
     isEmpty() {
       return this.visibleCards?.length === 0;
@@ -53,7 +54,8 @@ export default {
       discardCard: 'interactions/turns/discard/discardCard',
     }),
     isCardDraggable(card) {
-      return this.canDrawOneFromDiscardPile && (card.card_id === this.visibleTopDiscardPileCardId);
+      return this.canDrawMultiple ||
+          (this.canDrawOneFromDiscardPile && (card.card_id === this.visibleTopDiscardPileCardId));
     },
     isCardSelectable(card) {
       return this.selectableCards.includes(card);

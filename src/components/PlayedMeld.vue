@@ -1,7 +1,20 @@
 <template>
   <div
-      :class="['meld', type, `size-${sortedCards.length}`, { 'selected': isSelected, 'selectable': canExtendMelds }]"
+      :class="[
+        'meld',
+        type,
+        `size-${sortedCards.length}`,
+        {
+          'accepts-drop': acceptsDrop,
+          'selected': displayAsSelected,
+          'selectable': canExtendMelds
+        },
+      ]"
       @click="handleClick"
+      @dragenter="handleDragenterWithCustomLogic"
+      @dragleave="handleDragleaveWithCustomLogic"
+      @drop="handleDrop"
+      @dragover.prevent
   >
     <VisibleCard
         v-for="card in sortedCards"
@@ -14,12 +27,14 @@
 </template>
 
 <script>
-import VisibleCard from '@/components/VisibleCard.vue';
 import {mapActions, mapGetters} from 'vuex';
+import VisibleCard from '@/components/VisibleCard.vue';
+import {dropRecipientMixin} from '@/mixins/dropRecipientMixin';
 import meldsService from '@/services/meldsService';
 
 export default {
   name: 'PlayedMeld',
+  mixins: [dropRecipientMixin],
   components: {
     VisibleCard,
   },
@@ -40,24 +55,62 @@ export default {
   computed: {
     ...mapGetters({
       runOrders: 'storage/gameConfig/runOrders',
+      canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
+      canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
       canExtendMelds: 'sessionState/permissions/melds/canExtendMelds',
       selectedMeldId: 'sessionState/uiOperations/selections/selectedMeldId',
     }),
+    sortedCards() {
+      return meldsService.sortCardsByRunOrders(this.cards, this.runOrders);
+    },
     isSelected() {
       return this.selectedMeldId === this.id;
     },
-    sortedCards() {
-      return meldsService.sortCardsByRunOrders(this.cards, this.runOrders);
+    displayAsSelected() {
+      return !this.isDraggingCards && this.isSelected;
+    },
+    acceptsDrop() {
+      return this.provisionallyAcceptsDrop &&
+          this.isSelected &&
+          (this.canDrawMultipleFromDiscardPile || this.canExtendMeldFromHand);
     },
   },
   methods: {
     ...mapActions({
+      drawMultipleFromDiscardPile: 'interactions/turns/draw/drawMultipleFromDiscardPile',
+      extendMeld: 'interactions/turns/melds/extendMeld',
+      clearSelectedMeldId: 'sessionState/uiOperations/selections/clearSelectedMeldId',
+      setSelectedMeldId: 'sessionState/uiOperations/selections/setSelectedMeldId',
       toggleSelectedMeldId: 'sessionState/uiOperations/selections/toggleSelectedMeldId',
     }),
     handleClick() {
       if (this.canExtendMelds) {
         this.toggleSelectedMeldId(this.id);
       }
+    },
+    handleDragenterWithCustomLogic(event) {
+      this.handleDragenter(
+          event,
+          () => {
+            this.setSelectedMeldId(this.id);
+          },
+      );
+    },
+    handleDragleaveWithCustomLogic(event) {
+      this.handleDragleave(
+          event,
+          () => {
+            this.clearSelectedMeldId(this.id);
+          },
+      );
+    },
+    async handleDrop() {
+      if (this.canExtendMeldFromHand) {
+        await this.extendMeld();
+      } else if (this.canExtendMelds) {
+        await this.drawMultipleFromDiscardPile();
+      }
+      this.clearDraggedCards();
     },
   },
 };
@@ -104,7 +157,7 @@ export default {
   height: var(--card-height);
   padding-top: calc(var(--card-width) * 0.12);
   padding-bottom: calc(var(--card-width) * 0.1);
-  padding-left: calc((var(--card-width) * 0.2) + (var(--card-height) * 0.27));
+  padding-left: calc((var(--card-width) * 0.35) + (var(--card-height) * 0.3));
 
   &.size-4 {
     padding-right: calc(var(--card-width) * 0.02);
@@ -170,6 +223,25 @@ export default {
 
   &.set {
     @include fan-shape(4, 20deg, -20, 2, 1, 1);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &.accepts-drop {
+    &::before {
+      background-color: rgba(var(--accent-color-rgb), 0.25);
+    }
   }
 }
 </style>
