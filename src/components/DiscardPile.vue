@@ -2,16 +2,17 @@
   <div
       v-if="visibleRoundId"
       :class="['discard-pile', { 'accepts-drop': acceptsDrop }]"
-      @drop="handleDrop"
       @dragenter="handleDragenter"
-      @dragover.prevent
       @dragleave="handleDragleave"
+      @drop="handleDrop"
+      @dragover.prevent
   >
     <VisibleCard
         v-for="card in visibleCards"
         :key="card.card_id"
         :cardProp="card"
         :class="{ selectable: isCardSelectable(card) }"
+        :draggable="isCardDraggable(card)"
         :selectable="isCardSelectable(card)"
     />
     <div v-if="isEmpty" class="empty-placeholder">
@@ -23,37 +24,37 @@
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
 import {mapActions, mapGetters} from 'vuex';
+import {dropRecipientMixin} from '@/mixins/dropRecipientMixin';
 
 export default {
   name: 'DiscardPile',
+  mixins: [dropRecipientMixin],
   components: {
     VisibleCard,
   },
-  data() {
-    return {
-      isBeingDraggedOver: false,
-    };
-  },
   computed: {
     ...mapGetters({
-      visibleCards: 'sessionState/derived/discardPile/visibleDiscardPileCards',
       selectableCards: 'sessionState/derived/discardPile/selectableDiscardPileCards',
+      visibleCards: 'sessionState/derived/discardPile/visibleDiscardPileCards',
+      visibleTopDiscardPileCardId: 'sessionState/derived/discardPile/visibleTopDiscardPileCardId',
       visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
       canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
-      isDraggingCards: 'sessionState/uiOperations/dragState/isDraggingCards'
+      canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
     }),
     isEmpty() {
       return this.visibleCards?.length === 0;
     },
     acceptsDrop() {
-      return this.canDiscardByDragging && this.isBeingDraggedOver && this.isDraggingCards;
+      return this.provisionallyAcceptsDrop && this.canDiscardByDragging;
     },
   },
   methods: {
     ...mapActions({
       discardCard: 'interactions/turns/discard/discardCard',
-      clearDraggedCards: 'sessionState/uiOperations/dragState/clearDraggedCards',
     }),
+    isCardDraggable(card) {
+      return this.canDrawOneFromDiscardPile && (card.card_id === this.visibleTopDiscardPileCardId);
+    },
     isCardSelectable(card) {
       return this.selectableCards.includes(card);
     },
@@ -62,16 +63,6 @@ export default {
         await this.discardCard();
       }
       this.clearDraggedCards();
-    },
-    handleDragenter(event) {
-      if ((event.relatedTarget === event.currentTarget) || event.currentTarget.contains(event.relatedTarget)) {
-        this.isBeingDraggedOver = true;
-      }
-    },
-    handleDragleave(event) {
-      if (event.relatedTarget !== event.currentTarget && !event.currentTarget.contains(event.relatedTarget)) {
-        this.isBeingDraggedOver = false;
-      }
     },
   },
 };

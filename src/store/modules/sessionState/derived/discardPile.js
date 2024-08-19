@@ -34,6 +34,13 @@ const getters = {
     visibleDiscardPileCards(state, getters, rootState, rootGetters) {
         return getters.visibleDiscardPileCardIds.map(cardId => rootGetters['storage/cards/cards/getCardById'](cardId));
     },
+    visibleTopDiscardPileCardId(state, getters) {
+        const discardPileCardIds = getters.visibleDiscardPileCardIds;
+        if (discardPileCardIds.length === 0) {
+            return null;
+        }
+        return discardPileCardIds[discardPileCardIds.length - 1];
+    },
 };
 
 export default {

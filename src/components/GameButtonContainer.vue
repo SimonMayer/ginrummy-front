@@ -49,26 +49,27 @@ export default {
       canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
       canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
       canPlaySetFromHand: 'sessionState/permissions/melds/canPlaySetFromHand',
+      isDraggingCards: 'sessionState/uiOperations/dragState/isDraggingCards',
     }),
     buttonConfigs() {
       return [
         {
           icon: DrawOneFromStockIcon,
-          isDisabled: !this.canDrawOneFromStockPile,
+          isDisabled: this.isDraggingCards || !this.canDrawOneFromStockPile,
           labelDisabled: 'Draw one card from the stock pile',
           labelEnabled: 'Draw one card from the stock pile',
           pressHandler: this.drawOneFromStockPile,
         },
         {
           icon: DrawOneFromDiscardIcon,
-          isDisabled: !this.canDrawOneFromDiscardPile,
+          isDisabled: this.isDraggingCards || !this.canDrawOneFromDiscardPile,
           labelDisabled: 'Draw one card from the discard pile',
           labelEnabled: 'Draw one card from the discard pile',
           pressHandler: this.drawOneFromDiscardPile,
         },
         {
           icon: DrawMultipleFromDiscardIcon,
-          isDisabled: !this.canDrawMultipleFromDiscardPile,
+          isDisabled: this.isDraggingCards || !this.canDrawMultipleFromDiscardPile,
           labelDisabled: 'Draw multiple cards to play or extend a meld',
           labelEnabled: 'Draw multiple cards to play or extend a meld',
           pressHandler: this.drawMultipleFromDiscardPile,
@@ -76,14 +77,14 @@ export default {
         {
           addSeparatorBefore: true,
           icon: PlayMeldIcon,
-          isDisabled: !this.canPlaySetFromHand && !this.canPlayRunFromHand,
+          isDisabled: this.isDraggingCards || (!this.canPlaySetFromHand && !this.canPlayRunFromHand),
           labelDisabled: 'Play a meld',
           labelEnabled: 'Play a meld from the selected cards',
           pressHandler: this.playMeld,
         },
         {
           icon: ExtendMeldIcon,
-          isDisabled: !this.canExtendMeldFromHand,
+          isDisabled: this.isDraggingCards || !this.canExtendMeldFromHand,
           labelDisabled: 'Extend a meld',
           labelEnabled: 'Extend the selected meld',
           pressHandler: this.extendMeld,
@@ -91,7 +92,7 @@ export default {
         {
           addSeparatorBefore: true,
           icon: DiscardIcon,
-          isDisabled: !this.canDiscardSelected && !this.canOnlyDiscard,
+          isDisabled: this.isDraggingCards || (!this.canDiscardSelected && !this.canOnlyDiscard),
           labelDisabled: 'Discard one card from your hand',
           labelEnabled: 'Discard one card from your hand',
           pressHandler: this.discardCard,
@@ -99,7 +100,7 @@ export default {
         {
           addSeparatorBefore: true,
           icon: UnselectCardsIcon,
-          isDisabled: !this.hasSelectedMeldOrCards,
+          isDisabled: this.isDraggingCards || !this.hasSelectedMeldOrCards,
           labelDisabled: 'You don\'t have any cards or melds selected.',
           labelEnabled: 'Unselect all cards and melds',
           pressHandler: this.unselectAllCards,

@@ -44,7 +44,7 @@
         </div>
         <GameButtonContainer/>
         <div class="self-player-container">
-          <SelfMatchPlayer class="self-player"/>
+          <SelfMatchPlayer/>
         </div>
         <DraggedCardsImage/>
       </div>
