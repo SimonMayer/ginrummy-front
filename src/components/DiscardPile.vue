@@ -1,9 +1,11 @@
 <template>
   <div
       v-if="visibleRoundId"
-      class="discard-pile"
+      :class="['discard-pile', { 'accepts-drop': acceptsDrop }]"
       @drop="handleDrop"
+      @dragenter="handleDragenter"
       @dragover.prevent
+      @dragleave="handleDragleave"
   >
     <VisibleCard
         v-for="card in visibleCards"
@@ -27,15 +29,24 @@ export default {
   components: {
     VisibleCard,
   },
+  data() {
+    return {
+      isBeingDraggedOver: false,
+    };
+  },
   computed: {
     ...mapGetters({
       visibleCards: 'sessionState/derived/discardPile/visibleDiscardPileCards',
       selectableCards: 'sessionState/derived/discardPile/selectableDiscardPileCards',
       visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
       canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
+      isDraggingCards: 'sessionState/uiOperations/dragState/isDraggingCards'
     }),
     isEmpty() {
       return this.visibleCards?.length === 0;
+    },
+    acceptsDrop() {
+      return this.canDiscardByDragging && this.isBeingDraggedOver && this.isDraggingCards;
     },
   },
   methods: {
@@ -51,6 +62,16 @@ export default {
         await this.discardCard();
       }
       this.clearDraggedCards();
+    },
+    handleDragenter(event) {
+      if ((event.relatedTarget === event.currentTarget) || event.currentTarget.contains(event.relatedTarget)) {
+        this.isBeingDraggedOver = true;
+      }
+    },
+    handleDragleave(event) {
+      if (event.relatedTarget !== event.currentTarget && !event.currentTarget.contains(event.relatedTarget)) {
+        this.isBeingDraggedOver = false;
+      }
     },
   },
 };
@@ -113,6 +134,25 @@ export default {
     div {
       transform: rotate(-90deg);
       margin: var(--base-margin);
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &.accepts-drop {
+    &::before {
+      background-color: rgba(var(--accent-color-rgb), 0.25);
     }
   }
 }
