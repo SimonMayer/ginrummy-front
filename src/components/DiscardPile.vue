@@ -1,5 +1,10 @@
 <template>
-  <div v-if="visibleRoundId" class="discard-pile">
+  <div
+      v-if="visibleRoundId"
+      class="discard-pile"
+      @drop="handleDrop"
+      @dragover.prevent
+  >
     <VisibleCard
         v-for="card in visibleCards"
         :key="card.card_id"
@@ -15,7 +20,7 @@
 
 <script>
 import VisibleCard from '@/components/VisibleCard.vue';
-import {mapGetters} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'DiscardPile',
@@ -27,14 +32,25 @@ export default {
       visibleCards: 'sessionState/derived/discardPile/visibleDiscardPileCards',
       selectableCards: 'sessionState/derived/discardPile/selectableDiscardPileCards',
       visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
+      canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
     }),
     isEmpty() {
       return this.visibleCards?.length === 0;
     },
   },
   methods: {
+    ...mapActions({
+      discardCard: 'interactions/turns/discard/discardCard',
+      clearDraggedCards: 'sessionState/uiOperations/dragState/clearDraggedCards',
+    }),
     isCardSelectable(card) {
       return this.selectableCards.includes(card);
+    },
+    async handleDrop() {
+      if (this.canDiscardByDragging) {
+        await this.discardCard();
+      }
+      this.clearDraggedCards();
     },
   },
 };

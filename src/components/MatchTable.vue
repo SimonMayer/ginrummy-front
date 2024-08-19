@@ -46,31 +46,34 @@
         <div class="self-player-container">
           <SelfMatchPlayer class="self-player"/>
         </div>
+        <DraggedCardsImage/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import GameButtonContainer from '@/components/GameButtonContainer.vue';
-import PlayedMeld from '@/components/PlayedMeld.vue';
-import StockPile from '@/components/StockPile.vue';
 import DiscardPile from '@/components/DiscardPile.vue';
-import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
-import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
-import {mapActions, mapGetters} from 'vuex';
+import DraggedCardsImage from '@/components/DraggedCardsImage.vue';
+import GameButtonContainer from '@/components/GameButtonContainer.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
+import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
+import PlayedMeld from '@/components/PlayedMeld.vue';
+import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
+import StockPile from '@/components/StockPile.vue';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'MatchTable',
   components: {
-    ItemSearch,
-    GameButtonContainer,
-    PlayedMeld,
-    StockPile,
     DiscardPile,
-    SelfMatchPlayer,
+    DraggedCardsImage,
+    GameButtonContainer,
+    ItemSearch,
     NonSelfMatchPlayer,
+    PlayedMeld,
+    SelfMatchPlayer,
+    StockPile,
   },
   async mounted() {
     if (this.matchHasStarted) {

@@ -2,15 +2,31 @@ import turnsService from '@/services/turnsService';
 
 const actions = {
     async discardCard({dispatch, rootGetters}) {
-        if (!rootGetters['sessionState/permissions/discard/canDiscard']) {
+        const validationError = !rootGetters['sessionState/permissions/discard/canDiscard']
+            ? new Error('Discarding is not allowed right now')
+            : (rootGetters['sessionState/uiOperations/dragState/draggedCardsCount'] > 1)
+                ? new Error('Too many cards were dragged to the discard pile')
+                : null;
+
+        if (validationError) {
+            dispatch(
+                'sessionState/indicators/errorLog/addLogEntry',
+                {title: 'Cannot discard', error: validationError},
+                {root: true},
+            );
             return;
         }
 
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];
-        const cardId = rootGetters['sessionState/derived/selectedItems/selectedHandCardCount'] === 1
-            ? rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'][0]
-            : rootGetters['sessionState/derived/hand/currentHandCardIds'][0];
+
+        const cardId = rootGetters['sessionState/uiOperations/dragState/draggedCardsCount'] === 1
+            ? rootGetters['sessionState/uiOperations/dragState/draggedCardIds'][0]
+            : rootGetters['sessionState/derived/selectedItems/selectedHandCardCount'] === 1
+                ? rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'][0]
+                : rootGetters['sessionState/derived/hand/currentHandCardLength'] === 1
+                    ? rootGetters['sessionState/derived/hand/currentHandCardIds'][0]
+                    : null;
 
         return await dispatch(
             'utils/interactionHandler/handleInteraction',

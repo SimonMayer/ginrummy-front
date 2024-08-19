@@ -69,9 +69,6 @@ const getters = {
     getSelectedCardIds: (state) => {
         return state.selectedCardIds;
     },
-    getSelectedCards: (state, getters, rootState, rootGetters) => {
-        return state.selectedCardIds.map(id => rootGetters['storage/cards/cards/getCardById'](id));
-    },
 };
 
 export default {

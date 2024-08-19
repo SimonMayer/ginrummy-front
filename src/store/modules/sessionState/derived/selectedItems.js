@@ -63,9 +63,16 @@ const getters = {
         const selectedMeldId = rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
         return rootGetters['storage/rounds/melds/getMeldById'](selectedMeldId);
     },
+    selectedMeldCardIds(state, getters) {
+        const selectedMeld = getters.selectedMeld;
+        return selectedMeld ? selectedMeld.cardIds : [];
+    },
     selectedMeldCards(state, getters) {
         const selectedMeld = getters.selectedMeld;
         return selectedMeld ? selectedMeld.cards : [];
+    },
+    allSelectedCardIds(state, getters) {
+        return [...getters.selectedMeldCardIds, ...getters.selectedHandCardIds, ...getters.selectedDiscardPileCardIds];
     },
     allSelectedCards(state, getters) {
         return [...getters.selectedMeldCards, ...getters.selectedHandCards, ...getters.selectedDiscardPileCards];

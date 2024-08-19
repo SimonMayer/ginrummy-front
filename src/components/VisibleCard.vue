@@ -1,9 +1,12 @@
 <template>
   <div
       v-if="cardData"
-      :class="{ selected: isSelected }"
+      :class="{ selected: isSelected, draggable: draggable }"
+      :draggable="draggable"
       class="card visible-card"
       @click="handleClick"
+      @dragend="stopDraggingCards"
+      @dragstart="handleDragStart"
   >
     <div :class="['card-content', rankClass, suitClass]">
       <CardCorner :rank="displayRank" :suit="suitEmoji" class="top-left"/>
@@ -47,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    draggable: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -83,10 +90,17 @@ export default {
     ...mapActions({
       toggleSelectedCard: 'sessionState/uiOperations/selections/toggleSelectedCard',
       removeSelectedCard: 'sessionState/uiOperations/selections/removeSelectedCard',
+      startDraggingCards: 'sessionState/uiOperations/dragState/startDraggingCards',
+      stopDraggingCards: 'sessionState/uiOperations/dragState/stopDraggingCards',
     }),
     handleClick() {
       if (this.selectable) {
         this.toggleSelectedCard(this.id);
+      }
+    },
+    async handleDragStart(event) {
+      if (this.draggable) {
+        await this.startDraggingCards({eventCardId: this.id, event});
       }
     },
   },
@@ -147,6 +161,10 @@ export default {
     &.diamonds {
       color: var(--card-suit-diamonds-color);
     }
+  }
+
+  &.draggable {
+    cursor: grab;
   }
 }
 </style>

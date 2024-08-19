@@ -41,7 +41,8 @@ export default {
       currentRoundId: 'sessionState/derived/rounds/currentRoundId',
       isVisibleRoundCurrent: 'sessionState/derived/rounds/isVisibleRoundCurrent',
       hasSelectedMeldOrCards: 'sessionState/derived/selectedItems/hasSelectedMeldOrCards',
-      canDiscard: 'sessionState/permissions/discard/canDiscard',
+      canDiscardSelected: 'sessionState/permissions/discard/canDiscardSelected',
+      canOnlyDiscard: 'sessionState/permissions/discard/canOnlyDiscard',
       canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
       canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
       canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
@@ -90,7 +91,7 @@ export default {
         {
           addSeparatorBefore: true,
           icon: DiscardIcon,
-          isDisabled: !this.canDiscard,
+          isDisabled: !this.canDiscardSelected && !this.canOnlyDiscard,
           labelDisabled: 'Discard one card from your hand',
           labelEnabled: 'Discard one card from your hand',
           pressHandler: this.discardCard,

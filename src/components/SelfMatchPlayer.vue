@@ -17,6 +17,7 @@
           :key="card.card_id"
           :cardProp="card"
           :class="['card', { selectable: canSelectHandCards }]"
+          :draggable="canDragCard(card.card_id)"
           :selectable="canSelectHandCards"
       />
     </div>
@@ -41,8 +42,11 @@ export default {
       handCards: 'sessionState/derived/hand/visibleHandCards',
       playerMatchData: 'sessionState/derived/players/selfPlayerMatchData',
       playerRoundData: 'sessionState/derived/players/visibleSelfPlayerRoundData',
+      selectedHandCardCount: 'sessionState/derived/selectedItems/selectedHandCardCount',
       hasCurrentTurn: 'sessionState/permissions/core/isCurrentUserTurn',
+      canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
       canSelectHandCards: 'sessionState/permissions/hand/canSelectHandCards',
+      isCardSelected: 'sessionState/uiOperations/selections/isCardSelected',
     }),
     username() {
       return this.playerMatchData.username;
@@ -54,6 +58,11 @@ export default {
     roundScore() {
       const score = this.playerRoundData?.score.points_this_round;
       return Number.isInteger(score) ? score : null;
+    },
+  },
+  methods: {
+    canDragCard(cardId) {
+      return this.canDiscardByDragging && (this.isCardSelected(cardId) || this.selectedHandCardCount === 0);
     },
   },
 };
