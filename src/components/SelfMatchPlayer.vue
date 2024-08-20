@@ -60,6 +60,7 @@ export default {
       canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
       canSelectHandCards: 'sessionState/permissions/hand/canSelectHandCards',
       canExtendMelds: 'sessionState/permissions/melds/canExtendMelds',
+      canPlayMeld: 'sessionState/permissions/melds/canPlayMeld',
       isCardSelected: 'sessionState/uiOperations/selections/isCardSelected',
     }),
     username() {
@@ -83,6 +84,7 @@ export default {
     }),
     canDragCard(cardId) {
       return this.canDrawMultiple ||
+          this.canPlayMeld ||
           this.canExtendMelds ||
           (this.canDiscardByDragging && (this.isCardSelected(cardId) || this.selectedHandCardCount === 0));
     },
@@ -127,7 +129,7 @@ export default {
       width: 100%;
       height: 100%;
       background-color: transparent;
-      transition: background-color 0.3s ease;
+      transition: background-color var(--transition-time);
       pointer-events: none;
       z-index: 1;
     }

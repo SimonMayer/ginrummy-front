@@ -119,7 +119,7 @@ export default {
     width: var(--card-width);
     height: var(--card-height);
     background-color: rgba(var(--secondary-color-rgb), 0.8);
-    border: calc(var(--card-border-width) * 5) dashed var(--muted-light-color);
+    border: dashed calc(var(--card-border-width) * 5) var(--muted-light-color);
     border-radius: var(--card-border-radius);
     font-size: calc(var(--card-base-size) * 18);
     color: var(--muted-light-color);
@@ -138,7 +138,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: transparent;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-time);
     pointer-events: none;
     z-index: 1;
   }

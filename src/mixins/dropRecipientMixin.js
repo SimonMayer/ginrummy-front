@@ -19,7 +19,11 @@ export const dropRecipientMixin = {
             clearDraggedCards: 'sessionState/uiOperations/dragState/clearDraggedCards',
         }),
         handleDragenter(event, callback) {
-            if ((event.relatedTarget === event.currentTarget) || event.currentTarget.contains(event.relatedTarget)) {
+            if (
+                (event.relatedTarget === event.currentTarget) ||
+                event.currentTarget.contains(event.relatedTarget) ||
+                event.currentTarget.contains(event.target)
+            ) {
                 this.isBeingDraggedOver = true;
                 if (callback && typeof callback === 'function') {
                     callback();

@@ -107,7 +107,7 @@ export default {
     async handleDrop() {
       if (this.canExtendMeldFromHand) {
         await this.extendMeld();
-      } else if (this.canExtendMelds) {
+      } else if (this.canDrawMultipleFromDiscardPile) {
         await this.drawMultipleFromDiscardPile();
       }
       this.clearDraggedCards();
@@ -233,7 +233,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: transparent;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-time);
     pointer-events: none;
     z-index: 1;
   }

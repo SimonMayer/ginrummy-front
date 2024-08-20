@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div v-if="isLoading" class="loading-overlay">
+    <div v-show="isLoading" class="loading-overlay">
       <div class="spinner"></div>
     </div>
   </transition>
@@ -34,8 +34,8 @@ export default {
   pointer-events: none;
 
   .spinner {
-    border: 0.3em solid rgba(0, 0, 0, 0.1);
-    border-top: 0.3em solid #333;
+    border: solid 0.3em rgba(0, 0, 0, 0.1);
+    border-top: solid 0.3em #333;
     border-radius: 50%;
     width: 3rem;
     height: 3rem;
@@ -53,7 +53,7 @@ export default {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity calc(var(--transition-time) * 2);
 }
 
 .fade-enter, .fade-leave-to {

@@ -1,5 +1,9 @@
 <template>
-  <div v-if="currentRoundId && isVisibleRoundCurrent" class="game-button-container">
+  <div
+      v-if="currentRoundId && isVisibleRoundCurrent"
+      v-show="!isDraggingCards"
+      class="game-button-container"
+  >
     <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
       <div v-if="buttonConfig.addSeparatorBefore" class="button-separator"></div>
       <GameButton
@@ -47,29 +51,28 @@ export default {
       canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
       canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
       canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
-      canPlayRunFromHand: 'sessionState/permissions/melds/canPlayRunFromHand',
-      canPlaySetFromHand: 'sessionState/permissions/melds/canPlaySetFromHand',
+      canPlayMeldFromHand: 'sessionState/permissions/melds/canPlayMeldFromHand',
       isDraggingCards: 'sessionState/uiOperations/dragState/isDraggingCards',
     }),
     buttonConfigs() {
       return [
         {
           icon: DrawOneFromStockIcon,
-          isDisabled: this.isDraggingCards || !this.canDrawOneFromStockPile,
+          isDisabled: !this.canDrawOneFromStockPile,
           labelDisabled: 'Draw one card from the stock pile',
           labelEnabled: 'Draw one card from the stock pile',
           pressHandler: this.drawOneFromStockPile,
         },
         {
           icon: DrawOneFromDiscardIcon,
-          isDisabled: this.isDraggingCards || !this.canDrawOneFromDiscardPile,
+          isDisabled: !this.canDrawOneFromDiscardPile,
           labelDisabled: 'Draw one card from the discard pile',
           labelEnabled: 'Draw one card from the discard pile',
           pressHandler: this.drawOneFromDiscardPile,
         },
         {
           icon: DrawMultipleFromDiscardIcon,
-          isDisabled: this.isDraggingCards || !this.canDrawMultipleFromDiscardPile,
+          isDisabled: !this.canDrawMultipleFromDiscardPile,
           labelDisabled: 'Draw multiple cards to play or extend a meld',
           labelEnabled: 'Draw multiple cards to play or extend a meld',
           pressHandler: this.drawMultipleFromDiscardPile,
@@ -77,14 +80,14 @@ export default {
         {
           addSeparatorBefore: true,
           icon: PlayMeldIcon,
-          isDisabled: this.isDraggingCards || (!this.canPlaySetFromHand && !this.canPlayRunFromHand),
+          isDisabled: !this.canPlayMeldFromHand,
           labelDisabled: 'Play a meld',
           labelEnabled: 'Play a meld from the selected cards',
           pressHandler: this.playMeld,
         },
         {
           icon: ExtendMeldIcon,
-          isDisabled: this.isDraggingCards || !this.canExtendMeldFromHand,
+          isDisabled: !this.canExtendMeldFromHand,
           labelDisabled: 'Extend a meld',
           labelEnabled: 'Extend the selected meld',
           pressHandler: this.extendMeld,
@@ -92,7 +95,7 @@ export default {
         {
           addSeparatorBefore: true,
           icon: DiscardIcon,
-          isDisabled: this.isDraggingCards || (!this.canDiscardSelected && !this.canOnlyDiscard),
+          isDisabled: (!this.canDiscardSelected && !this.canOnlyDiscard),
           labelDisabled: 'Discard one card from your hand',
           labelEnabled: 'Discard one card from your hand',
           pressHandler: this.discardCard,
@@ -100,7 +103,7 @@ export default {
         {
           addSeparatorBefore: true,
           icon: UnselectCardsIcon,
-          isDisabled: this.isDraggingCards || !this.hasSelectedMeldOrCards,
+          isDisabled: !this.hasSelectedMeldOrCards,
           labelDisabled: 'You don\'t have any cards or melds selected.',
           labelEnabled: 'Unselect all cards and melds',
           pressHandler: this.unselectAllCards,

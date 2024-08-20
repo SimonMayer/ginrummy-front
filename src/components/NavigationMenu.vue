@@ -73,7 +73,7 @@ nav {
     text-decoration: none;
     padding: var(--base-padding);
     border-radius: var(--border-radius);
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color var(--transition-time);
 
     &:hover {
       background-color: var(--button-hover-color);

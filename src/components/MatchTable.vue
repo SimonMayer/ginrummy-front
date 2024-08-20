@@ -25,6 +25,8 @@
               :type="meld.meld_type"
           />
         </div>
+        <PlayArea class="buttons-container"/>
+        <GameButtonContainer class="buttons-container"/>
         <div v-if="matchHasStarted && !currentRoundId" class="buttons-container">
           <button @click="startRound">Start new round</button>
         </div>
@@ -42,14 +44,13 @@
               @item-selected="addPlayer"
           />
         </div>
-        <GameButtonContainer/>
         <div class="self-player-container">
           <SelfMatchPlayer/>
         </div>
-        <DraggedCardsImage/>
       </div>
     </div>
   </div>
+  <DraggedCardsImage/>
 </template>
 
 <script>
@@ -62,10 +63,12 @@ import PlayedMeld from '@/components/PlayedMeld.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import StockPile from '@/components/StockPile.vue';
 import {mapActions, mapGetters} from 'vuex';
+import PlayArea from '@/components/PlayArea.vue';
 
 export default {
   name: 'MatchTable',
   components: {
+    PlayArea,
     DiscardPile,
     DraggedCardsImage,
     GameButtonContainer,
@@ -91,7 +94,6 @@ export default {
       players: 'sessionState/derived/players/playersMatchData',
       nonSelfPlayersMatchData: 'sessionState/derived/players/nonSelfPlayersMatchData',
       currentRoundId: 'sessionState/derived/rounds/currentRoundId',
-      hasDrawActionInCurrentTurn: 'sessionState/derived/turn/hasDrawActionInCurrentTurn',
       matchId: 'sessionState/matchIdentifier/matchId',
       canAddPlayerToMatch: 'sessionState/permissions/match/canAddPlayerToMatch',
       canStartMatch: 'sessionState/permissions/match/canStartMatch',
@@ -181,7 +183,12 @@ export default {
 
   .buttons-container,
   .search-container {
-    width: 100%;
+    margin: 0 auto;
+    width: 520px;
+  }
+
+  .buttons-container {
+    height: 54px;
   }
 
   .non-self-players-container {

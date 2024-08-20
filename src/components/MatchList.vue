@@ -55,19 +55,14 @@ export default {
 
     li {
       background-color: var(--secondary-color);
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 5px;
-      transition: background-color 0.3s, box-shadow 0.3s;
+      padding: calc(var(--base-padding) / 2) var(--base-padding);
+      margin: var(--base-margin) 0;
+      border-radius: var(--border-radius);
+      transition: background-color var(--transition-time), box-shadow var(--transition-time);
 
       &:hover {
         background-color: var(--button-hover-color);
         box-shadow: var(--box-shadow-3-medium);
-      }
-
-      p {
-        margin: 5px 0;
-        color: var(--text-color);
       }
 
       a {

@@ -29,13 +29,11 @@ const actions = {
     },
 
     async playMeld({dispatch, rootGetters}) {
-        const canPlaySetFromHand = rootGetters['sessionState/permissions/melds/canPlaySetFromHand'];
-        const canPlayRunFromHand = rootGetters['sessionState/permissions/melds/canPlayRunFromHand'];
-        if (!canPlaySetFromHand && !canPlayRunFromHand) {
+        if (!rootGetters['sessionState/permissions/melds/canPlayMeldFromHand']) {
             return;
         }
 
-        const meldType = canPlaySetFromHand ? 'set' : 'run';
+        const meldType = rootGetters['sessionState/permissions/melds/canPlaySetFromHand'] ? 'set' : 'run';
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const cardIds = rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];

@@ -43,28 +43,29 @@ export default {
 
 .wrapper {
   background-color: white;
-  border-radius: 5px;
-  margin: 10px 0 40px;
+  border-radius: var(--border-radius);
+  margin: var(--base-margin) 0;
   min-width: 400px;
   padding: 2px;
 
   .error-box {
-    border: 1px solid var(--error-accent-color);
+    border: solid var(--border-width-medium) var(--error-accent-color);
+    border-radius: var(--border-radius);
     color: var(--text-color);
+    overflow: hidden;
     position: relative;
-    border-radius: 5px;
 
     .title {
       background-color: var(--error-color);
       font-weight: bold;
       min-height: 30px;
-      padding: 10px;
+      padding: var(--base-padding);
     }
 
     .message {
       color: var(--error-color);
       min-height: 20px;
-      padding: 10px;
+      padding: var(--base-padding);
     }
 
     .close-button {
@@ -75,7 +76,7 @@ export default {
       width: 1rem;
       height: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: background-color var(--transition-time), color var(--transition-time);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -101,11 +102,11 @@ export default {
       }
 
       &:hover {
-        background-color: var(--error-accent-color);
+        background-color: rgba(var(--error-accent-color-rgb), 0.8);
       }
 
       &:active {
-        background-color: var(--button-active-color);
+        background-color: rgba(var(--error-accent-color-rgb), 0.98);
       }
     }
   }

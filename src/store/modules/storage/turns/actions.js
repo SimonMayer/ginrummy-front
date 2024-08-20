@@ -22,7 +22,7 @@ const actions = {
 const getters = {
     getActionsByTurnId: (state, getters, rootState, rootGetters) => (turnId) => {
         const turn = rootGetters['storage/turns/turns/getTurnById'](turnId);
-        return turn.actions;
+        return turn?.actions || [];
     },
     hasDrawAction: (state, getters) => (turnId) => {
         const actions = getters.getActionsByTurnId(turnId);

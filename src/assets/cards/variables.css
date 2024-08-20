@@ -3,6 +3,7 @@
     --card-width: calc(var(--card-base-size) * 100);
     --card-height: calc(var(--card-base-size) * 150);
     --card-border-width: calc(var(--card-base-size) * 0.3);
+    --card-content-border-width: calc(var(--card-border-width) * 2);
     --card-border-radius: calc(var(--card-base-size) * 10);
     --card-corner-font-size: calc(var(--card-base-size) * 12);
     --card-pattern-font-size: calc(var(--card-base-size) * 20);

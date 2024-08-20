@@ -121,7 +121,7 @@ export default {
 
 .card {
   user-select: none;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition: transform var(--transition-time), filter var(--transition-time);
 
   &.selected {
     filter: var(--card-selected-filter);
@@ -130,7 +130,7 @@ export default {
   .card-content {
     position: relative;
     height: var(--card-height);
-    border: 1px solid var(--card-edge-color);
+    border: solid var(--card-content-border-width) var(--card-edge-color);
     border-radius: var(--card-border-radius);
     background-color: var(--card-background-color);
     text-align: center;

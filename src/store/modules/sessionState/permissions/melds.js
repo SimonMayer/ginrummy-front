@@ -12,7 +12,7 @@ const getters = {
             !rootGetters['sessionState/uiOperations/selections/selectedMeldId'] &&
             getters.canMeldOnThisRotation;
     },
-    canPlayMeldFromHand(state, getters, rootState, rootGetters) {
+    canPlayMeldAfterDraw(state, getters, rootState, rootGetters) {
         const selectedHandCardCount = rootGetters['sessionState/derived/selectedItems/selectedHandCardCount'];
         const minimumMeldSize = rootGetters['storage/gameConfig/minimumMeldSize'];
 
@@ -25,11 +25,14 @@ const getters = {
         const selectedHandCards = rootGetters['sessionState/derived/selectedItems/selectedHandCards'];
         const runOrders = rootGetters['storage/gameConfig/runOrders'];
 
-        return getters.canPlayMeldFromHand && meldsService.doCardsMakeValidRun(selectedHandCards, runOrders);
+        return getters.canPlayMeldAfterDraw && meldsService.doCardsMakeValidRun(selectedHandCards, runOrders);
     },
     canPlaySetFromHand(state, getters, rootState, rootGetters) {
         const selectedHandCards = rootGetters['sessionState/derived/selectedItems/selectedHandCards'];
-        return getters.canPlayMeldFromHand && meldsService.areAllCardsOfSameRank(selectedHandCards);
+        return getters.canPlayMeldAfterDraw && meldsService.areAllCardsOfSameRank(selectedHandCards);
+    },
+    canPlayMeldFromHand(state, getters) {
+        return getters.canPlaySetFromHand || getters.canPlayRunFromHand;
     },
     canExtendMelds(state, getters, rootState, rootGetters) {
         return rootGetters['sessionState/permissions/core/canAct'] &&

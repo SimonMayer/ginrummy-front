@@ -100,9 +100,9 @@ export default {
       align-items: center;
       cursor: pointer;
       padding: var(--base-padding);
-      border: 1px solid var(--primary-color);
+      border: solid var(--border-width-medium) var(--primary-color);
       border-radius: var(--border-radius);
-      transition: background-color 0.3s ease;
+      transition: background-color var(--transition-time);
 
       &:hover {
         background-color: var(--button-hover-color);

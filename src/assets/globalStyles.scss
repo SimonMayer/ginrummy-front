@@ -22,11 +22,11 @@ button {
   font-family: var(--font-family);
   font-size: var(--font-size);
   color: var(--text-color);
-  border: solid 1px var(--tertiary-color);
+  border: solid var(--border-width-medium) var(--tertiary-color);
   border-radius: var(--border-radius);
   padding: var(--base-padding) calc(2 * var(--base-padding));
   cursor: pointer;
-  transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.8s ease;
+  transition: background-color calc(var(--transition-time) * 1.5), box-shadow calc(var(--transition-time) * 1.5), border-color calc(var(--transition-time) * 2.5);
 }
 
 button:disabled {
@@ -61,11 +61,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin-bottom: 20px;
+  margin-bottom: calc(var(--base-margin) * 2);
 }
 
 p {
-  margin: 0 0 1em;
+  margin: var(--base-margin) 0;
 }
 
 a {
@@ -82,7 +82,7 @@ input {
   font-size: var(--font-size);
   margin-bottom: var(--base-margin);
   padding: var(--base-padding);
-  border: 1px solid var(--primary-color);
+  border: solid var(--border-width-medium) var(--primary-color);
   border-radius: var(--border-radius);
   background-color: var(--input-background-color);
 }
