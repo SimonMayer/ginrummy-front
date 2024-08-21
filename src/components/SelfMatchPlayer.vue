@@ -107,6 +107,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/globalVariables';
 @import '@/assets/cards/variables.css';
+@import '@/assets/dropRecipient';
 @import '@/assets/players';
 
 .self-player {
@@ -127,24 +128,7 @@ export default {
       }
     }
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: transparent;
-      transition: background-color var(--transition-time);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    &.accepts-drop {
-      &::before {
-        background-color: rgba(var(--accent-color-rgb), 0.25);
-      }
-    }
+    @include drop-recipient;
   }
 }
 </style>
