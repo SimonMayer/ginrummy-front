@@ -1,5 +1,5 @@
 <template>
-  <div v-show="isDraggingCards" class="play-area-container">
+  <div v-show="isDraggingItems" class="play-area-container">
     <div
         v-show="canNewMeldBePlayed"
         :class="['play-area', { 'accepts-drop': acceptsDrop }]"
@@ -26,7 +26,7 @@ export default {
     ...mapGetters({
       canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
       canPlayMeldFromHand: 'sessionState/permissions/melds/canPlayMeldFromHand',
-      isDraggingCards: 'sessionState/uiOperations/dragState/isDraggingCards',
+      isDraggingItems: 'sessionState/uiOperations/dragState/isDraggingItems',
     }),
     acceptsDrop() {
       return this.provisionallyAcceptsDrop && this.canNewMeldBePlayed;
@@ -46,7 +46,7 @@ export default {
       } else if (this.canDrawMultipleFromDiscardPile) {
         await this.drawMultipleFromDiscardPile();
       }
-      this.clearDraggedCards();
+      this.clearDraggedItems();
     },
   },
 };

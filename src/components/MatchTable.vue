@@ -50,12 +50,12 @@
       </div>
     </div>
   </div>
-  <DraggedCardsImage/>
+  <DragImages/>
 </template>
 
 <script>
 import DiscardPile from '@/components/DiscardPile.vue';
-import DraggedCardsImage from '@/components/DraggedCardsImage.vue';
+import DragImages from '@/components/DragImages.vue';
 import GameButtonContainer from '@/components/GameButtonContainer.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
@@ -70,7 +70,7 @@ export default {
   components: {
     PlayArea,
     DiscardPile,
-    DraggedCardsImage,
+    DragImages,
     GameButtonContainer,
     ItemSearch,
     NonSelfMatchPlayer,

@@ -1,7 +1,14 @@
 <template>
   <div v-if="visibleRoundId" class="stock-pile-container">
     <div :class="{ disabled: disabled, empty: isEmpty }" class="stock-pile" @click="handleClick">
-      <HiddenCard v-for="n in size" :key="n" class="stock-card-item"/>
+      <HiddenCard
+          v-for="n in size"
+          :key="n"
+          :draggable="isCardDraggable(n)"
+          class="stock-card-item"
+          @dragend="stopDraggingItems"
+          @dragstart="(event) => handleDragStart(event, n)"
+      />
       <div v-if="isEmpty" class="empty-placeholder">
         <div class="icon">↻</div>
         <div>Rebuild from discards</div>
@@ -11,8 +18,8 @@
 </template>
 
 <script>
-import HiddenCard from '@/components/HiddenCard.vue';
 import {mapActions, mapGetters} from 'vuex';
+import HiddenCard from '@/components/HiddenCard.vue';
 
 export default {
   name: 'StockPile',
@@ -35,10 +42,20 @@ export default {
   methods: {
     ...mapActions({
       drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
+      startDraggingNamedHiddenCard: 'sessionState/uiOperations/dragState/startDraggingNamedHiddenCard',
+      stopDraggingItems: 'sessionState/uiOperations/dragState/stopDraggingItems',
     }),
+    isCardDraggable(index) {
+      return this.canDrawOneFromStockPile && (index === this.size);
+    },
     handleClick() {
       if (!this.disabled) {
         this.drawOneFromStockPile();
+      }
+    },
+    async handleDragStart(event, cardIndex) {
+      if (this.canDrawOneFromStockPile && this.isCardDraggable(cardIndex)) {
+        await this.startDraggingNamedHiddenCard({name: 'topCardInStockPile', event});
       }
     },
   },

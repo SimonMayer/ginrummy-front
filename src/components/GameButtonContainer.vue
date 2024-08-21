@@ -1,7 +1,7 @@
 <template>
   <div
       v-if="currentRoundId && isVisibleRoundCurrent"
-      v-show="!isDraggingCards"
+      v-show="!isDraggingItems"
       class="game-button-container"
   >
     <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
@@ -52,7 +52,7 @@ export default {
       canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
       canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
       canPlayMeldFromHand: 'sessionState/permissions/melds/canPlayMeldFromHand',
-      isDraggingCards: 'sessionState/uiOperations/dragState/isDraggingCards',
+      isDraggingItems: 'sessionState/uiOperations/dragState/isDraggingItems',
     }),
     buttonConfigs() {
       return [

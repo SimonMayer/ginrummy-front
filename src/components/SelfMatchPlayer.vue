@@ -50,6 +50,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      isOnlyTopDiscardPileCardDragged: 'sessionState/derived/draggedItems/isOnlyTopDiscardPileCardDragged',
       handCards: 'sessionState/derived/hand/visibleHandCards',
       playerMatchData: 'sessionState/derived/players/selfPlayerMatchData',
       playerRoundData: 'sessionState/derived/players/visibleSelfPlayerRoundData',
@@ -57,10 +58,12 @@ export default {
       hasCurrentTurn: 'sessionState/permissions/core/isCurrentUserTurn',
       canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
       canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
+      canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
       canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
       canSelectHandCards: 'sessionState/permissions/hand/canSelectHandCards',
       canExtendMelds: 'sessionState/permissions/melds/canExtendMelds',
       canPlayMeld: 'sessionState/permissions/melds/canPlayMeld',
+      draggedNamedHiddenCard: 'sessionState/uiOperations/dragState/draggedNamedHiddenCard',
       isCardSelected: 'sessionState/uiOperations/selections/isCardSelected',
     }),
     username() {
@@ -81,6 +84,7 @@ export default {
   methods: {
     ...mapActions({
       drawOneFromDiscardPile: 'interactions/turns/draw/drawOneFromDiscardPile',
+      drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
     }),
     canDragCard(cardId) {
       return this.canDrawMultiple ||
@@ -89,10 +93,12 @@ export default {
           (this.canDiscardByDragging && (this.isCardSelected(cardId) || this.selectedHandCardCount === 0));
     },
     async handleDrop() {
-      if (this.canDrawOneFromDiscardPile) {
+      if (this.canDrawOneFromDiscardPile && this.isOnlyTopDiscardPileCardDragged) {
         await this.drawOneFromDiscardPile();
+      } else if (this.canDrawOneFromStockPile && (this.draggedNamedHiddenCard === 'topCardInStockPile')) {
+        await this.drawOneFromStockPile();
       }
-      this.clearDraggedCards();
+      this.clearDraggedItems();
     },
   },
 };

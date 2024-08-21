@@ -66,7 +66,7 @@ const getters = {
     selectedMeldId(state) {
         return state.selectedMeldId;
     },
-    getSelectedCardIds: (state) => {
+    selectedCardIds(state) {
         return state.selectedCardIds;
     },
 };

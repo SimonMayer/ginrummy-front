@@ -64,7 +64,7 @@ export default {
       if (this.canDiscardByDragging) {
         await this.discardCard();
       }
-      this.clearDraggedCards();
+      this.clearDraggedItems();
     },
   },
 };

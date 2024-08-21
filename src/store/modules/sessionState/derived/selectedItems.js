@@ -1,7 +1,7 @@
 const getters = {
     selectedHandCardIds(state, getters, rootState, rootGetters) {
         const handCardIds = rootGetters['sessionState/derived/hand/currentHandCardIds'] || [];
-        const selectedCardIds = rootGetters['sessionState/uiOperations/selections/getSelectedCardIds'];
+        const selectedCardIds = rootGetters['sessionState/uiOperations/selections/selectedCardIds'];
 
         return handCardIds.filter(cardId => selectedCardIds.includes(cardId));
     },
@@ -23,7 +23,7 @@ const getters = {
     },
     selectedDiscardPileCardIds(state, getters, rootState, rootGetters) {
         const discardPileCardIds = rootGetters['sessionState/derived/discardPile/currentDiscardPileCardIds'];
-        const selectedCardIds = rootGetters['sessionState/uiOperations/selections/getSelectedCardIds'];
+        const selectedCardIds = rootGetters['sessionState/uiOperations/selections/selectedCardIds'];
 
         return discardPileCardIds.filter(cardId => selectedCardIds.includes(cardId));
     },

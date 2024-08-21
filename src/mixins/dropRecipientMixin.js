@@ -8,15 +8,15 @@ export const dropRecipientMixin = {
     },
     computed: {
         ...mapGetters({
-            isDraggingCards: 'sessionState/uiOperations/dragState/isDraggingCards',
+            isDraggingItems: 'sessionState/uiOperations/dragState/isDraggingItems',
         }),
         provisionallyAcceptsDrop() {
-            return this.isBeingDraggedOver && this.isDraggingCards;
+            return this.isBeingDraggedOver && this.isDraggingItems;
         },
     },
     methods: {
         ...mapActions({
-            clearDraggedCards: 'sessionState/uiOperations/dragState/clearDraggedCards',
+            clearDraggedItems: 'sessionState/uiOperations/dragState/clearDraggedItems',
         }),
         handleDragenter(event, callback) {
             if (

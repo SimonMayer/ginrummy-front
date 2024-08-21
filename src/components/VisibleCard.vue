@@ -5,7 +5,7 @@
       :draggable="draggable"
       class="card visible-card"
       @click="handleClick"
-      @dragend="stopDraggingCards"
+      @dragend="stopDraggingItems"
       @dragstart="handleDragStart"
   >
     <div :class="['card-content', rankClass, suitClass]">
@@ -90,8 +90,8 @@ export default {
     ...mapActions({
       toggleSelectedCard: 'sessionState/uiOperations/selections/toggleSelectedCard',
       removeSelectedCard: 'sessionState/uiOperations/selections/removeSelectedCard',
-      startDraggingCards: 'sessionState/uiOperations/dragState/startDraggingCards',
-      stopDraggingCards: 'sessionState/uiOperations/dragState/stopDraggingCards',
+      startDraggingVisibleCards: 'sessionState/uiOperations/dragState/startDraggingVisibleCards',
+      stopDraggingItems: 'sessionState/uiOperations/dragState/stopDraggingItems',
     }),
     handleClick() {
       if (this.selectable) {
@@ -100,7 +100,7 @@ export default {
     },
     async handleDragStart(event) {
       if (this.draggable) {
-        await this.startDraggingCards({eventCardId: this.id, event});
+        await this.startDraggingVisibleCards({eventCardId: this.id, event});
       }
     },
   },

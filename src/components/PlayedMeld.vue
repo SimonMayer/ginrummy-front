@@ -67,7 +67,7 @@ export default {
       return this.selectedMeldId === this.id;
     },
     displayAsSelected() {
-      return !this.isDraggingCards && this.isSelected;
+      return !this.isDraggingItems && this.isSelected;
     },
     acceptsDrop() {
       return this.provisionallyAcceptsDrop &&
@@ -110,7 +110,7 @@ export default {
       } else if (this.canDrawMultipleFromDiscardPile) {
         await this.drawMultipleFromDiscardPile();
       }
-      this.clearDraggedCards();
+      this.clearDraggedItems();
     },
   },
 };
