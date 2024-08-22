@@ -30,13 +30,14 @@ export default {
     ...mapGetters({
       visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
       size: 'sessionState/derived/stockPile/visibleStockPileSize',
-      canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
+      canDrawOneFromStockPileNowByButton: 'sessionState/permissions/draw/canDrawOneFromStockPileNowByButton',
+      canStartDraggingNowToDrawOneFromStockPile: 'sessionState/permissions/draw/canStartDraggingNowToDrawOneFromStockPile',
     }),
     isEmpty() {
       return this.size === 0;
     },
     disabled() {
-      return !this.canDrawOneFromStockPile;
+      return !this.canDrawOneFromStockPileNowByButton;
     },
   },
   methods: {
@@ -46,7 +47,7 @@ export default {
       stopDraggingItems: 'sessionState/uiOperations/dragState/stopDraggingItems',
     }),
     isCardDraggable(index) {
-      return this.canDrawOneFromStockPile && (index === this.size);
+      return this.canStartDraggingNowToDrawOneFromStockPile && (index === this.size);
     },
     handleClick() {
       if (!this.disabled) {
@@ -54,7 +55,7 @@ export default {
       }
     },
     async handleDragStart(event, cardIndex) {
-      if (this.canDrawOneFromStockPile && this.isCardDraggable(cardIndex)) {
+      if (this.isCardDraggable(cardIndex)) {
         await this.startDraggingNamedHiddenCard({name: 'topCardInStockPile', event});
       }
     },

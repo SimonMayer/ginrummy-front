@@ -10,8 +10,17 @@ export const dropRecipientMixin = {
         ...mapGetters({
             isDraggingItems: 'sessionState/uiOperations/dragState/isDraggingItems',
         }),
+        provisionallyInvitesDrop() {
+            return !this.isBeingDraggedOver && this.isDraggingItems;
+        },
         provisionallyAcceptsDrop() {
             return this.isBeingDraggedOver && this.isDraggingItems;
+        },
+        invitesDrop() {
+            return this.provisionallyInvitesDrop && (this.componentSpecificDropCriteria ?? false);
+        },
+        acceptsDrop() {
+            return this.provisionallyAcceptsDrop && (this.componentSpecificDropCriteria ?? false);
         },
     },
     methods: {

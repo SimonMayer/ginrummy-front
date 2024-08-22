@@ -1,4 +1,46 @@
+@property --gradientColor1 {
+  syntax: '<color>';
+  initial-value: transparent;
+  inherits: false;
+}
+
+@property --gradientColor2 {
+  syntax: '<color>';
+  initial-value: transparent;
+  inherits: false;
+}
+
+@property --guidanceBackgroundColor {
+  syntax: '<color>';
+  initial-value: transparent;
+  inherits: false;
+}
+
+@property --guidanceTextColor {
+  syntax: '<color>';
+  initial-value: transparent;
+  inherits: false;
+}
+
 @mixin drop-recipient {
+  position: relative;
+
+  .guidance-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: var(--border-radius);
+    background-color: var(--guidanceBackgroundColor);
+    color: var(--guidanceTextColor);
+    transition: --guidanceBackgroundColor calc(var(--transition-time) * 2), --guidanceTextColor calc(var(--transition-time) * 2);
+    margin: var(--border-width-thick) 0 calc(var(--border-width-thick) * -1);
+    padding: var(--base-padding);
+    text-align: center;
+    user-select: none;
+    z-index: -1;
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -6,15 +48,46 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: transparent;
-    transition: background-color var(--transition-time);
+    border: solid var(--border-width-thick) transparent;
+    border-radius: var(--border-radius);
+    background: linear-gradient(
+                    45deg,
+                    var(--gradientColor1) 20%,
+                    var(--gradientColor2) 20%,
+                    var(--gradientColor2) 50%,
+                    var(--gradientColor1) 50%,
+                    var(--gradientColor1) 70%,
+                    var(--gradientColor2) 70%,
+                    var(--gradientColor2) 100%
+    );
+    background-size: 5px 5px;
+    transition: border-color calc(var(--transition-time) * 2), --gradientColor1 calc(var(--transition-time) * 2), --gradientColor2 calc(var(--transition-time) * 2);
     pointer-events: none;
     z-index: 1;
   }
 
+  &.invites-drop,
+  &.accepts-drop {
+    .guidance-text {
+      --guidanceTextColor: var(--text-color);
+      --guidanceBackgroundColor: rgba(var(--accent-color-rgb), 0.75);
+      z-index: 2;
+    }
+  }
+
+  &.invites-drop {
+    &::before {
+      border-color: rgba(var(--accent-color-rgb), 0.25);
+      --gradientColor1: rgba(var(--accent-color-rgb), 0.25);
+      --gradientColor2: transparent;
+    }
+  }
+
   &.accepts-drop {
     &::before {
-      background-color: rgba(var(--accent-color-rgb), 0.25);
+      border-color: rgba(var(--accent-color-rgb), 0.4);
+      --gradientColor1: rgba(var(--accent-color-rgb), 0.25);
+      --gradientColor2: rgba(var(--accent-color-rgb), 0.25);
     }
   }
 }

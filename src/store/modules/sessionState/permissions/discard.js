@@ -1,17 +1,33 @@
 const getters = {
-    canDiscard(state, getters, rootState, rootGetters) {
+    canDiscardAsNextMove(state, getters, rootState, rootGetters) {
         return rootGetters['sessionState/permissions/core/canAct'] &&
             rootGetters['sessionState/derived/turn/hasDrawActionInCurrentTurn'] &&
             !rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
     },
-    canDiscardByDragging(state, getters, rootState, rootGetters) {
-        return getters.canDiscard && rootGetters['sessionState/derived/selectedItems/selectedHandCardCount'] <= 1;
-    },
     canDiscardSelected(state, getters, rootState, rootGetters) {
-        return getters.canDiscard && rootGetters['sessionState/derived/selectedItems/hasOneHandCardSelected'];
+        return getters.canDiscardAsNextMove && rootGetters['sessionState/derived/selectedItems/hasOneHandCardSelected'];
     },
     canOnlyDiscard(state, getters, rootState, rootGetters) {
-        return getters.canDiscard && rootGetters['sessionState/derived/hand/currentHandCardLength'] === 1;
+        return getters.canDiscardAsNextMove && rootGetters['sessionState/derived/hand/currentHandCardLength'] === 1;
+    },
+    canDiscardNowByButton(state, getters) {
+        return getters.canDiscardSelected || getters.canOnlyDiscard;
+    },
+    canStartDraggingCardNowToDiscard: (state, getters, rootState, rootGetters) => (cardId) => {
+        return getters.canOnlyDiscard ||
+            (
+                getters.canDiscardSelected &&
+                rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'][0] === cardId
+            ) ||
+            (
+                getters.canDiscardAsNextMove &&
+                rootGetters['sessionState/derived/selectedItems/hasNoHandCardsSelected']
+            );
+    },
+    canDiscardCurrentlyDraggedCard(state, getters, rootState, rootGetters) {
+        return getters.canDiscardAsNextMove &&
+            rootGetters['sessionState/uiOperations/dragState/draggedVisibleCardCount'] === 1 &&
+            rootGetters['sessionState/derived/draggedItems/hasOneHandCardDragged'];
     },
 };
 

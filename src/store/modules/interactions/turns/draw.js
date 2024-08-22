@@ -2,9 +2,6 @@ import turnsService from '@/services/turnsService';
 
 const actions = {
     async drawOneFromStockPile({dispatch, rootGetters}) {
-        if (!rootGetters['sessionState/permissions/draw/canDrawOneFromStockPile']) {
-            return;
-        }
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];
         return await dispatch(
@@ -25,9 +22,6 @@ const actions = {
         );
     },
     async drawOneFromDiscardPile({dispatch, rootGetters}) {
-        if (!rootGetters['sessionState/permissions/draw/canDrawOneFromDiscardPile']) {
-            return;
-        }
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];
         return await dispatch(
@@ -51,9 +45,6 @@ const actions = {
         );
     },
     async drawMultipleFromDiscardPile({dispatch, rootGetters}) {
-        if (!rootGetters['sessionState/permissions/draw/canDrawMultipleFromDiscardPile']) {
-            return;
-        }
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];
         return await dispatch(

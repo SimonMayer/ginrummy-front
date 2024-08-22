@@ -1,8 +1,8 @@
 <template>
   <div v-show="isDraggingItems" class="play-area-container">
     <div
-        v-show="canNewMeldBePlayed"
-        :class="['play-area', { 'accepts-drop': acceptsDrop }]"
+        v-show="componentSpecificDropCriteria"
+        :class="['play-area', { 'invites-drop': invitesDrop, 'accepts-drop': acceptsDrop }]"
         aria-label="Play a meld by dropping cards here"
         role="region"
         @dragenter="handleDragenter"
@@ -24,15 +24,12 @@ export default {
   mixins: [dropRecipientMixin],
   computed: {
     ...mapGetters({
-      canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
-      canPlayMeldFromHand: 'sessionState/permissions/melds/canPlayMeldFromHand',
+      canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards: 'sessionState/permissions/draw/canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards',
+      canPlayCurrentlyDraggedCardsFromHandAsMeld: 'sessionState/permissions/melds/canPlayCurrentlyDraggedCardsFromHandAsMeld',
       isDraggingItems: 'sessionState/uiOperations/dragState/isDraggingItems',
     }),
-    acceptsDrop() {
-      return this.provisionallyAcceptsDrop && this.canNewMeldBePlayed;
-    },
-    canNewMeldBePlayed() {
-      return this.canDrawMultipleFromDiscardPile || this.canPlayMeldFromHand;
+    componentSpecificDropCriteria() {
+      return this.canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards || this.canPlayCurrentlyDraggedCardsFromHandAsMeld;
     },
   },
   methods: {
@@ -41,9 +38,9 @@ export default {
       playMeld: 'interactions/turns/melds/playMeld',
     }),
     async handleDrop() {
-      if (this.canPlayMeldFromHand) {
+      if (this.canPlayCurrentlyDraggedCardsFromHandAsMeld) {
         await this.playMeld();
-      } else if (this.canDrawMultipleFromDiscardPile) {
+      } else if (this.canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards) {
         await this.drawMultipleFromDiscardPile();
       }
       this.clearDraggedItems();
@@ -60,19 +57,9 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
-  border: solid var(--border-width-thick) var(--muted-mid-color);
-  border-radius: var(--border-radius);
-  box-sizing: border-box;
-  background-color: var(--muted-very-light-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--box-shadow-3-medium);
-
-  .guidance-text {
-    color: var(--muted-mid-color);
-    text-align: center;
-  }
 
   @include drop-recipient;
 }

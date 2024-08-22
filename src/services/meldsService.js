@@ -41,8 +41,12 @@ const meldsService = {
         }
         return cards;
     },
-    doCardsMakeValidMeld(cards, runOrders) {
-        return this.areAllCardsOfSameRank(cards) || this.doCardsMakeValidRun(cards, runOrders);
+    doCardsMakeValidMeld(cards, runOrders, minimumMeldSize) {
+        return cards.length >= minimumMeldSize &&
+            (
+                this.areAllCardsOfSameRank(cards) ||
+                this.doCardsMakeValidRun(cards, runOrders)
+            );
     },
 };
 

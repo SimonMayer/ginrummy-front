@@ -1,3 +1,5 @@
+import meldsService from '@/services/meldsService';
+
 const getters = {
     selectedHandCardIds(state, getters, rootState, rootGetters) {
         const handCardIds = rootGetters['sessionState/derived/hand/currentHandCardIds'] || [];
@@ -20,6 +22,11 @@ const getters = {
     hasAllHandCardsSelected(state, getters, rootState, rootGetters) {
         const handCardIds = rootGetters['sessionState/derived/hand/currentHandCardIds'];
         return getters.selectedHandCardCount === handCardIds.length;
+    },
+    isCardOnlyOneNotSelectedInHand: (state, getters, rootState, rootGetters) => (cardId) => {
+        const handSize = rootGetters['sessionState/derived/hand/currentHandCardLength'];
+        return ((handSize - getters.selectedHandCardCount) === 1) &&
+            !getters.selectedHandCardIds.includes(cardId);
     },
     selectedDiscardPileCardIds(state, getters, rootState, rootGetters) {
         const discardPileCardIds = rootGetters['sessionState/derived/discardPile/currentDiscardPileCardIds'];
@@ -54,10 +61,9 @@ const getters = {
         return getters.hasOneDiscardPileCardSelected && topCardId === getters.selectedDiscardPileCardIds[0];
     },
     countSelectedAndHigherDiscardPileCards(state, getters, rootState, rootGetters) {
-        const discardPileCardIds = rootGetters['sessionState/derived/discardPile/currentDiscardPileCardIds'];
-        const lowestCardIndex = discardPileCardIds.findIndex(cardId => cardId === getters.lowestSelectedCardIdInDiscardPile);
-
-        return lowestCardIndex !== -1 ? discardPileCardIds.length - lowestCardIndex : 0;
+        return rootGetters['sessionState/derived/discardPile/getCountOfCurrentDiscardPileCardsFromCardAndHigher'](
+            getters.lowestSelectedCardIdInDiscardPile,
+        );
     },
     selectedMeld(state, getters, rootState, rootGetters) {
         const selectedMeldId = rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
@@ -81,6 +87,9 @@ const getters = {
         return !!rootGetters['sessionState/uiOperations/selections/selectedMeldId'] ||
             getters.selectedDiscardPileCardCount > 0 ||
             getters.selectedHandCardCount > 0;
+    },
+    hasOnlySelectedCardsOfMatchingRank(state, getters) {
+        return meldsService.areAllCardsOfSameRank(getters.allSelectedCards);
     },
 };
 

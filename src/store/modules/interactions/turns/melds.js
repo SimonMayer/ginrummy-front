@@ -2,10 +2,6 @@ import turnsService from '@/services/turnsService';
 
 const actions = {
     async extendMeld({dispatch, rootGetters}) {
-        if (!rootGetters['sessionState/permissions/melds/canExtendMeldFromHand']) {
-            return;
-        }
-
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const cardIds = rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'];
         const meldId = rootGetters['sessionState/uiOperations/selections/selectedMeldId'];
@@ -29,11 +25,7 @@ const actions = {
     },
 
     async playMeld({dispatch, rootGetters}) {
-        if (!rootGetters['sessionState/permissions/melds/canPlayMeldFromHand']) {
-            return;
-        }
-
-        const meldType = rootGetters['sessionState/permissions/melds/canPlaySetFromHand'] ? 'set' : 'run';
+        const meldType = rootGetters['sessionState/derived/selectedItems/hasOnlySelectedCardsOfMatchingRank'] ? 'set' : 'run';
         const matchId = rootGetters['sessionState/matchIdentifier/matchId'];
         const cardIds = rootGetters['sessionState/derived/selectedItems/selectedHandCardIds'];
         const handId = rootGetters['sessionState/derived/hand/currentHandId'];

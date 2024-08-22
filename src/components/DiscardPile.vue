@@ -1,7 +1,7 @@
 <template>
   <div
       v-if="visibleRoundId"
-      :class="['discard-pile', { 'accepts-drop': acceptsDrop }]"
+      :class="['discard-pile', { 'invites-drop': invitesDrop, 'accepts-drop': acceptsDrop }]"
       @dragenter="handleDragenter"
       @dragleave="handleDragleave"
       @drop="handleDrop"
@@ -17,6 +17,9 @@
     />
     <div v-if="isEmpty" class="empty-placeholder">
       <div>Discarded cards will appear here</div>
+    </div>
+    <div class="guidance-text-holder">
+      <span class="guidance-text">Drop card here to discard it</span>
     </div>
   </div>
 </template>
@@ -38,15 +41,15 @@ export default {
       visibleCards: 'sessionState/derived/discardPile/visibleDiscardPileCards',
       visibleTopDiscardPileCardId: 'sessionState/derived/discardPile/visibleTopDiscardPileCardId',
       visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',
-      canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
-      canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
-      canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
+      canDiscardCurrentlyDraggedCard: 'sessionState/permissions/discard/canDiscardCurrentlyDraggedCard',
+      canStartDraggingCardNowToDrawOneFromDiscardPile: 'sessionState/permissions/draw/canStartDraggingCardNowToDrawOneFromDiscardPile',
+      canStartDraggingCardNowToDrawMultiple: 'sessionState/permissions/draw/canStartDraggingCardNowToDrawMultiple',
     }),
     isEmpty() {
       return this.visibleCards?.length === 0;
     },
-    acceptsDrop() {
-      return this.provisionallyAcceptsDrop && this.canDiscardByDragging;
+    componentSpecificDropCriteria() {
+      return this.canDiscardCurrentlyDraggedCard;
     },
   },
   methods: {
@@ -54,14 +57,15 @@ export default {
       discardCard: 'interactions/turns/discard/discardCard',
     }),
     isCardDraggable(card) {
-      return this.canDrawMultiple ||
-          (this.canDrawOneFromDiscardPile && (card.card_id === this.visibleTopDiscardPileCardId));
+      const cardId = card.card_id;
+      return this.canStartDraggingCardNowToDrawMultiple(cardId) ||
+          this.canStartDraggingCardNowToDrawOneFromDiscardPile(cardId);
     },
     isCardSelectable(card) {
       return this.selectableCards.includes(card);
     },
     async handleDrop() {
-      if (this.canDiscardByDragging) {
+      if (this.canDiscardCurrentlyDraggedCard) {
         await this.discardCard();
       }
       this.clearDraggedItems();
@@ -76,6 +80,7 @@ export default {
 @import '@/assets/dropRecipient';
 
 .discard-pile {
+  position: relative;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -132,5 +137,36 @@ export default {
   }
 
   @include drop-recipient;
+
+  .guidance-text-holder {
+    position: absolute;
+    height: var(--card-width);
+    width: var(--card-height);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: rotate(-90deg) translateX(calc(var(--card-height) / 3 * -0.8 - (var(--base-margin)))) translateY(calc(var(--card-width) / 3 * -0.8));
+    transition: z-index 0s calc(var(--transition-time) * 2);
+    user-select: none;
+    z-index: -1;
+
+    .guidance-text {
+      margin: var(--base-margin);
+      width: var(--card-height);
+    }
+  }
+
+  &.invites-drop,
+  &.accepts-drop {
+    .guidance-text-holder {
+      transition: z-index 0s 0s;
+      z-index: 2;
+
+      .guidance-text {
+        z-index: 3;
+      }
+    }
+  }
 }
 </style>

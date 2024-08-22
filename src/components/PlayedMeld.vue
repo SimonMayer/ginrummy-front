@@ -5,14 +5,15 @@
         type,
         `size-${sortedCards.length}`,
         {
+          'invites-drop': invitesDrop,
           'accepts-drop': acceptsDrop,
           'selected': displayAsSelected,
-          'selectable': canExtendMelds
+          'selectable': isSelectable,
         },
       ]"
       @click="handleClick"
-      @dragenter="handleDragenterWithCustomLogic"
-      @dragleave="handleDragleaveWithCustomLogic"
+      @dragenter="handleDragenter"
+      @dragleave="handleDragleave"
       @drop="handleDrop"
       @dragover.prevent
   >
@@ -23,6 +24,8 @@
         :selectable="false"
         class="card"
     />
+    <span v-show="allDraggedCardCount === 1" class="guidance-text">Drop card here to extend the meld</span>
+    <span v-show="allDraggedCardCount > 1" class="guidance-text">Drop cards here to extend the meld</span>
   </div>
 </template>
 
@@ -55,13 +58,18 @@ export default {
   computed: {
     ...mapGetters({
       runOrders: 'storage/gameConfig/runOrders',
-      canDrawMultipleFromDiscardPile: 'sessionState/permissions/draw/canDrawMultipleFromDiscardPile',
-      canExtendMeldFromHand: 'sessionState/permissions/melds/canExtendMeldFromHand',
-      canExtendMelds: 'sessionState/permissions/melds/canExtendMelds',
+      allDraggedCardCount: 'sessionState/derived/draggedItems/allDraggedCardCount',
+      canDrawMultipleAndExtendSpecificMeldUsingCurrentlyDraggedCards: 'sessionState/permissions/draw/canDrawMultipleAndExtendSpecificMeldUsingCurrentlyDraggedCards',
+      canDrawMultipleToExtendMeldAsNextMove: 'sessionState/permissions/draw/canDrawMultipleToExtendMeldAsNextMove',
+      canExtendMeldFromHandAsNextMove: 'sessionState/permissions/melds/canExtendMeldFromHandAsNextMove',
+      canExtendSpecificMeldFromHandWithCurrentlyDraggedCards: 'sessionState/permissions/melds/canExtendSpecificMeldFromHandWithCurrentlyDraggedCards',
       selectedMeldId: 'sessionState/uiOperations/selections/selectedMeldId',
     }),
     sortedCards() {
       return meldsService.sortCardsByRunOrders(this.cards, this.runOrders);
+    },
+    isSelectable() {
+      return this.canExtendMeldFromHandAsNextMove || this.canDrawMultipleToExtendMeldAsNextMove;
     },
     isSelected() {
       return this.selectedMeldId === this.id;
@@ -69,10 +77,9 @@ export default {
     displayAsSelected() {
       return !this.isDraggingItems && this.isSelected;
     },
-    acceptsDrop() {
-      return this.provisionallyAcceptsDrop &&
-          this.isSelected &&
-          (this.canDrawMultipleFromDiscardPile || this.canExtendMeldFromHand);
+    componentSpecificDropCriteria() {
+      return this.canDrawMultipleAndExtendSpecificMeldUsingCurrentlyDraggedCards(this.id) ||
+          this.canExtendSpecificMeldFromHandWithCurrentlyDraggedCards(this.id);
     },
   },
   methods: {
@@ -84,30 +91,16 @@ export default {
       toggleSelectedMeldId: 'sessionState/uiOperations/selections/toggleSelectedMeldId',
     }),
     handleClick() {
-      if (this.canExtendMelds) {
+      if (this.isSelectable) {
         this.toggleSelectedMeldId(this.id);
       }
     },
-    handleDragenterWithCustomLogic(event) {
-      this.handleDragenter(
-          event,
-          () => {
-            this.setSelectedMeldId(this.id);
-          },
-      );
-    },
-    handleDragleaveWithCustomLogic(event) {
-      this.handleDragleave(
-          event,
-          () => {
-            this.clearSelectedMeldId(this.id);
-          },
-      );
-    },
     async handleDrop() {
-      if (this.canExtendMeldFromHand) {
+      if (this.canExtendSpecificMeldFromHandWithCurrentlyDraggedCards(this.id)) {
+        await this.setSelectedMeldId(this.id);
         await this.extendMeld();
-      } else if (this.canDrawMultipleFromDiscardPile) {
+      } else if (this.canDrawMultipleAndExtendSpecificMeldUsingCurrentlyDraggedCards(this.id)) {
+        await this.setSelectedMeldId(this.id);
         await this.drawMultipleFromDiscardPile();
       }
       this.clearDraggedItems();

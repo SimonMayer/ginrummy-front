@@ -15,20 +15,23 @@
       </div>
     </div>
     <div
-        :class="['hand', { 'accepts-drop': acceptsDrop }]"
+        :class="['hand-drop-area', { 'invites-drop': invitesDrop, 'accepts-drop': acceptsDrop }]"
         @dragenter="handleDragenter"
         @dragleave="handleDragleave"
         @drop="handleDrop"
         @dragover.prevent
     >
-      <VisibleCard
-          v-for="card in handCards"
-          :key="card.card_id"
-          :cardProp="card"
-          :class="['card', { selectable: canSelectHandCards }]"
-          :draggable="canDragCard(card.card_id)"
-          :selectable="canSelectHandCards"
-      />
+      <div class="hand">
+        <VisibleCard
+            v-for="card in handCards"
+            :key="card.card_id"
+            :cardProp="card"
+            :class="['card', { selectable: canSelectHandCards }]"
+            :draggable="canDragCard(card.card_id)"
+            :selectable="canSelectHandCards"
+        />
+      </div>
+      <span class="guidance-text">Drop card here to draw it</span>
     </div>
   </div>
 </template>
@@ -50,19 +53,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isOnlyTopDiscardPileCardDragged: 'sessionState/derived/draggedItems/isOnlyTopDiscardPileCardDragged',
       handCards: 'sessionState/derived/hand/visibleHandCards',
       playerMatchData: 'sessionState/derived/players/selfPlayerMatchData',
       playerRoundData: 'sessionState/derived/players/visibleSelfPlayerRoundData',
       selectedHandCardCount: 'sessionState/derived/selectedItems/selectedHandCardCount',
       hasCurrentTurn: 'sessionState/permissions/core/isCurrentUserTurn',
-      canDiscardByDragging: 'sessionState/permissions/discard/canDiscardByDragging',
-      canDrawOneFromDiscardPile: 'sessionState/permissions/draw/canDrawOneFromDiscardPile',
-      canDrawOneFromStockPile: 'sessionState/permissions/draw/canDrawOneFromStockPile',
-      canDrawMultiple: 'sessionState/permissions/draw/canDrawMultiple',
+      canStartDraggingCardNowToDiscard: 'sessionState/permissions/discard/canStartDraggingCardNowToDiscard',
+      canDrawCurrentlyDraggedItemAsOneFromDiscardPile: 'sessionState/permissions/draw/canDrawCurrentlyDraggedItemAsOneFromDiscardPile',
+      canDrawCurrentlyDraggedItemAsOneFromStockPile: 'sessionState/permissions/draw/canDrawCurrentlyDraggedItemAsOneFromStockPile',
+      canStartDraggingCardNowToDrawMultiple: 'sessionState/permissions/draw/canStartDraggingCardNowToDrawMultiple',
       canSelectHandCards: 'sessionState/permissions/hand/canSelectHandCards',
-      canExtendMelds: 'sessionState/permissions/melds/canExtendMelds',
-      canPlayMeld: 'sessionState/permissions/melds/canPlayMeld',
+      canStartDraggingCardNowFromHandToExtendMeld: 'sessionState/permissions/melds/canStartDraggingCardNowFromHandToExtendMeld',
+      canStartDraggingCardNowFromHandToPlayMeld: 'sessionState/permissions/melds/canStartDraggingCardNowFromHandToPlayMeld',
       draggedNamedHiddenCard: 'sessionState/uiOperations/dragState/draggedNamedHiddenCard',
       isCardSelected: 'sessionState/uiOperations/selections/isCardSelected',
     }),
@@ -77,8 +79,8 @@ export default {
       const score = this.playerRoundData?.score.points_this_round;
       return Number.isInteger(score) ? score : null;
     },
-    acceptsDrop() {
-      return this.provisionallyAcceptsDrop && this.canDrawOneFromDiscardPile;
+    componentSpecificDropCriteria() {
+      return this.canDrawCurrentlyDraggedItemAsOneFromStockPile || this.canDrawCurrentlyDraggedItemAsOneFromDiscardPile;
     },
   },
   methods: {
@@ -87,15 +89,15 @@ export default {
       drawOneFromStockPile: 'interactions/turns/draw/drawOneFromStockPile',
     }),
     canDragCard(cardId) {
-      return this.canDrawMultiple ||
-          this.canPlayMeld ||
-          this.canExtendMelds ||
-          (this.canDiscardByDragging && (this.isCardSelected(cardId) || this.selectedHandCardCount === 0));
+      return this.canStartDraggingCardNowToDrawMultiple(cardId) ||
+          this.canStartDraggingCardNowFromHandToPlayMeld(cardId) ||
+          this.canStartDraggingCardNowFromHandToExtendMeld(cardId) ||
+          this.canStartDraggingCardNowToDiscard(cardId);
     },
     async handleDrop() {
-      if (this.canDrawOneFromDiscardPile && this.isOnlyTopDiscardPileCardDragged) {
+      if (this.canDrawCurrentlyDraggedItemAsOneFromDiscardPile) {
         await this.drawOneFromDiscardPile();
-      } else if (this.canDrawOneFromStockPile && (this.draggedNamedHiddenCard === 'topCardInStockPile')) {
+      } else if (this.canDrawCurrentlyDraggedItemAsOneFromStockPile) {
         await this.drawOneFromStockPile();
       }
       this.clearDraggedItems();
@@ -115,6 +117,10 @@ export default {
     justify-content: left;
   }
 
+  .hand-drop-area {
+    @include drop-recipient;
+  }
+
   .hand {
     height: var(--card-height);
     margin: calc(var(--base-margin) * 2) 0 0 0;
@@ -127,8 +133,6 @@ export default {
         @include card-transform(-40deg, 3deg, calc(var(--card-height) * -0.3), 0.2);
       }
     }
-
-    @include drop-recipient;
   }
 }
 </style>
