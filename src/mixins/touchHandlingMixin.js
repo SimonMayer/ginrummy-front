@@ -5,6 +5,7 @@ export const touchHandlingMixin = {
         ...mapGetters({
             isDrag: 'sessionState/uiOperations/touchState/isDrag',
             touchPayload: 'sessionState/uiOperations/touchState/payload',
+            source: 'sessionState/uiOperations/touchState/source',
         }),
     },
     methods: {
@@ -13,8 +14,8 @@ export const touchHandlingMixin = {
             setTouchMoveCoordinates: 'sessionState/uiOperations/touchState/setTouchMoveCoordinates',
             startTouchEvent: 'sessionState/uiOperations/touchState/startTouchEvent',
         }),
-        handleTouchstart(event, payload) {
-            this.startTouchEvent({event, payload});
+        handleTouchstart(event, payload = null) {
+            this.startTouchEvent({event, payload, source: this.componentSpecificTouchSource});
             event.preventDefault();
         },
         handleTouchmove(event) {
@@ -34,8 +35,8 @@ export const touchHandlingMixin = {
     },
     watch: {
         isDrag(isDragBehaviour, wasDragBehaviour) {
-            if (!wasDragBehaviour && isDragBehaviour) {
-                this.preHandleDragstart();
+            if (!wasDragBehaviour && isDragBehaviour && this.source === this.componentSpecificTouchSource) {
+                this.preHandleDragstartFromTouch();
             }
         },
     },

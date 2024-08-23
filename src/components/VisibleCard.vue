@@ -90,6 +90,9 @@ export default {
     suitClass() {
       return this.cardData.suit.toLowerCase();
     },
+    componentSpecificTouchSource() {
+      return `VisibleCard${this.id}`;
+    },
   },
   methods: {
     ...mapActions({
@@ -103,10 +106,8 @@ export default {
         this.toggleSelectedCard(this.id);
       }
     },
-    preHandleDragstart() {
-      if (this.touchPayload.cardId === this.id) {
-        this.handleDragstart(null);
-      }
+    preHandleDragstartFromTouch() {
+      this.handleDragstart(null);
     },
     async handleDragstart(event) {
       if (!this.draggable) {

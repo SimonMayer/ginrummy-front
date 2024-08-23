@@ -10,7 +10,7 @@
           @dragstart="(event) => handleDragstart(event, n)"
           @touchend="handleTouchend"
           @touchmove="handleTouchmove"
-          @touchstart="(event) => handleTouchstart(event, {name: 'topCardInStockPile', cardIndex: n})"
+          @touchstart="(event) => handleTouchstart(event, {cardIndex: n})"
       />
       <div v-if="isEmpty" class="empty-placeholder">
         <div class="icon">↻</div>
@@ -44,6 +44,9 @@ export default {
     disabled() {
       return !this.canDrawOneFromStockPileNowByButton;
     },
+    componentSpecificTouchSource() {
+      return 'topCardInStockPile';
+    },
   },
   methods: {
     ...mapActions({
@@ -59,10 +62,8 @@ export default {
         this.drawOneFromStockPile();
       }
     },
-    preHandleDragstart() {
-      if (this.touchPayload.name === 'topCardInStockPile') {
-        this.handleDragstart(null, this.touchPayload.cardIndex);
-      }
+    preHandleDragstartFromTouch() {
+      this.handleDragstart(null, this.touchPayload.cardIndex);
     },
     async handleDragstart(event, cardIndex) {
       if (this.isCardDraggable(cardIndex)) {

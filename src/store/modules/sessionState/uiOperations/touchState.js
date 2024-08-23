@@ -3,6 +3,7 @@ const MAXIMUM_CLICK_MOVEMENT = 10;
 
 const state = {
     payload: null,
+    source: null,
     startTime: null,
     startPosition: null,
     interimPosition: null,
@@ -13,8 +14,9 @@ const state = {
 };
 
 const mutations = {
-    RECORD_TOUCH_START(state, {x, y, payload}) {
+    RECORD_TOUCH_START(state, {x, y, payload, source}) {
         state.payload = payload;
+        state.source = source;
         state.startTime = Date.now();
         state.startPosition = {x, y};
         state.interimPosition = null;
@@ -38,8 +40,8 @@ const mutations = {
 };
 
 const actions = {
-    startTouchEvent({commit}, {event, payload}) {
-        commit('RECORD_TOUCH_START', {x: event.touches[0].clientX, y: event.touches[0].clientY, payload});
+    startTouchEvent({commit}, {event, payload, source}) {
+        commit('RECORD_TOUCH_START', {x: event.touches[0].clientX, y: event.touches[0].clientY, payload, source});
     },
     recordIfDrag({commit, state}, {x, y}) {
         if (state.isDrag) {
@@ -83,6 +85,7 @@ const getters = {
     elementAtTouchCoordinates: (state) => state.elementAtTouchCoordinates,
     isDrag: (state) => state.isDrag,
     payload: (state) => state.payload,
+    source: (state) => state.source,
 };
 
 export default {
