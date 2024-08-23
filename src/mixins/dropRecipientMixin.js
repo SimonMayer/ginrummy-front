@@ -9,12 +9,17 @@ export const dropRecipientMixin = {
     computed: {
         ...mapGetters({
             isDraggingItems: 'sessionState/uiOperations/dragState/isDraggingItems',
+            elementAtTouchCoordinates: 'sessionState/uiOperations/touchState/elementAtTouchCoordinates',
         }),
+        isBeingTouchDraggedOver() {
+            const dropArea = this.$refs[this.componentSpecificDropAreaRef];
+            return this.elementAtTouchCoordinates && dropArea && dropArea.contains(this.elementAtTouchCoordinates);
+        },
         provisionallyInvitesDrop() {
-            return !this.isBeingDraggedOver && this.isDraggingItems;
+            return !this.isBeingDraggedOver && !this.isBeingTouchDraggedOver && this.isDraggingItems;
         },
         provisionallyAcceptsDrop() {
-            return this.isBeingDraggedOver && this.isDraggingItems;
+            return (this.isBeingDraggedOver && this.isDraggingItems) || this.isBeingTouchDraggedOver;
         },
         invitesDrop() {
             return this.provisionallyInvitesDrop && (this.componentSpecificDropCriteria ?? false);
@@ -45,6 +50,17 @@ export const dropRecipientMixin = {
                 if (callback && typeof callback === 'function') {
                     callback();
                 }
+            }
+        },
+        async handleDrop() {
+            await this.componentSpecificDropHandler();
+            this.clearDraggedItems();
+        },
+    },
+    watch: {
+        isDraggingItems(isDragging, wasDragging) {
+            if (this.isBeingTouchDraggedOver && wasDragging && !isDragging) {
+                this.handleDrop();
             }
         },
     },

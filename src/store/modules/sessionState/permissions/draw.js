@@ -182,6 +182,7 @@ const getters = {
         const cards = [...draggedCards, ...meld.cards];
 
         return getters.canDrawMultipleToExtendMeldAsNextMove &&
+            draggedCards.length > 0 &&
             draggedCards.length < (handCardLength + drawnCardsLength) &&
             meldsService.doCardsMakeValidMeld(cards, runOrders, minimumMeldSize);
     },

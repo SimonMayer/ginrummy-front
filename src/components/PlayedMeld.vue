@@ -1,5 +1,6 @@
 <template>
   <div
+      :ref="componentSpecificDropAreaRef"
       :class="[
         'meld',
         type,
@@ -81,6 +82,9 @@ export default {
       return this.canDrawMultipleAndExtendSpecificMeldUsingCurrentlyDraggedCards(this.id) ||
           this.canExtendSpecificMeldFromHandWithCurrentlyDraggedCards(this.id);
     },
+    componentSpecificDropAreaRef() {
+      return `PlayedMeld${this.id}DropArea`;
+    },
   },
   methods: {
     ...mapActions({
@@ -95,15 +99,16 @@ export default {
         this.toggleSelectedMeldId(this.id);
       }
     },
-    async handleDrop() {
+    async componentSpecificDropHandler() {
       if (this.canExtendSpecificMeldFromHandWithCurrentlyDraggedCards(this.id)) {
         await this.setSelectedMeldId(this.id);
-        await this.extendMeld();
-      } else if (this.canDrawMultipleAndExtendSpecificMeldUsingCurrentlyDraggedCards(this.id)) {
-        await this.setSelectedMeldId(this.id);
-        await this.drawMultipleFromDiscardPile();
+        return await this.extendMeld();
       }
-      this.clearDraggedItems();
+
+      if (this.canDrawMultipleAndExtendSpecificMeldUsingCurrentlyDraggedCards(this.id)) {
+        await this.setSelectedMeldId(this.id);
+        return await this.drawMultipleFromDiscardPile();
+      }
     },
   },
 };

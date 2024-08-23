@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from 'vuex';
 import GameButton from '@/components/GameButton.vue';
 import DiscardIcon from '@/components/SvgIcons/DiscardIcon.vue';
 import DrawMultipleFromDiscardIcon from '@/components/SvgIcons/DrawMultipleFromDiscardIcon.vue';
@@ -35,7 +36,6 @@ import DrawOneFromStockIcon from '@/components/SvgIcons/DrawOneFromStockIcon.vue
 import ExtendMeldIcon from '@/components/SvgIcons/ExtendMeldIcon.vue';
 import PlayMeldIcon from '@/components/SvgIcons/PlayMeldIcon.vue';
 import UnselectCardsIcon from '@/components/SvgIcons/UnselectCardsIcon.vue';
-import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'GameButtonContainer',

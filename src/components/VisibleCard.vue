@@ -5,8 +5,11 @@
       :draggable="draggable"
       class="card visible-card"
       @click="handleClick"
-      @dragend="stopDraggingItems"
-      @dragstart="handleDragStart"
+      @dragend="handleDragend"
+      @dragstart="handleDragstart"
+      @touchend="handleTouchend"
+      @touchmove="handleTouchmove"
+      @touchstart="handleTouchstart"
   >
     <div :class="['card-content', rankClass, suitClass]">
       <CardCorner :rank="displayRank" :suit="suitEmoji" class="top-left"/>
@@ -17,14 +20,16 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from 'vuex';
 import CardCorner from '@/components/CardCorner.vue';
 import CardPattern from '@/components/CardPattern.vue';
-import {getDisplayRank, getSuitEmoji, getSuitRepeat} from '@/utils/cardUtils';
+import {touchHandlingMixin} from '@/mixins/touchHandlingMixin';
 import cardsService from '@/services/cardsService';
-import {mapActions, mapGetters} from 'vuex';
+import {getDisplayRank, getSuitEmoji, getSuitRepeat} from '@/utils/cardUtils';
 
 export default {
   name: 'VisibleCard',
+  mixins: [touchHandlingMixin],
   components: {
     CardCorner,
     CardPattern,
@@ -88,20 +93,31 @@ export default {
   },
   methods: {
     ...mapActions({
-      toggleSelectedCard: 'sessionState/uiOperations/selections/toggleSelectedCard',
-      removeSelectedCard: 'sessionState/uiOperations/selections/removeSelectedCard',
       startDraggingVisibleCards: 'sessionState/uiOperations/dragState/startDraggingVisibleCards',
       stopDraggingItems: 'sessionState/uiOperations/dragState/stopDraggingItems',
+      toggleSelectedCard: 'sessionState/uiOperations/selections/toggleSelectedCard',
+      removeSelectedCard: 'sessionState/uiOperations/selections/removeSelectedCard',
     }),
     handleClick() {
       if (this.selectable) {
         this.toggleSelectedCard(this.id);
       }
     },
-    async handleDragStart(event) {
-      if (this.draggable) {
-        await this.startDraggingVisibleCards({eventCardId: this.id, event});
+    preHandleDragstart() {
+      if (this.touchPayload.cardId === this.id) {
+        this.handleDragstart(null);
       }
+    },
+    async handleDragstart(event) {
+      if (!this.draggable) {
+        return;
+      }
+      document.body.classList.add('dragging');
+      await this.startDraggingVisibleCards({eventCardId: this.id, event});
+    },
+    async handleDragend() {
+      document.body.classList.remove('dragging');
+      await this.stopDraggingItems();
     },
   },
   async created() {

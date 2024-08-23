@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import VisibleCard from '@/components/VisibleCard.vue';
 import {mapActions, mapGetters} from 'vuex';
 import HiddenCard from '@/components/HiddenCard.vue';
+import VisibleCard from '@/components/VisibleCard.vue';
 
 export default {
   name: 'DragImages',
@@ -27,7 +27,6 @@ export default {
     ...mapGetters({
       selectedHandCards: 'sessionState/derived/selectedItems/selectedHandCards',
       selectedDiscardPileCards: 'sessionState/derived/selectedItems/selectedDiscardPileCards',
-      event: 'sessionState/uiOperations/dragState/event',
     }),
   },
   methods: {

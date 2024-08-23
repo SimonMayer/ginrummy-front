@@ -2,6 +2,7 @@
   <div v-show="isDraggingItems" class="play-area-container">
     <div
         v-show="componentSpecificDropCriteria"
+        :ref="componentSpecificDropAreaRef"
         :class="['play-area', { 'invites-drop': invitesDrop, 'accepts-drop': acceptsDrop }]"
         aria-label="Play a meld by dropping cards here"
         role="region"
@@ -31,19 +32,23 @@ export default {
     componentSpecificDropCriteria() {
       return this.canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards || this.canPlayCurrentlyDraggedCardsFromHandAsMeld;
     },
+    componentSpecificDropAreaRef() {
+      return 'playAreaDropArea';
+    },
   },
   methods: {
     ...mapActions({
       drawMultipleFromDiscardPile: 'interactions/turns/draw/drawMultipleFromDiscardPile',
       playMeld: 'interactions/turns/melds/playMeld',
     }),
-    async handleDrop() {
+    async componentSpecificDropHandler() {
       if (this.canPlayCurrentlyDraggedCardsFromHandAsMeld) {
-        await this.playMeld();
-      } else if (this.canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards) {
-        await this.drawMultipleFromDiscardPile();
+        return await this.playMeld();
       }
-      this.clearDraggedItems();
+
+      if (this.canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards) {
+        return await this.drawMultipleFromDiscardPile();
+      }
     },
   },
 };

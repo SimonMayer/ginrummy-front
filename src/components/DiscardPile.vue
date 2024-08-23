@@ -1,6 +1,7 @@
 <template>
   <div
       v-if="visibleRoundId"
+      :ref="componentSpecificDropAreaRef"
       :class="['discard-pile', { 'invites-drop': invitesDrop, 'accepts-drop': acceptsDrop }]"
       @dragenter="handleDragenter"
       @dragleave="handleDragleave"
@@ -51,6 +52,9 @@ export default {
     componentSpecificDropCriteria() {
       return this.canDiscardCurrentlyDraggedCard;
     },
+    componentSpecificDropAreaRef() {
+      return 'discardPileDropArea';
+    },
   },
   methods: {
     ...mapActions({
@@ -64,11 +68,10 @@ export default {
     isCardSelectable(card) {
       return this.selectableCards.includes(card);
     },
-    async handleDrop() {
+    async componentSpecificDropHandler() {
       if (this.canDiscardCurrentlyDraggedCard) {
-        await this.discardCard();
+        return await this.discardCard();
       }
-      this.clearDraggedItems();
     },
   },
 };

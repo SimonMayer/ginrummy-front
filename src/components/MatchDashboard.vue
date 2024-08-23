@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import MatchTable from '@/components/MatchTable.vue';
 import {mapActions} from 'vuex';
+import MatchTable from '@/components/MatchTable.vue';
 
 export default {
   name: 'MatchDashboard',

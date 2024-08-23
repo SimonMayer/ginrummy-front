@@ -6,8 +6,11 @@
           :key="n"
           :draggable="isCardDraggable(n)"
           class="stock-card-item"
-          @dragend="stopDraggingItems"
-          @dragstart="(event) => handleDragStart(event, n)"
+          @dragend="handleDragend"
+          @dragstart="(event) => handleDragstart(event, n)"
+          @touchend="handleTouchend"
+          @touchmove="handleTouchmove"
+          @touchstart="(event) => handleTouchstart(event, {name: 'topCardInStockPile', cardIndex: n})"
       />
       <div v-if="isEmpty" class="empty-placeholder">
         <div class="icon">↻</div>
@@ -20,9 +23,11 @@
 <script>
 import {mapActions, mapGetters} from 'vuex';
 import HiddenCard from '@/components/HiddenCard.vue';
+import {touchHandlingMixin} from '@/mixins/touchHandlingMixin';
 
 export default {
   name: 'StockPile',
+  mixins: [touchHandlingMixin],
   components: {
     HiddenCard,
   },
@@ -54,10 +59,20 @@ export default {
         this.drawOneFromStockPile();
       }
     },
-    async handleDragStart(event, cardIndex) {
+    preHandleDragstart() {
+      if (this.touchPayload.name === 'topCardInStockPile') {
+        this.handleDragstart(null, this.touchPayload.cardIndex);
+      }
+    },
+    async handleDragstart(event, cardIndex) {
       if (this.isCardDraggable(cardIndex)) {
+        document.body.classList.add('dragging');
         await this.startDraggingNamedHiddenCard({name: 'topCardInStockPile', event});
       }
+    },
+    async handleDragend() {
+      document.body.classList.remove('dragging');
+      await this.stopDraggingItems();
     },
   },
 };

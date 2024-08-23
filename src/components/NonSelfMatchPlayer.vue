@@ -18,17 +18,17 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 import HiddenCard from '@/components/HiddenCard.vue';
 import NamePlate from '@/components/NamePlate.vue';
 import ScoreBoard from '@/components/ScoreBoard.vue';
-import {mapGetters} from 'vuex';
 
 export default {
   name: 'NonSelfMatchPlayer',
   components: {
-    ScoreBoard,
     HiddenCard,
     NamePlate,
+    ScoreBoard,
   },
   props: {
     userId: {

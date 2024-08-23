@@ -15,6 +15,7 @@
       </div>
     </div>
     <div
+        :ref="componentSpecificDropAreaRef"
         :class="['hand-drop-area', { 'invites-drop': invitesDrop, 'accepts-drop': acceptsDrop }]"
         @dragenter="handleDragenter"
         @dragleave="handleDragleave"
@@ -82,6 +83,9 @@ export default {
     componentSpecificDropCriteria() {
       return this.canDrawCurrentlyDraggedItemAsOneFromStockPile || this.canDrawCurrentlyDraggedItemAsOneFromDiscardPile;
     },
+    componentSpecificDropAreaRef() {
+      return 'handDropArea';
+    },
   },
   methods: {
     ...mapActions({
@@ -94,13 +98,14 @@ export default {
           this.canStartDraggingCardNowFromHandToExtendMeld(cardId) ||
           this.canStartDraggingCardNowToDiscard(cardId);
     },
-    async handleDrop() {
+    async componentSpecificDropHandler() {
       if (this.canDrawCurrentlyDraggedItemAsOneFromDiscardPile) {
-        await this.drawOneFromDiscardPile();
-      } else if (this.canDrawCurrentlyDraggedItemAsOneFromStockPile) {
-        await this.drawOneFromStockPile();
+        return await this.drawOneFromDiscardPile();
       }
-      this.clearDraggedItems();
+
+      if (this.canDrawCurrentlyDraggedItemAsOneFromStockPile) {
+        return await this.drawOneFromStockPile();
+      }
     },
   },
 };

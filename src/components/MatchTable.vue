@@ -54,26 +54,26 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from 'vuex';
 import DiscardPile from '@/components/DiscardPile.vue';
 import DragImages from '@/components/DragImages.vue';
 import GameButtonContainer from '@/components/GameButtonContainer.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
+import PlayArea from '@/components/PlayArea.vue';
 import PlayedMeld from '@/components/PlayedMeld.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import StockPile from '@/components/StockPile.vue';
-import {mapActions, mapGetters} from 'vuex';
-import PlayArea from '@/components/PlayArea.vue';
 
 export default {
   name: 'MatchTable',
   components: {
-    PlayArea,
     DiscardPile,
     DragImages,
     GameButtonContainer,
     ItemSearch,
     NonSelfMatchPlayer,
+    PlayArea,
     PlayedMeld,
     SelfMatchPlayer,
     StockPile,

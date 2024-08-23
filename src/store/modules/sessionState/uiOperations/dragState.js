@@ -3,7 +3,6 @@ const state = {
     draggedNamedHiddenCard: null,
     draggedVisibleCardsImage: null,
     draggedHiddenCardImage: null,
-    event: null,
     isDraggingItems: false,
 };
 
@@ -14,19 +13,16 @@ const mutations = {
     REGISTER_DRAGGED_HIDDEN_CARD_IMAGE(state, draggedHiddenCardImage) {
         state.draggedHiddenCardImage = draggedHiddenCardImage;
     },
-    START_DRAGGING_CARDS(state, {cardIds, event}) {
+    START_DRAGGING_CARDS(state, {cardIds}) {
         state.draggedVisibleCardIds = cardIds;
         state.isDraggingItems = true;
-        state.event = event;
     },
-    START_DRAGGING_NAMED_HIDDEN_CARD(state, {name, event}) {
+    START_DRAGGING_NAMED_HIDDEN_CARD(state, {name}) {
         state.draggedNamedHiddenCard = name;
         state.isDraggingItems = true;
-        state.event = event;
     },
     STOP_DRAGGING_ITEMS(state) {
         state.isDraggingItems = false;
-        state.event = null;
     },
     CLEAR_DRAGGED_ITEMS(state) {
         state.draggedVisibleCardIds = [];
@@ -47,20 +43,24 @@ const actions = {
             await dispatch('sessionState/uiOperations/selections/addSelectedCard', eventCardId, {root: true});
             selectedCardIds.push(eventCardId);
         }
-        event.dataTransfer.dropEffect = 'move';
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setDragImage(state.draggedVisibleCardsImage, 0, 0);
+        if (event?.dataTransfer) {
+            event.dataTransfer.dropEffect = 'move';
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setDragImage(state.draggedVisibleCardsImage, 0, 0);
+        }
 
         dispatch('clearDraggedItems');
-        commit('START_DRAGGING_CARDS', {cardIds: selectedCardIds, event});
+        commit('START_DRAGGING_CARDS', {cardIds: selectedCardIds});
     },
     async startDraggingNamedHiddenCard({commit, dispatch}, {name, event}) {
-        event.dataTransfer.dropEffect = 'move';
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setDragImage(state.draggedHiddenCardImage, 0, 0);
+        if (event?.dataTransfer) {
+            event.dataTransfer.dropEffect = 'move';
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setDragImage(state.draggedHiddenCardImage, 0, 0);
+        }
 
         dispatch('clearDraggedItems');
-        commit('START_DRAGGING_NAMED_HIDDEN_CARD', {name, event});
+        commit('START_DRAGGING_NAMED_HIDDEN_CARD', {name});
     },
     stopDraggingItems({commit}) {
         commit('STOP_DRAGGING_ITEMS');
@@ -71,7 +71,6 @@ const actions = {
 };
 
 const getters = {
-    event: (state) => state.event,
     isDraggingItems: (state) => state.isDraggingItems,
     draggedNamedHiddenCard: (state) => state.draggedNamedHiddenCard,
     draggedVisibleCardCount: (state) => state.draggedVisibleCardIds.length,
