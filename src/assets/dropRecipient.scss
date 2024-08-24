@@ -23,7 +23,9 @@
 }
 
 @mixin drop-recipient {
-  position: relative;
+  & {
+    position: relative;
+  }
 
   .guidance-text {
     position: absolute;

@@ -4,10 +4,12 @@
       aria-label="{{ label }}"
       @click="handleClick"
   >
-    <span class="button-tooltip">
-      <span v-if="isDisabled" class="unavailable-note">Action unavailable: </span>
-      {{ label }}
-    </span>
+    <div class="button-tooltip">
+      <div class="content">
+        <span v-if="isDisabled" class="unavailable-note">Action unavailable: </span>
+        {{ label }}
+      </div>
+    </div>
     <slot
         :mutedLightToSecondary="mutedLightToSecondary"
         :mutedLightToWhite="mutedLightToWhite"
@@ -74,34 +76,48 @@ button {
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
     margin: -1px;
+    padding: 0;
     overflow: hidden;
     clip-path: inset(50%);
     border: 0;
+    border-radius: var(--border-radius);
+    background-color: rgba(var(--secondary-color-rgb), 0.2);
 
-    .unavailable-note {
-      display: block;
-      font-weight: bold;
+    .content {
+      padding: calc(var(--base-padding) * 0.5);
+      background-color: rgba(var(--secondary-color-rgb), 0.8);
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      color: var(--text-color);
+      white-space: nowrap;
+      font-size: var(--font-size-small);
+
+      .unavailable-note {
+        display: block;
+        font-weight: bold;
+      }
     }
   }
 }
 
 button:hover .button-tooltip {
-  display: block;
-  position: absolute;
   top: 100%;
-  left: 0;
-  transform: translateX(calc(var(--base-margin) * -2));
+  right: 0;
+  display: block;
   width: auto;
   height: auto;
-  padding: var(--base-padding);
-  margin: var(--base-margin) 0 0;
+  margin: calc(var(--base-margin) * -0.5) 0 0;
+  padding: var(--base-margin) 0 0;
   clip-path: none;
-  background-color: rgba(var(--secondary-color-rgb), 0.5);
-  color: var(--text-color);
-  border-radius: 4px;
-  white-space: nowrap;
-  font-size: var(--font-size-small);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--base-margin) * -1);
+    right: calc(var(--base-margin) * 1.5);
+    border-width: calc(var(--base-margin));
+    border-style: solid;
+    border-color: transparent transparent rgba(var(--secondary-color-rgb), 0.8) transparent;
+  }
 }
 </style>
