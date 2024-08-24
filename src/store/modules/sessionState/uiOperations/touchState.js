@@ -55,8 +55,11 @@ const actions = {
             commit('RECORD_HAS_BECOME_DRAG');
         }
     },
-    setTouchMoveCoordinates({commit, dispatch}, {x, y}) {
+    setTouchMoveCoordinates({commit, dispatch, state}, {x, y}) {
         dispatch('recordIfDrag', {x, y});
+        if (state.isDrag) {
+            dispatch('sessionState/uiOperations/dragState/updateSimulatedDragImagePosition', {x, y}, {root: true});
+        }
         commit('RECORD_INTERIM_POSITION', {x, y});
         commit('SET_TOUCHED_ELEMENT', document.elementFromPoint(x, y));
     },

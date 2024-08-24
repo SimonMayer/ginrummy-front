@@ -3,15 +3,16 @@ const state = {
     draggedNamedHiddenCard: null,
     draggedVisibleCardsImage: null,
     draggedHiddenCardImage: null,
+    simulatedDragImage: null,
     isDraggingItems: false,
 };
 
 const mutations = {
-    REGISTER_DRAGGED_VISIBLE_CARDS_IMAGE(state, draggedVisibleCardsImage) {
-        state.draggedVisibleCardsImage = draggedVisibleCardsImage;
+    REGISTER_DRAGGED_VISIBLE_CARDS_IMAGE(state, element) {
+        state.draggedVisibleCardsImage = element;
     },
-    REGISTER_DRAGGED_HIDDEN_CARD_IMAGE(state, draggedHiddenCardImage) {
-        state.draggedHiddenCardImage = draggedHiddenCardImage;
+    REGISTER_DRAGGED_HIDDEN_CARD_IMAGE(state, element) {
+        state.draggedHiddenCardImage = element;
     },
     START_DRAGGING_CARDS(state, {cardIds}) {
         state.draggedVisibleCardIds = cardIds;
@@ -23,19 +24,26 @@ const mutations = {
     },
     STOP_DRAGGING_ITEMS(state) {
         state.isDraggingItems = false;
+        state.simulatedDragImage = null;
     },
     CLEAR_DRAGGED_ITEMS(state) {
         state.draggedVisibleCardIds = [];
         state.draggedNamedHiddenCard = null;
     },
+    SET_SIMULATED_DRAG_IMAGE(state, element) {
+        state.simulatedDragImage = element;
+    },
+    REMOVE_SIMULATED_DRAG_IMAGE(state) {
+        state.simulatedDragImage = null;
+    },
 };
 
 const actions = {
-    registerVisibleCardsImage({commit}, draggedVisibleCardsImage) {
-        commit('REGISTER_DRAGGED_VISIBLE_CARDS_IMAGE', draggedVisibleCardsImage);
+    registerDraggedVisibleCardsImage({commit}, element) {
+        commit('REGISTER_DRAGGED_VISIBLE_CARDS_IMAGE', element);
     },
-    registerDraggedHiddenCardImage({commit}, draggedHiddenCardImage) {
-        commit('REGISTER_DRAGGED_HIDDEN_CARD_IMAGE', draggedHiddenCardImage);
+    registerDraggedHiddenCardImage({commit}, element) {
+        commit('REGISTER_DRAGGED_HIDDEN_CARD_IMAGE', element);
     },
     async startDraggingVisibleCards({commit, dispatch, rootGetters, state}, {eventCardId, event}) {
         const selectedCardIds = rootGetters['sessionState/derived/selectedItems/allSelectedCardIds'];
@@ -47,26 +55,51 @@ const actions = {
             event.dataTransfer.dropEffect = 'move';
             event.dataTransfer.effectAllowed = 'move';
             event.dataTransfer.setDragImage(state.draggedVisibleCardsImage, 0, 0);
+        } else {
+            dispatch('createSimulatedDragImage', state.draggedVisibleCardsImage);
         }
 
         dispatch('clearDraggedItems');
         commit('START_DRAGGING_CARDS', {cardIds: selectedCardIds});
     },
-    async startDraggingNamedHiddenCard({commit, dispatch}, {name, event}) {
+    async startDraggingNamedHiddenCard({commit, dispatch, state}, {name, event}) {
         if (event?.dataTransfer) {
             event.dataTransfer.dropEffect = 'move';
             event.dataTransfer.effectAllowed = 'move';
             event.dataTransfer.setDragImage(state.draggedHiddenCardImage, 0, 0);
+        } else {
+            dispatch('createSimulatedDragImage', state.draggedHiddenCardImage);
         }
 
         dispatch('clearDraggedItems');
         commit('START_DRAGGING_NAMED_HIDDEN_CARD', {name});
     },
-    stopDraggingItems({commit}) {
+    stopDraggingItems({commit, dispatch}) {
+        dispatch('removeSimulatedDragImage');
         commit('STOP_DRAGGING_ITEMS');
     },
     clearDraggedItems({commit}) {
         commit('CLEAR_DRAGGED_ITEMS');
+    },
+    createSimulatedDragImage({commit}, element) {
+        const clone = element.cloneNode(true);
+        clone.style.position = 'absolute';
+        clone.style.pointerEvents = 'none';
+        clone.style.zIndex = '9999';
+        document.body.appendChild(clone);
+        commit('SET_SIMULATED_DRAG_IMAGE', clone);
+    },
+    updateSimulatedDragImagePosition({state}, {x, y}) {
+        if (state.simulatedDragImage) {
+            state.simulatedDragImage.style.left = `${x}px`;
+            state.simulatedDragImage.style.top = `${y}px`;
+        }
+    },
+    removeSimulatedDragImage({state, commit}) {
+        if (state.simulatedDragImage) {
+            document.body.removeChild(state.simulatedDragImage);
+            commit('REMOVE_SIMULATED_DRAG_IMAGE');
+        }
     },
 };
 

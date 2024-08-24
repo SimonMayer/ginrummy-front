@@ -31,12 +31,12 @@ export default {
   },
   methods: {
     ...mapActions({
-      registerVisibleCardsImage: 'sessionState/uiOperations/dragState/registerVisibleCardsImage',
+      registerDraggedVisibleCardsImage: 'sessionState/uiOperations/dragState/registerDraggedVisibleCardsImage',
       registerDraggedHiddenCardImage: 'sessionState/uiOperations/dragState/registerDraggedHiddenCardImage',
     }),
   },
   mounted() {
-    this.registerVisibleCardsImage(this.$refs.draggedVisibleCardsImage);
+    this.registerDraggedVisibleCardsImage(this.$refs.draggedVisibleCardsImage);
     this.registerDraggedHiddenCardImage(this.$refs.draggedHiddenCardImage);
   },
 };
@@ -53,16 +53,20 @@ export default {
 }
 
 .dragged-visible-cards-image {
-  top: calc(-1 * (var(--card-height) + var(--card-width)));
   display: flex;
   flex-direction: row;
   justify-content: center;
+  pointer-events: none;
 
   .card {
     &:not(:first-child) {
       margin-left: calc(var(--card-width) * -0.8);
     }
   }
+}
+
+.dragged-visible-cards-image {
+  top: calc(-1 * (var(--card-height) + var(--card-width)));
 }
 
 .dragged-hidden-card-image {
