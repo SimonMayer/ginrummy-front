@@ -17,6 +17,8 @@
       @dragleave="handleDragleave"
       @drop="handleDrop"
       @dragover.prevent
+      @touchend="handleTouchend"
+      @touchstart="handleTouchstart"
   >
     <VisibleCard
         v-for="card in sortedCards"
@@ -34,13 +36,22 @@
 import {mapActions, mapGetters} from 'vuex';
 import VisibleCard from '@/components/VisibleCard.vue';
 import {dropRecipientMixin} from '@/mixins/dropRecipientMixin';
+import {touchHandlingMixin} from '@/mixins/touchHandlingMixin';
 import meldsService from '@/services/meldsService';
 
 export default {
   name: 'PlayedMeld',
-  mixins: [dropRecipientMixin],
+  mixins: [
+      dropRecipientMixin,
+      touchHandlingMixin,
+  ],
   components: {
     VisibleCard,
+  },
+  data(){
+    return {
+      disallowDrag: true,
+    };
   },
   props: {
     cards: {

@@ -25,7 +25,7 @@ export const touchHandlingMixin = {
         async handleTouchend(event) {
             const result = await this.endTouchEvent(event);
 
-            if (result.isDrag) {
+            if (!this.disallowDrag && result.isDrag) {
                 this.handleDragend();
             }
             if (result.isClick) {
@@ -35,7 +35,12 @@ export const touchHandlingMixin = {
     },
     watch: {
         isDrag(isDragBehaviour, wasDragBehaviour) {
-            if (!wasDragBehaviour && isDragBehaviour && this.source === this.componentSpecificTouchSource) {
+            if (
+                !this.disallowDrag &&
+                !wasDragBehaviour &&
+                isDragBehaviour &&
+                this.source === this.componentSpecificTouchSource
+            ) {
                 this.preHandleDragstartFromTouch();
             }
         },
