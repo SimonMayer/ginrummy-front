@@ -31,6 +31,12 @@ export default {
   components: {
     HiddenCard,
   },
+  data() {
+    return {
+      allowClick: true,
+      allowDrag: true,
+    };
+  },
   computed: {
     ...mapGetters({
       visibleRoundId: 'sessionState/derived/rounds/visibleRoundId',

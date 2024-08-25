@@ -42,16 +42,11 @@ import meldsService from '@/services/meldsService';
 export default {
   name: 'PlayedMeld',
   mixins: [
-      dropRecipientMixin,
-      touchHandlingMixin,
+    dropRecipientMixin,
+    touchHandlingMixin,
   ],
   components: {
     VisibleCard,
-  },
-  data(){
-    return {
-      disallowDrag: true,
-    };
   },
   props: {
     cards: {
@@ -66,6 +61,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      allowClick: true,
+    };
   },
   computed: {
     ...mapGetters({

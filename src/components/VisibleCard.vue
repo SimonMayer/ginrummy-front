@@ -62,6 +62,8 @@ export default {
   },
   data() {
     return {
+      allowClick: true,
+      allowDrag: true,
       cardData: null,
     };
   },

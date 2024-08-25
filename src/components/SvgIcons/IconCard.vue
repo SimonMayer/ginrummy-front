@@ -37,17 +37,17 @@ export default {
       required: false,
     },
   },
-  computed: {
-    transform() {
-      return `translate(0,0) rotate(${this.rotationAngle}, ${this.x + (this.width / 2)}, ${this.y + (this.height / 2)})`;
-    },
-  },
   data() {
     return {
       radius: 2,
       width: 12,
       height: 18,
     };
+  },
+  computed: {
+    transform() {
+      return `translate(0,0) rotate(${this.rotationAngle}, ${this.x + (this.width / 2)}, ${this.y + (this.height / 2)})`;
+    },
   },
 };
 </script>

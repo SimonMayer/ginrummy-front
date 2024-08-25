@@ -70,15 +70,15 @@ const actions = {
             y: state.endPosition.y - state.startPosition.y,
         };
         const duration = state.endTime - state.startTime;
+        const hasMovedSignificantly = state.isDrag ||
+            Math.abs(offset.x) > MAXIMUM_CLICK_MOVEMENT ||
+            Math.abs(offset.y) > MAXIMUM_CLICK_MOVEMENT;
+
         return {
             offset,
             duration,
-            isClick: (
-                !state.isDrag &&
-                Math.abs(offset.x) <= MAXIMUM_CLICK_MOVEMENT &&
-                Math.abs(offset.y) <= MAXIMUM_CLICK_MOVEMENT &&
-                duration <= MAXIMUM_CLICK_MILLISECONDS
-            ),
+            isClick: !hasMovedSignificantly && (duration <= MAXIMUM_CLICK_MILLISECONDS),
+            isLongPress: !hasMovedSignificantly && (duration > MAXIMUM_CLICK_MILLISECONDS),
             isDrag: state.isDrag,
         };
     },

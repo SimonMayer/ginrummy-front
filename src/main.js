@@ -8,4 +8,6 @@ const app = createApp(App);
 app.use(router);
 app.use(store);
 
+store.dispatch('sessionState/client/capabilities/detectTouchSupport');
+
 app.mount('#app');

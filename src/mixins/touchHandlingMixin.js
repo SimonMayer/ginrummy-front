@@ -1,6 +1,13 @@
 import {mapActions, mapGetters} from 'vuex';
 
 export const touchHandlingMixin = {
+    data() {
+        return {
+            allowClick: false,
+            allowDrag: false,
+            allowLongPress: false,
+        };
+    },
     computed: {
         ...mapGetters({
             isDrag: 'sessionState/uiOperations/touchState/isDrag',
@@ -25,18 +32,21 @@ export const touchHandlingMixin = {
         async handleTouchend(event) {
             const result = await this.endTouchEvent(event);
 
-            if (!this.disallowDrag && result.isDrag) {
+            if (this.allowClick && result.isClick) {
+                this.handleClick();
+            }
+            if (this.allowDrag && result.isDrag) {
                 this.handleDragend();
             }
-            if (result.isClick) {
-                this.handleClick();
+            if (this.allowLongPress && result.isLongPress) {
+                this.handleLongPress();
             }
         },
     },
     watch: {
         isDrag(isDragBehaviour, wasDragBehaviour) {
             if (
-                !this.disallowDrag &&
+                this.allowDrag &&
                 !wasDragBehaviour &&
                 isDragBehaviour &&
                 this.source === this.componentSpecificTouchSource
