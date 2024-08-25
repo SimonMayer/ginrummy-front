@@ -39,31 +39,36 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/spacing/variables' as spacing;
+
 .wrapper {
   background-color: white;
-  border-radius: var(--border-radius);
-  margin: var(--base-margin) 0;
+  border-radius: decorative.$border-radius;
+  margin: spacing.$margin-standard 0;
   min-width: 400px;
   padding: 2px;
 
   .error-box {
-    border: solid var(--border-width-medium) var(--error-accent-color);
-    border-radius: var(--border-radius);
-    color: var(--text-color);
+    border: solid decorative.$border-width-medium color.$error-accent;
+    border-radius: decorative.$border-radius;
+    color: color.$text;
     overflow: hidden;
     position: relative;
 
     .title {
-      background-color: var(--error-color);
+      background-color: color.$error;
       font-weight: bold;
       min-height: 30px;
-      padding: var(--base-padding);
+      padding: spacing.$padding-standard;
     }
 
     .message {
-      color: var(--error-color);
+      color: color.$error;
       min-height: 20px;
-      padding: var(--base-padding);
+      padding: spacing.$padding-standard;
     }
 
     .close-button {
@@ -74,7 +79,7 @@ export default {
       width: 1rem;
       height: 1rem;
       cursor: pointer;
-      transition: background-color var(--transition-time), color var(--transition-time);
+      transition: background-color animation.$transition-time-standard, color animation.$transition-time-standard;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -87,7 +92,7 @@ export default {
         left: 50%;
         width: 16px;
         height: 3px;
-        background: var(--text-color);
+        background: color.$text;
         transform-origin: center;
       }
 
@@ -100,11 +105,11 @@ export default {
       }
 
       &:hover {
-        background-color: rgba(var(--error-accent-color-rgb), 0.8);
+        background-color: rgba(color.$error-accent, 0.8);
       }
 
       &:active {
-        background-color: rgba(var(--error-accent-color-rgb), 0.98);
+        background-color: rgba(color.$error-accent, 0.98);
       }
     }
   }

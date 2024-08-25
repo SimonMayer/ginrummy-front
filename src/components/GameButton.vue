@@ -17,13 +17,7 @@
         {{ label }}
       </div>
     </div>
-    <slot
-        :mutedLightToSecondary="mutedLightToSecondary"
-        :mutedLightToWhite="mutedLightToWhite"
-        :mutedMidToAccent="mutedMidToAccent"
-        :mutedMidToMutedLight="mutedMidToMutedLight"
-        name="icon"
-    />
+    <slot name="icon"/>
   </button>
 </template>
 
@@ -63,18 +57,6 @@ export default {
     label() {
       return this.isDisabled ? this.labelDisabled : this.labelEnabled;
     },
-    mutedLightToWhite() {
-      return this.isDisabled ? 'var(--muted-light-color)' : '#fff';
-    },
-    mutedLightToSecondary() {
-      return this.isDisabled ? 'var(--muted-light-color)' : 'var(--secondary-color)';
-    },
-    mutedMidToMutedLight() {
-      return this.isDisabled ? 'var(--muted-mid-color)' : 'var(--muted-light-color)';
-    },
-    mutedMidToAccent() {
-      return this.isDisabled ? 'var(--muted-mid-color)' : 'var(--accent-color)';
-    },
   },
   methods: {
     handleClick() {
@@ -94,7 +76,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/spacing/variables' as spacing;
+@use '@/assets/core/typography/variables' as typography;
 @use '@/assets/match/variables' as match;
+
+$arrowHeight: spacing.$margin-standard;
 
 button {
   border-width: match.$button-border-width;
@@ -111,47 +100,47 @@ button {
     top: 100%;
     right: 0;
     pointer-events: none;
-    margin: calc(var(--base-margin) * -0.5) 0 0;
-    padding: var(--base-margin) 0 0;
-    border-radius: var(--border-radius);
+    margin: spacing.$margin-half 0 0;
+    padding: $arrowHeight 0 0;
+    border-radius: decorative.$border-radius;
     opacity: 0;
     transform: translateX(-5px) translateY(5px);
-    transition: opacity var(--transition-time), transform var(--transition-time);
-    background-color: rgba(var(--muted-mid-color-rgb), 0.2);
+    transition: opacity animation.$transition-time-standard, transform animation.$transition-time-standard;
+    background-color: rgba(color.$muted-mid, 0.2);
 
     &::before {
       content: '';
       position: absolute;
-      top: calc(var(--base-margin) * -1);
-      right: calc(var(--base-margin) * 1.5);
-      border-color: transparent transparent rgba(var(--muted-mid-color-rgb), 0.8) transparent;
+      top: calc($arrowHeight * -1);
+      right: spacing.$margin-standard;
+      border-color: transparent transparent rgba(color.$muted-mid, 0.8) transparent;
       border-style: solid;
-      border-width: calc(var(--base-margin));
+      border-width: spacing.$margin-standard;
     }
 
     .content {
-      background-color: rgba(var(--muted-mid-color-rgb), 0.8);
-      color: var(--muted-very-light-color);
-      border-radius: 0 0 var(--border-radius) var(--border-radius);
-      padding: calc(var(--base-padding) * 0.5) var(--base-padding);
-      font-size: var(--font-size-small);
+      background-color: rgba(color.$muted-mid, 0.8);
+      color: color.$muted-very-light;
+      border-radius: 0 0 decorative.$border-radius decorative.$border-radius;
+      padding: spacing.$padding-half spacing.$padding-standard;
+      font-size: typography.$font-size-small;
       white-space: nowrap;
 
       .unavailable-note {
-        padding-right: calc(var(--base-padding) * 0.5);
+        padding-right: spacing.$padding-half;
       }
     }
 
     &.is-available {
-      background-color: rgba(var(--secondary-color-rgb), 0.2);
+      background-color: rgba(color.$secondary, 0.2);
 
       &::before {
-        border-color: transparent transparent rgba(var(--secondary-color-rgb), 0.8) transparent;
+        border-color: transparent transparent rgba(color.$secondary, 0.8) transparent;
       }
 
       .content {
-        background-color: rgba(var(--secondary-color-rgb), 0.8);
-        color: var(--text-color);
+        background-color: rgba(color.$secondary, 0.8);
+        color: color.$text;
       }
     }
   }

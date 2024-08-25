@@ -12,13 +12,10 @@
           :labelEnabled="buttonConfig.labelEnabled"
           @button:press="buttonConfig.pressHandler"
       >
-        <template #icon="{ mutedLightToSecondary, mutedLightToWhite, mutedMidToAccent, mutedMidToMutedLight}">
+        <template #icon="{}">
           <component
+              :active="!buttonConfig.isDisabled"
               :is="buttonConfig.icon"
-              :fillColor="mutedLightToWhite"
-              :sharpIndicatorColor="mutedMidToAccent"
-              :strokeColor="mutedMidToMutedLight"
-              :strongIndicatorColor="mutedLightToSecondary"
               class="icon"
           />
         </template>
@@ -126,17 +123,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/spacing/variables' as spacing;
+
 .game-button-container {
   display: flex;
-  gap: var(--base-margin);
+  gap: spacing.$margin-standard;
   justify-content: center;
   width: 100%;
 
   .button-separator {
     width: 1px;
     height: 100%;
-    background-color: var(--muted-light-color);
-    margin: 0 calc(var(--base-margin) * 0.5);
+    background-color: color.$muted-light;
+    margin: 0 spacing.$margin-half;
   }
 }
 </style>

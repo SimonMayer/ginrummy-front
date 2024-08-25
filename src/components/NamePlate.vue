@@ -24,6 +24,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/decorative/variables' as decorative;
+
 @mixin set-font-size($size, $width, $height) {
   $characterWidth: 1.13125;
 
@@ -68,7 +70,7 @@ export default {
     .face {
       position: absolute;
       backface-visibility: hidden;
-      box-shadow: var(--box-shadow-3-medium);
+      box-shadow: decorative.$box-shadow-3-medium;
 
       &.front {
         transform: translateZ(30px);

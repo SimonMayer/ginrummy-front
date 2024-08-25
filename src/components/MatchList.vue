@@ -41,6 +41,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/spacing/variables' as spacing;
+
 .match-list {
   display: flex;
   flex-direction: column;
@@ -52,15 +57,15 @@ export default {
     width: 100%;
 
     li {
-      background-color: var(--secondary-color);
-      padding: calc(var(--base-padding) / 2) var(--base-padding);
-      margin: var(--base-margin) 0;
-      border-radius: var(--border-radius);
-      transition: background-color var(--transition-time), box-shadow var(--transition-time);
+      background-color: color.$secondary;
+      padding: spacing.$padding-half spacing.$padding-standard;
+      margin: spacing.$margin-standard 0;
+      border-radius: decorative.$border-radius;
+      transition: background-color animation.$transition-time-standard, box-shadow animation.$transition-time-standard;
 
       &:hover {
-        background-color: var(--button-hover-color);
-        box-shadow: var(--box-shadow-3-medium);
+        background-color: color.$button-hover;
+        box-shadow: decorative.$box-shadow-3-medium;
       }
 
       a {

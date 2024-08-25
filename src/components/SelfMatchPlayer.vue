@@ -112,6 +112,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/spacing/variables' as spacing;
 @use '@/assets/cards/variables' as card;
 @import '@/assets/dropRecipient';
 @import '@/assets/players';
@@ -127,7 +128,7 @@ export default {
 
   .hand {
     height: card.$height;
-    margin: calc(var(--base-margin) * 2) 0 0 0;
+    margin: spacing.$margin-double 0 0 0;
     padding: 0 0 0 calc(0.4 * card.$width);
 
     .card {

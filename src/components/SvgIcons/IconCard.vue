@@ -1,10 +1,9 @@
 <template>
   <rect
-      :fill="fillColor ? fillColor : undefined"
+      :class="[{ active: active, disabled: !active, highlight: highlight, reverse: reverse }]"
       :height="height"
       :rx="radius"
       :ry="radius"
-      :stroke="strokeColor ? strokeColor : undefined"
       :transform="transform"
       :width="width"
       :x="x"
@@ -15,6 +14,18 @@
 <script>
 export default {
   props: {
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    highlight: {
+      type: Boolean,
+      default: false,
+    },
+    reverse: {
+      type: Boolean,
+      default: false,
+    },
     x: {
       type: Number,
       required: true,
@@ -27,14 +38,6 @@ export default {
       type: Number,
       required: false,
       default: 0,
-    },
-    fillColor: {
-      type: String,
-      required: false,
-    },
-    strokeColor: {
-      type: String,
-      required: false,
     },
   },
   data() {
@@ -51,3 +54,32 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+@use '@/assets/core/color/variables' as color;
+
+.active {
+  fill: color.$white;
+  stroke: color.$muted-light;
+
+  &.highlight {
+    fill: color.$white;
+    stroke: color.$accent;
+  }
+
+  &.reverse {
+    fill: color.$muted-light;
+    stroke: color.$white;
+  }
+}
+
+.disabled {
+  fill: color.$muted-light;
+  stroke: color.$muted-mid;
+
+  &.reverse {
+    fill: color.$muted-mid;
+    stroke: color.$muted-light;
+  }
+}
+</style>

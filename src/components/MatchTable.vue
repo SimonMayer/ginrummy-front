@@ -113,6 +113,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/spacing/variables' as spacing;
 @use '@/assets/cards/variables' as card;
 @use '@/assets/match/variables' as match;
 
@@ -120,12 +121,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--base-margin);
+  gap: spacing.$margin-standard;
 
   .game-section {
     &.full-width {
       flex-basis: 100%;
-      padding: var(--base-padding);
+      padding: spacing.$padding-standard;
       text-align: center;
     }
 
@@ -135,7 +136,7 @@ export default {
 
       .column {
         flex: 1;
-        padding: var(--base-padding);
+        padding: spacing.$padding-standard;
         text-align: center;
       }
     }
@@ -145,7 +146,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--base-margin);
+    gap: spacing.$margin-standard;
     height: 100%;
     position: relative;
     padding-right: calc(card.$height * 0.25);
@@ -157,8 +158,8 @@ export default {
 
     .discard-pile {
       position: absolute;
-      top: calc((card.$width * 1.2) + var(--base-margin));
-      left: calc(2 * var(--base-margin));
+      top: calc((card.$width * 1.2) + spacing.$margin-standard);
+      left: spacing.$margin-double;
     }
   }
 
@@ -167,14 +168,14 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: var(--base-margin);
+    gap: spacing.$margin-standard;
   }
 
   .buttons-container,
   .melds-container,
   .search-container {
     display: flex;
-    gap: var(--base-margin);
+    gap: spacing.$margin-standard;
     justify-content: center;
   }
 

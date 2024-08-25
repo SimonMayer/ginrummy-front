@@ -78,6 +78,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/spacing/variables' as spacing;
 @use '@/assets/cards/variables' as card;
 @import '@/assets/dropRecipient';
 
@@ -126,15 +129,15 @@ export default {
     justify-content: center;
     width: card.$width;
     height: card.$height;
-    background-color: rgba(var(--secondary-color-rgb), 0.8);
-    border: dashed calc(card.$border-width * 5) var(--muted-light-color);
+    background-color: rgba(color.$secondary, 0.8);
+    border: dashed calc(card.$border-width * 5) color.$muted-light;
     border-radius: card.$border-radius;
     font-size: calc(card.$base-size * 18);
-    color: var(--muted-light-color);
+    color: color.$muted-light;
 
     div {
       transform: rotate(-90deg);
-      margin: var(--base-margin);
+      margin: spacing.$margin-standard;
     }
   }
 
@@ -148,13 +151,13 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    transform: rotate(-90deg) translateX(calc(card.$height / 3 * -0.8 - (var(--base-margin)))) translateY(calc(card.$width / 3 * -0.8));
-    transition: z-index 0s calc(var(--transition-time) * 2);
+    transform: rotate(-90deg) translateX(calc(card.$height / 3 * -0.8 - spacing.$margin-standard)) translateY(calc(card.$width / 3 * -0.8));
+    transition: z-index 0s animation.$transition-time-slower;
     user-select: none;
     z-index: -1;
 
     .guidance-text {
-      margin: var(--base-margin);
+      margin: spacing.$margin-standard;
       width: card.$height;
     }
   }

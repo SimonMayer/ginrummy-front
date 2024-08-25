@@ -24,29 +24,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/spacing/variables' as spacing;
+@use '@/assets/core/typography/variables' as typography;
+
 .score-board {
   text-align: right;
   width: 120px;
-  padding: var(--base-padding);
-  background-color: rgba(var(--secondary-color-rgb), 0.5);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow-1-very-light);
+  padding: spacing.$padding-standard;
+  background-color: rgba(color.$secondary, 0.5);
+  border-radius: decorative.$border-radius;
+  box-shadow: decorative.$box-shadow-1-very-light;
 
   .label {
-    font-size: var(--font-size-small);
-    color: var(--muted-light-color);
-    margin-bottom: calc(var(--base-margin) * 0.2);
+    font-size: typography.$font-size-small;
+    color: color.$muted-light;
+    margin-bottom: spacing.$margin-tiny;
   }
 
   .total,
   .turn {
-    color: var(--tertiary-color);
-    font-size: var(--font-size-large);
+    color: color.$tertiary;
+    font-size: typography.$font-size-large;
     font-weight: bold;
   }
 
   .total {
-    margin-bottom: calc(var(--base-margin) * 0.5);
+    margin-bottom: spacing.$margin-half;
   }
 }
 </style>

@@ -78,8 +78,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/spacing/variables' as spacing;
+
 .item-search {
-  margin-top: var(--base-margin);
+  margin-top: spacing.$margin-standard;
 
   input {
     width: 100%;
@@ -89,21 +94,21 @@ export default {
   ul {
     list-style-type: none;
     padding: 0;
-    margin: var(--base-margin) 0 0 0;
+    margin: spacing.$margin-standard 0 0 0;
 
     li.search-item {
-      margin: var(--base-margin) 0;
+      margin: spacing.$margin-standard 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      padding: var(--base-padding);
-      border: solid var(--border-width-medium) var(--primary-color);
-      border-radius: var(--border-radius);
-      transition: background-color var(--transition-time);
+      padding: spacing.$padding-standard;
+      border: solid decorative.$border-width-medium color.$primary;
+      border-radius: decorative.$border-radius;
+      transition: background-color animation.$transition-time-standard;
 
       &:hover {
-        background-color: var(--button-hover-color);
+        background-color: color.$button-hover;
       }
     }
   }

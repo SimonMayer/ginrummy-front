@@ -35,6 +35,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/spacing/variables' as spacing;
+
 .sign-in {
   display: flex;
   flex-direction: column;
@@ -46,7 +48,7 @@ export default {
     width: 300px;
 
     button {
-      padding: var(--base-padding);
+      padding: spacing.$padding-standard;
     }
   }
 }

@@ -1,0 +1,18 @@
+$primary: #1B5E20;
+$secondary: #235789;
+$tertiary: #0AD3FF;
+$accent: $tertiary;
+$muted-very-light: #F0F4E6;
+$muted-light: #D0D6B3;
+$muted-mid: #6A7D5C;
+$muted-dark: #2F3E46;
+$white: #fff;
+$text: $white;
+$error: #9B1D20;
+$error-accent: #DA2C38;
+
+$button-hover: rgba($accent, 0.8);
+$button-active: rgba($accent, 0.98);
+$button-disabled-background: $muted-light;
+$button-disabled-text: $muted-mid;
+$input-background: $muted-very-light;

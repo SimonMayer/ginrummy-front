@@ -134,12 +134,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
 @use '@/assets/cards/variables' as card;
 @import '@/assets/cards/styles';
 
 .card {
   user-select: none;
-  transition: transform var(--transition-time), filter var(--transition-time);
+  transition: transform animation.$transition-time-standard, filter animation.$transition-time-standard;
 
   &.selected {
     filter: card.$selected-filter;

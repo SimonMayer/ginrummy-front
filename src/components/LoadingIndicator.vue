@@ -20,6 +20,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
+
 .loading-overlay {
   position: fixed;
   top: 50%;
@@ -51,7 +53,7 @@ export default {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity calc(var(--transition-time) * 2);
+  transition: opacity animation.$transition-time-slower;
 }
 
 .fade-enter, .fade-leave-to {

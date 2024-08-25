@@ -52,34 +52,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/animation/variables' as animation;
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/spacing/variables' as spacing;
+
 nav {
   display: flex;
   justify-content: space-between;
-  gap: var(--base-margin);
-  margin-bottom: var(--base-margin);
-  background-color: var(--secondary-color);
-  padding: var(--base-padding);
-  border-radius: var(--border-radius);
+  gap: spacing.$margin-standard;
+  margin-bottom: spacing.$margin-standard;
+  background-color: color.$secondary;
+  padding: spacing.$padding-standard;
+  border-radius: decorative.$border-radius;
 
   .nav-links, .auth-links {
     display: flex;
-    gap: var(--base-margin);
+    gap: spacing.$margin-standard;
   }
 
   a {
-    color: var(--text-color);
+    color: color.$text;
     text-decoration: none;
-    padding: var(--base-padding);
-    border-radius: var(--border-radius);
-    transition: background-color var(--transition-time);
+    padding: spacing.$padding-standard;
+    border-radius: decorative.$border-radius;
+    transition: background-color animation.$transition-time-standard;
 
     &:hover {
-      background-color: var(--button-hover-color);
+      background-color: color.$button-hover;
     }
 
     &.active {
       font-weight: bold;
-      border-bottom: solid 2px var(--accent-color);
+      border-bottom: solid 2px color.$accent;
     }
   }
 }

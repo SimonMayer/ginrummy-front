@@ -1,19 +1,17 @@
 <template>
   <svg
-      :fill="fillColor"
-      :stroke="strokeColor"
+      :class="[{ active: active, disabled: !active }]"
       stroke-linecap="round"
       stroke-linejoin="round"
-      stroke-width="1"
       viewBox="0 0 32 32"
       xmlns="http://www.w3.org/2000/svg"
   >
-    <IconCard :rotationAngle="90" :x="7" :y="0"/>
-    <IconCard :rotationAngle="90" :x="7" :y="3"/>
-    <IconCard :rotationAngle="90" :x="7" :y="6"/>
-    <IconCard :fillColor="fillColor" :strokeColor="sharpIndicatorColor" :x="16" :y="12"/>
+    <IconCard :active="active" :rotationAngle="90" :x="7" :y="0"/>
+    <IconCard :active="active" :rotationAngle="90" :x="7" :y="3"/>
+    <IconCard :active="active" :rotationAngle="90" :x="7" :y="6"/>
+    <IconCard :active="active" :x="16" :y="12" :highlight="true"/>
 
-    <IconArrow :color="strongIndicatorColor" :rotationAngle="10" :tipCoordinateX="19" :tipCoordinateY="15"/>
+    <IconArrow :active="active" :rotationAngle="10" :tipCoordinateX="19" :tipCoordinateY="15"/>
   </svg>
 </template>
 
@@ -24,22 +22,10 @@ import IconCard from '@/components/SvgIcons/IconCard.vue';
 export default {
   components: {IconArrow, IconCard},
   props: {
-    fillColor: {
-      type: String,
-      required: true,
+    active: {
+      type: Boolean,
+      default: false,
     },
-    strokeColor: {
-      type: String,
-      required: true,
-    },
-    strongIndicatorColor: {
-      type: String,
-      required: true,
-    },
-    sharpIndicatorColor: {
-      type: String,
-      required: true,
-    },
-  },
+  }
 };
 </script>

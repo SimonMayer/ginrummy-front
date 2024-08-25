@@ -1,3 +1,6 @@
+@use '@/assets/core/color/variables' as color;
+@use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/spacing/variables' as spacing;
 @use '@/assets/cards/variables' as card;
 
 @mixin card-transform($rotate-x, $rotate-y, $translate-y, $translate-z-multiplier) {
@@ -5,8 +8,8 @@
 }
 
 .player-item {
-  color: var(--text-color);
-  border-radius: var(--border-radius);
+  color: color.$text;
+  border-radius: decorative.$border-radius;
 
   .player-details {
     display: flex;
@@ -27,13 +30,13 @@
   .highlight-container {
     display: flex;
     height: 22px;
-    margin: var(--base-margin) 0;
+    margin: spacing.$margin-standard 0;
 
     .highlight {
       width: 20px;
       height: 20px;
-      background-color: var(--tertiary-color);
-      border: solid var(--border-width-thin) var(--primary-color);
+      background-color: color.$tertiary;
+      border: solid decorative.$border-width-thin color.$primary;
       border-radius: 50%;
     }
   }

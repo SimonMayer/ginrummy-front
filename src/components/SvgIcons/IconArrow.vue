@@ -1,7 +1,7 @@
 <template>
   <g>
     <line
-        :stroke="color"
+        :class="[{ active: active, disabled: !active }]"
         :transform="transform"
         :x1="tipCoordinateX"
         :x2="centerTailX"
@@ -10,7 +10,7 @@
         stroke-width="1.5"
     />
     <line
-        :stroke="color"
+        :class="[{ active: active, disabled: !active }]"
         :transform="transform"
         :x1="tipCoordinateX"
         :x2="rightTailX"
@@ -19,7 +19,7 @@
         stroke-width="1.5"
     />
     <line
-        :stroke="color"
+        :class="[{ active: active, disabled: !active }]"
         :transform="transform"
         :x1="tipCoordinateX"
         :x2="leftTailX"
@@ -33,9 +33,9 @@
 <script>
 export default {
   props: {
-    color: {
-      type: String,
-      required: true,
+    active: {
+      type: Boolean,
+      default: false,
     },
     rotationAngle: {
       type: Number,
@@ -75,3 +75,15 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+@use '@/assets/core/color/variables' as color;
+
+.active {
+  stroke: color.$secondary;
+}
+
+.disabled {
+  stroke: color.$muted-light;
+}
+</style>

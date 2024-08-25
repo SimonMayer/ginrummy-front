@@ -1,6 +1,6 @@
-@use "../globalVariables";
+@use '@/assets/core/decorative/variables' as decorative;
 
-$button-border-width: var(--border-width-medium);
+$button-border-width: decorative.$border-width-medium;
 $button-height: 40px;
 $button-width: $button-height;
 $button-container-height: calc($button-height + (2 * $button-border-width));
