@@ -75,11 +75,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 @import '@/assets/players';
 
 .non-self-player {
-  margin: calc(var(--card-height) / 2) 0 0 0;
+  margin: calc(card.$height / 2) 0 0 0;
 
   .highlight-container {
     justify-content: right;

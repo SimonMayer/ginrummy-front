@@ -22,11 +22,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 
 .corner {
   position: absolute;
-  width: var(--corner-width);
-  font-size: var(--card-corner-font-size);
+  width: card.$corner-width;
+  font-size: card.$corner-font-size;
 }
 </style>

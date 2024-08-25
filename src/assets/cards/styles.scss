@@ -1,0 +1,9 @@
+@use '@/assets/cards/variables' as card;
+
+.card {
+    width: card.$width;
+    height: card.$height;
+    border: solid card.$border-width card.$edge-color;
+    border-radius: card.$border-radius;
+    text-align: center;
+}

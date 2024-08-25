@@ -21,15 +21,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 @import '@/assets/cards/facePatterns';
 
 .pattern {
   position: absolute;
-  top: var(--card-pattern-indentation-size);
-  bottom: var(--card-pattern-indentation-size);
-  left: var(--card-pattern-indentation-size);
-  right: var(--card-pattern-indentation-size);
+  top: card.$pattern-indentation-size;
+  bottom: card.$pattern-indentation-size;
+  left: card.$pattern-indentation-size;
+  right: card.$pattern-indentation-size;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(16, 1fr);
@@ -38,7 +38,7 @@ export default {
   align-items: center;
 
   .suit-symbol {
-    font-size: var(--card-pattern-font-size);
+    font-size: card.$pattern-font-size;
   }
 }
 </style>

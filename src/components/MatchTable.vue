@@ -113,7 +113,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/match/variables';
+@use '@/assets/cards/variables' as card;
+@use '@/assets/match/variables' as match;
 
 .match-table {
   display: flex;
@@ -147,16 +148,16 @@ export default {
     gap: var(--base-margin);
     height: 100%;
     position: relative;
-    padding-right: calc(var(--card-height) * 0.25);
+    padding-right: calc(card.$height * 0.25);
 
     .stock-pile-container, .discard-pile {
       transform-origin: top left;
-      transform: rotate(90deg) translateY(calc(var(--card-height) * -1));
+      transform: rotate(90deg) translateY(calc(card.$height * -1));
     }
 
     .discard-pile {
       position: absolute;
-      top: calc((var(--card-width) * 1.2) + var(--base-margin));
+      top: calc((card.$width * 1.2) + var(--base-margin));
       left: calc(2 * var(--base-margin));
     }
   }
@@ -188,7 +189,7 @@ export default {
   }
 
   .buttons-container {
-    height: $match-button-container-height;
+    height: match.$button-container-height;
   }
 
   .non-self-players-container {

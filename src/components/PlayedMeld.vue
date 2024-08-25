@@ -126,7 +126,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 @import '@/assets/dropRecipient';
 
 @mixin fan-shape($maximumCardCount, $span, $rotationOffset, $shownFirstCards, $shownFinalCards, $innerCardRotationFactor) {
@@ -162,58 +162,58 @@ export default {
   display: flex;
   justify-content: right;
   align-items: flex-start;
-  width: calc(var(--card-width) * 0.8);
-  height: var(--card-height);
-  padding-top: calc(var(--card-width) * 0.12);
-  padding-bottom: calc(var(--card-width) * 0.1);
-  padding-left: calc((var(--card-width) * 0.35) + (var(--card-height) * 0.3));
+  width: calc(card.$width * 0.8);
+  height: card.$height;
+  padding-top: calc(card.$width * 0.12);
+  padding-bottom: calc(card.$width * 0.1);
+  padding-left: calc((card.$width * 0.35) + (card.$height * 0.3));
 
   &.size-4 {
-    padding-right: calc(var(--card-width) * 0.02);
+    padding-right: calc(card.$width * 0.02);
   }
 
   &.size-5 {
-    padding-right: calc(var(--card-width) * 0.18);
+    padding-right: calc(card.$width * 0.18);
   }
 
   &.size-6 {
-    padding-right: calc(var(--card-width) * 0.06);
+    padding-right: calc(card.$width * 0.06);
   }
 
   &.size-7 {
-    padding-right: calc(var(--card-width) * 0.12);
+    padding-right: calc(card.$width * 0.12);
   }
 
   &.size-8 {
-    padding-right: calc(var(--card-width) * 0.18);
+    padding-right: calc(card.$width * 0.18);
   }
 
   &.size-9 {
-    padding-right: calc(var(--card-width) * 0.24);
+    padding-right: calc(card.$width * 0.24);
   }
 
   &.size-10 {
-    padding-right: calc(var(--card-width) * 0.30);
+    padding-right: calc(card.$width * 0.30);
   }
 
   &.size-11 {
-    padding-right: calc(var(--card-width) * 0.36);
-    padding-bottom: calc(var(--card-width) * 0.15);
+    padding-right: calc(card.$width * 0.36);
+    padding-bottom: calc(card.$width * 0.15);
   }
 
   &.size-12 {
-    padding-right: calc(var(--card-width) * 0.42);
-    padding-bottom: calc(var(--card-width) * 0.18);
+    padding-right: calc(card.$width * 0.42);
+    padding-bottom: calc(card.$width * 0.18);
   }
 
   &.size-13 {
-    padding-right: calc(var(--card-width) * 0.48);
-    padding-bottom: calc(var(--card-width) * 0.22);
+    padding-right: calc(card.$width * 0.48);
+    padding-bottom: calc(card.$width * 0.22);
   }
 
   &.selected {
     .card {
-      filter: var(--card-selected-filter);
+      filter: card.$selected-filter;
     }
   }
 

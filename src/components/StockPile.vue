@@ -86,7 +86,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 
 .stock-pile-container {
   display: flex;
@@ -102,8 +102,8 @@ export default {
   justify-content: left;
   position: relative;
   cursor: pointer;
-  height: var(--card-height);
-  width: calc(var(--card-width) * 1.5);
+  height: card.$height;
+  width: calc(card.$width * 1.5);
 
   @for $i from 1 through 52 {
     .stock-card-item:nth-child(#{$i}) {
@@ -126,9 +126,9 @@ export default {
       transform-origin: calc($xOffsetWeight * 1%) calc($yOffsetWeight * 1.1%);
 
       @if $i != 1 {
-        margin-left: calc(var(--card-width) * -1.015);
+        margin-left: calc(card.$width * -1.015);
       }
-      margin-top: calc(var(--card-height) * 0.005 * $i);
+      margin-top: calc(card.$height * 0.005 * $i);
     }
   }
 
@@ -142,12 +142,12 @@ export default {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    width: var(--card-width);
-    height: var(--card-height);
+    width: card.$width;
+    height: card.$height;
     background-color: rgba(var(--secondary-color-rgb), 0.8);
-    border: dashed calc(var(--card-border-width) * 5) var(--muted-light-color);
-    border-radius: var(--card-border-radius);
-    font-size: calc(var(--card-base-size) * 18);
+    border: dashed calc(card.$border-width * 5) var(--muted-light-color);
+    border-radius: card.$border-radius;
+    font-size: calc(card.$base-size * 18);
     color: var(--muted-light-color);
 
     div {

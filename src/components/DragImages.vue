@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 @import '@/assets/players';
 
 .dragged-visible-cards-image,
@@ -59,16 +59,16 @@ export default {
 
   .card {
     &:not(:first-child) {
-      margin-left: calc(var(--card-width) * -0.8);
+      margin-left: calc(card.$width * -0.8);
     }
   }
 }
 
 .dragged-visible-cards-image {
-  top: calc(-1 * (var(--card-height) + var(--card-width)));
+  top: calc(-1 * (card.$height + card.$width));
 }
 
 .dragged-hidden-card-image {
-  top: calc(-2 * (var(--card-height) + var(--card-width)));
+  top: calc(-2 * (card.$height + card.$width));
 }
 </style>

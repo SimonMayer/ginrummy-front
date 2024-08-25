@@ -94,16 +94,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/match/variables';
+@use '@/assets/match/variables' as match;
 
 button {
-  border-width: $match-button-border-width;
+  border-width: match.$button-border-width;
   position: relative;
   padding: 0;
 
   ::v-deep(.icon) {
-    height: $match-button-height;
-    width: $match-button-width;
+    height: match.$button-height;
+    width: match.$button-width;
   }
 
   .button-tooltip {

@@ -112,7 +112,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 @import '@/assets/dropRecipient';
 @import '@/assets/players';
 
@@ -126,15 +126,15 @@ export default {
   }
 
   .hand {
-    height: var(--card-height);
+    height: card.$height;
     margin: calc(var(--base-margin) * 2) 0 0 0;
-    padding: 0 0 0 calc(0.4 * var(--card-width));
+    padding: 0 0 0 calc(0.4 * card.$width);
 
     .card {
-      @include card-transform(-40deg, 0deg, calc(var(--card-height) * -0.1), 0.2);
+      @include card-transform(-40deg, 0deg, calc(card.$height * -0.1), 0.2);
 
       &.selected {
-        @include card-transform(-40deg, 3deg, calc(var(--card-height) * -0.3), 0.2);
+        @include card-transform(-40deg, 3deg, calc(card.$height * -0.3), 0.2);
       }
     }
   }

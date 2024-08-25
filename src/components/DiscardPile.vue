@@ -78,7 +78,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
+@use '@/assets/cards/variables' as card;
 @import '@/assets/dropRecipient';
 
 .discard-pile {
@@ -87,8 +87,8 @@ export default {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
-  padding: calc(var(--card-height) * 0.1) calc(var(--card-width) * 0.1);
-  height: var(--card-height);
+  padding: calc(card.$height * 0.1) calc(card.$width * 0.1);
+  height: card.$height;
 
   .selectable {
     cursor: pointer;
@@ -111,11 +111,11 @@ export default {
       transform: $rotate;
 
       @if $i != 1 {
-        margin-left: calc(var(--card-width) * -0.85);
+        margin-left: calc(card.$width * -0.85);
       }
 
       &.selected {
-        transform: $rotate translateY(calc(var(--card-height) * -0.2));
+        transform: $rotate translateY(calc(card.$height * -0.2));
       }
     }
   }
@@ -124,12 +124,12 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--card-width);
-    height: var(--card-height);
+    width: card.$width;
+    height: card.$height;
     background-color: rgba(var(--secondary-color-rgb), 0.8);
-    border: dashed calc(var(--card-border-width) * 5) var(--muted-light-color);
-    border-radius: var(--card-border-radius);
-    font-size: calc(var(--card-base-size) * 18);
+    border: dashed calc(card.$border-width * 5) var(--muted-light-color);
+    border-radius: card.$border-radius;
+    font-size: calc(card.$base-size * 18);
     color: var(--muted-light-color);
 
     div {
@@ -142,20 +142,20 @@ export default {
 
   .guidance-text-holder {
     position: absolute;
-    height: var(--card-width);
-    width: var(--card-height);
+    height: card.$width;
+    width: card.$height;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    transform: rotate(-90deg) translateX(calc(var(--card-height) / 3 * -0.8 - (var(--base-margin)))) translateY(calc(var(--card-width) / 3 * -0.8));
+    transform: rotate(-90deg) translateX(calc(card.$height / 3 * -0.8 - (var(--base-margin)))) translateY(calc(card.$width / 3 * -0.8));
     transition: z-index 0s calc(var(--transition-time) * 2);
     user-select: none;
     z-index: -1;
 
     .guidance-text {
       margin: var(--base-margin);
-      width: var(--card-height);
+      width: card.$height;
     }
   }
 

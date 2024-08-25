@@ -134,50 +134,50 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
-@import '@/assets/cards/styles.css';
+@use '@/assets/cards/variables' as card;
+@import '@/assets/cards/styles';
 
 .card {
   user-select: none;
   transition: transform var(--transition-time), filter var(--transition-time);
 
   &.selected {
-    filter: var(--card-selected-filter);
+    filter: card.$selected-filter;
   }
 
   .card-content {
     position: relative;
-    height: var(--card-height);
-    border: solid var(--card-content-border-width) var(--card-edge-color);
-    border-radius: var(--card-border-radius);
-    background-color: var(--card-background-color);
+    height: card.$height;
+    border: solid card.$content-border-width card.$edge-color;
+    border-radius: card.$border-radius;
+    background-color: card.$background-color;
     text-align: center;
 
     .top-left {
-      top: var(--card-corner-indentation-size);
+      top: card.$corner-indentation-size;
       left: 0;
     }
 
     .bottom-right {
-      bottom: var(--card-corner-indentation-size);
+      bottom: card.$corner-indentation-size;
       right: 0;
       transform: rotate(180deg);
     }
 
     &.spades {
-      color: var(--card-suit-spades-color);
+      color: card.$suit-spades-color;
     }
 
     &.hearts {
-      color: var(--card-suit-hearts-color);
+      color: card.$suit-hearts-color;
     }
 
     &.clubs {
-      color: var(--card-suit-clubs-color);
+      color: card.$suit-clubs-color;
     }
 
     &.diamonds {
-      color: var(--card-suit-diamonds-color);
+      color: card.$suit-diamonds-color;
     }
   }
 

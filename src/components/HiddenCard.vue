@@ -9,7 +9,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/cards/variables.css';
-@import '@/assets/cards/styles.css';
-@import '@/assets/cards/backing.css';
+@import '@/assets/cards/styles';
+@import '@/assets/cards/backing';
 </style>
