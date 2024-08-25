@@ -66,6 +66,7 @@ const getters = {
 
         return getters.canExtendMeldFromHandAsNextMove &&
             rootGetters['sessionState/uiOperations/selections/selectedMeldId'] &&
+            !rootGetters['sessionState/derived/selectedItems/hasNoHandCardsSelected'] &&
             !rootGetters['sessionState/derived/selectedItems/hasAllHandCardsSelected'] &&
             meldsService.doCardsMakeValidMeld(cards, runOrders, minimumMeldSize);
     },
