@@ -39,8 +39,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 .wrapper {
   background-color: white;
   border-radius: var(--border-radius);

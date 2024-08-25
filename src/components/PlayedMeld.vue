@@ -16,9 +16,9 @@
       @dragenter="handleDragenter"
       @dragleave="handleDragleave"
       @drop="handleDrop"
-      @dragover.prevent
       @touchend="handleTouchend"
       @touchstart="handleTouchstart"
+      @dragover.prevent
   >
     <VisibleCard
         v-for="card in sortedCards"
@@ -126,7 +126,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
 @import '@/assets/cards/variables.css';
 @import '@/assets/dropRecipient';
 

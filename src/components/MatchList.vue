@@ -41,8 +41,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 .match-list {
   display: flex;
   flex-direction: column;

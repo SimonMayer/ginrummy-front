@@ -22,7 +22,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
 @import '@/assets/cards/variables.css';
 
 .corner {

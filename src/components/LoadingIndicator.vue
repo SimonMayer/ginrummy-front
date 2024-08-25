@@ -20,8 +20,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 .loading-overlay {
   position: fixed;
   top: 50%;

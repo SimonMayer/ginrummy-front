@@ -24,8 +24,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 .score-board {
   text-align: right;
   width: 120px;

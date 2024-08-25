@@ -2,12 +2,10 @@
   <svg
       :fill="fillColor"
       :stroke="strokeColor"
-      height="48"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width="1"
       viewBox="0 0 32 32"
-      width="48"
       xmlns="http://www.w3.org/2000/svg"
   >
     <IconCard :rotationAngle="90" :x="10.1" :y="5.5"/>

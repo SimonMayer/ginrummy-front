@@ -1,0 +1,6 @@
+@use "../globalVariables";
+
+$match-button-border-width: var(--border-width-medium);
+$match-button-height: 40px;
+$match-button-width: $match-button-height;
+$match-button-container-height: calc($match-button-height + (2 * $match-button-border-width));

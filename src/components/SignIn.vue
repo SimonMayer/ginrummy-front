@@ -35,8 +35,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 .sign-in {
   display: flex;
   flex-direction: column;

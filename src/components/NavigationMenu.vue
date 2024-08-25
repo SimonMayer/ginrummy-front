@@ -52,8 +52,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 nav {
   display: flex;
   justify-content: space-between;

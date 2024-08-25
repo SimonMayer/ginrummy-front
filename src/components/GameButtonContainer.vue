@@ -1,12 +1,12 @@
 <template>
   <div
       v-if="currentRoundId && isVisibleRoundCurrent"
-      v-show="!isDraggingItems"
       class="game-button-container"
   >
     <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
-      <div v-if="buttonConfig.addSeparatorBefore" class="button-separator"></div>
+      <div v-if="buttonConfig.addSeparatorBefore" v-show="!isDraggingItems" class="button-separator"></div>
       <GameButton
+          v-show="!isDraggingItems"
           :isDisabled="buttonConfig.isDisabled"
           :labelDisabled="buttonConfig.labelDisabled"
           :labelEnabled="buttonConfig.labelEnabled"
@@ -19,6 +19,7 @@
               :sharpIndicatorColor="mutedMidToAccent"
               :strokeColor="mutedMidToMutedLight"
               :strongIndicatorColor="mutedLightToSecondary"
+              class="icon"
           />
         </template>
       </GameButton>
@@ -125,8 +126,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 .game-button-container {
   display: flex;
   gap: var(--base-margin);
@@ -137,8 +136,7 @@ export default {
     width: 1px;
     height: 100%;
     background-color: var(--muted-light-color);
-    margin-left: var(--base-margin);
-    margin-right: var(--base-margin);
+    margin: 0 calc(var(--base-margin) * 0.5);
   }
 }
 </style>

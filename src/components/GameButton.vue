@@ -94,12 +94,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-@import '@/assets/cards/variables.css';
+@import '@/assets/match/variables';
 
 button {
+  border-width: $match-button-border-width;
   position: relative;
   padding: 0;
+
+  ::v-deep(.icon) {
+    height: $match-button-height;
+    width: $match-button-width;
+  }
 
   .button-tooltip {
     position: absolute;
@@ -157,5 +162,4 @@ button {
     transform: translateX(0) translateY(0);
   }
 }
-
 </style>

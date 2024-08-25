@@ -1,7 +1,7 @@
 <template>
-  <div v-show="isDraggingItems" class="play-area-container">
+  <div class="play-area-container">
     <div
-        v-show="componentSpecificDropCriteria"
+        v-show="isDraggingItems && componentSpecificDropCriteria"
         :ref="componentSpecificDropAreaRef"
         :class="['play-area', { 'invites-drop': invitesDrop, 'accepts-drop': acceptsDrop }]"
         aria-label="Play a meld by dropping cards here"
@@ -55,17 +55,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
 @import '@/assets/dropRecipient';
 
-.play-area {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.play-area-container {
+  min-height: 150px;
+  width: 150px;
 
-  @include drop-recipient;
+  .play-area {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include drop-recipient;
+  }
 }
 </style>

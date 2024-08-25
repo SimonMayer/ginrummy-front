@@ -17,6 +17,7 @@
       </div>
       <div class="game-column">
         <div class="melds-container">
+          <PlayArea/>
           <PlayedMeld
               v-for="meld in visibleMelds"
               :id="meld.meld_id"
@@ -25,7 +26,6 @@
               :type="meld.meld_type"
           />
         </div>
-        <PlayArea class="buttons-container"/>
         <GameButtonContainer class="buttons-container"/>
         <div v-if="matchHasStarted && !currentRoundId" class="buttons-container">
           <button @click="startRound">Start new round</button>
@@ -113,7 +113,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
+@import '@/assets/match/variables';
 
 .match-table {
   display: flex;
@@ -188,7 +188,7 @@ export default {
   }
 
   .buttons-container {
-    height: 54px;
+    height: $match-button-container-height;
   }
 
   .non-self-players-container {

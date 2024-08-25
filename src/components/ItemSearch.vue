@@ -78,8 +78,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/globalVariables';
-
 .item-search {
   margin-top: var(--base-margin);
 
