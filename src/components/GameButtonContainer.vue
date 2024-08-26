@@ -128,7 +128,7 @@ export default {
 
 .game-button-container {
   display: flex;
-  gap: spacing.$margin-standard;
+  gap: var(--spacing-margin-standard);
   justify-content: center;
   width: 100%;
 
@@ -136,7 +136,7 @@ export default {
     width: 1px;
     height: 100%;
     background-color: color.$muted-light;
-    margin: 0 spacing.$margin-half;
+    margin: 0 var(--spacing-margin-half);
   }
 }
 </style>

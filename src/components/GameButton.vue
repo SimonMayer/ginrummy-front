@@ -83,7 +83,7 @@ export default {
 @use '@/assets/core/typography/variables' as typography;
 @use '@/assets/match/variables' as match;
 
-$arrowHeight: spacing.$margin-standard;
+$arrowHeight: var(--spacing-margin-standard);
 
 button {
   border-width: match.$button-border-width;
@@ -100,7 +100,7 @@ button {
     top: 100%;
     right: 0;
     pointer-events: none;
-    margin: spacing.$margin-half 0 0;
+    margin: var(--spacing-margin-half) 0 0;
     padding: $arrowHeight 0 0;
     border-radius: decorative.$border-radius;
     opacity: 0;
@@ -112,22 +112,22 @@ button {
       content: '';
       position: absolute;
       top: calc($arrowHeight * -1);
-      right: spacing.$margin-standard;
+      right: var(--spacing-margin-standard);
       border-color: transparent transparent rgba(color.$muted-mid, 0.8) transparent;
       border-style: solid;
-      border-width: spacing.$margin-standard;
+      border-width: var(--spacing-margin-standard);
     }
 
     .content {
       background-color: rgba(color.$muted-mid, 0.8);
       color: color.$muted-very-light;
       border-radius: 0 0 decorative.$border-radius decorative.$border-radius;
-      padding: spacing.$padding-half spacing.$padding-standard;
-      font-size: typography.$font-size-small;
+      padding: var(--spacing-padding-half) var(--spacing-padding-standard);
+      font-size: var(--typography-font-size-small);
       white-space: nowrap;
 
       .unavailable-note {
-        padding-right: spacing.$padding-half;
+        padding-right: var(--spacing-padding-half);
       }
     }
 

@@ -94,7 +94,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: spacing.$margin-standard;
+  margin: var(--spacing-margin-standard);
 }
 
 .stock-pile {
@@ -154,7 +154,7 @@ export default {
 
     div {
       transform: rotate(-90deg);
-      margin: spacing.$margin-standard;
+      margin: var(--spacing-margin-standard);
     }
   }
 }

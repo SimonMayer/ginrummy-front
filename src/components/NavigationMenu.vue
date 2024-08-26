@@ -60,21 +60,21 @@ export default {
 nav {
   display: flex;
   justify-content: space-between;
-  gap: spacing.$margin-standard;
-  margin-bottom: spacing.$margin-standard;
+  gap: var(--spacing-margin-standard);
+  margin-bottom: var(--spacing-margin-standard);
   background-color: color.$secondary;
-  padding: spacing.$padding-standard;
+  padding: var(--spacing-padding-standard);
   border-radius: decorative.$border-radius;
 
   .nav-links, .auth-links {
     display: flex;
-    gap: spacing.$margin-standard;
+    gap: var(--spacing-margin-standard);
   }
 
   a {
     color: color.$text;
     text-decoration: none;
-    padding: spacing.$padding-standard;
+    padding: var(--spacing-padding-standard);
     border-radius: decorative.$border-radius;
     transition: background-color animation.$transition-time-standard;
 

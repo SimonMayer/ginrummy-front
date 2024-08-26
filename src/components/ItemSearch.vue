@@ -84,7 +84,7 @@ export default {
 @use '@/assets/core/spacing/variables' as spacing;
 
 .item-search {
-  margin-top: spacing.$margin-standard;
+  margin-top: var(--spacing-margin-standard);
 
   input {
     width: 100%;
@@ -94,15 +94,15 @@ export default {
   ul {
     list-style-type: none;
     padding: 0;
-    margin: spacing.$margin-standard 0 0 0;
+    margin: var(--spacing-margin-standard) 0 0 0;
 
     li.search-item {
-      margin: spacing.$margin-standard 0;
+      margin: var(--spacing-margin-standard) 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      padding: spacing.$padding-standard;
+      padding: var(--spacing-padding-standard);
       border: solid decorative.$border-width-medium color.$primary;
       border-radius: decorative.$border-radius;
       transition: background-color animation.$transition-time-standard;

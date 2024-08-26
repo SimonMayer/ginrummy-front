@@ -128,7 +128,7 @@ export default {
 
   .hand {
     height: var(--card-height);
-    margin: spacing.$margin-double 0 0 0;
+    margin: var(--spacing-margin-double) 0 0 0;
     padding: 0 0 0 calc(0.4 * var(--card-width));
 
     .card {

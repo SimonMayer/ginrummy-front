@@ -58,8 +58,8 @@ export default {
 
     li {
       background-color: color.$secondary;
-      padding: spacing.$padding-half spacing.$padding-standard;
-      margin: spacing.$margin-standard 0;
+      padding: var(--spacing-padding-half) var(--spacing-padding-standard);
+      margin: var(--spacing-margin-standard) 0;
       border-radius: decorative.$border-radius;
       transition: background-color animation.$transition-time-standard, box-shadow animation.$transition-time-standard;
 

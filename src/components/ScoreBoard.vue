@@ -32,26 +32,26 @@ export default {
 .score-board {
   text-align: right;
   width: 120px;
-  padding: spacing.$padding-standard;
+  padding: var(--spacing-padding-standard);
   background-color: rgba(color.$secondary, 0.5);
   border-radius: decorative.$border-radius;
   box-shadow: decorative.$box-shadow-1-very-light;
 
   .label {
-    font-size: typography.$font-size-small;
+    font-size: var(--typography-font-size-small);
     color: color.$muted-light;
-    margin-bottom: spacing.$margin-tiny;
+    margin-bottom: var(--spacing-margin-tiny);
   }
 
   .total,
   .turn {
     color: color.$tertiary;
-    font-size: typography.$font-size-large;
+    font-size: var(--typography-font-size-large);
     font-weight: bold;
   }
 
   .total {
-    margin-bottom: spacing.$margin-half;
+    margin-bottom: var(--spacing-margin-half);
   }
 }
 </style>

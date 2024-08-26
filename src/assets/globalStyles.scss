@@ -9,8 +9,8 @@ $backgroundColor2: rgba(color.$primary, 0.985);
 $backgroundTileSize: 30px;
 
 body {
-  font-family: typography.$font-family;
-  font-size: typography.$font-size;
+  font-family: typography.$fontFamily;
+  font-size: var(--typography-font-size);
   color: color.$text;
   background: conic-gradient(
                   from 45deg,
@@ -24,7 +24,7 @@ body {
   background-size: $backgroundTileSize $backgroundTileSize;
   background-attachment: scroll;
   margin: 0;
-  padding: spacing.$padding-standard;
+  padding: var(--spacing-padding-standard);
 
   &.dragging {
     overflow: hidden;
@@ -33,12 +33,12 @@ body {
 
 button {
   background-color: color.$secondary;
-  font-family: typography.$font-family;
-  font-size: typography.$font-size;
+  font-family: typography.$fontFamily;
+  font-size: var(--typography-font-size);
   color: color.$text;
   border: solid decorative.$border-width-medium color.$tertiary;
   border-radius: decorative.$border-radius;
-  padding: spacing.$padding-standard spacing.$padding-double;
+  padding: var(--spacing-padding-standard) var(--spacing-padding-double);
   cursor: pointer;
   transition: background-color animation.$transition-time-slow, box-shadow animation.$transition-time-slow, border-color animation.$transition-time-slowest;
 }
@@ -75,11 +75,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin-bottom: spacing.$margin-double;
+  margin-bottom: var(--spacing-margin-double);
 }
 
 p {
-  margin: spacing.$margin-standard 0;
+  margin: var(--spacing-margin-standard) 0;
 }
 
 a {
@@ -92,10 +92,10 @@ a:hover {
 }
 
 input {
-  font-family: typography.$font-family;
-  font-size: typography.$font-size;
-  margin-bottom: spacing.$margin-standard;
-  padding: spacing.$padding-standard;
+  font-family: typography.$fontFamily;
+  font-size: var(--typography-font-size);
+  margin-bottom: var(--spacing-margin-standard);
+  padding: var(--spacing-padding-standard);
   border: solid decorative.$border-width-medium color.$primary;
   border-radius: decorative.$border-radius;
   background-color: color.$input-background;

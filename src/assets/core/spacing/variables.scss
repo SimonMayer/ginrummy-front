@@ -1,10 +1,33 @@
-$base-padding: 10px;
-$base-margin: 10px;
+@use '@/assets/core/responsive/mixins' as responsive;
 
-$margin-tiny: $base-margin * 0.2;
-$margin-half: $base-margin * 0.5;
-$margin-standard: $base-margin;
-$margin-double: $base-margin * 2;
-$padding-half: $base-padding * 0.5;
-$padding-standard: $base-padding;
-$padding-double: $base-padding * 2;
+@mixin spacing($basePadding, $baseMargin) {
+  $marginTiny: $baseMargin * 0.2;
+  $marginHalf: $baseMargin * 0.5;
+  $marginStandard: $baseMargin;
+  $marginDouble: $baseMargin * 2;
+  $paddingHalf: $basePadding * 0.5;
+  $paddingStandard: $basePadding;
+  $paddingDouble: $basePadding * 2;
+
+  * {
+    --spacing-margin-tiny: #{$marginTiny};
+    --spacing-margin-half: #{$marginHalf};
+    --spacing-margin-standard: #{$marginStandard};
+    --spacing-margin-double: #{$marginDouble};
+    --spacing-padding-half: #{$paddingHalf};
+    --spacing-padding-standard: #{$paddingStandard};
+    --spacing-padding-double: #{$paddingDouble};
+  }
+}
+
+@include responsive.breakpoint(large) {
+  @include spacing(10px, 10px);
+}
+
+@include responsive.breakpoint(medium) {
+  @include spacing(8px, 8px);
+}
+
+@include responsive.breakpoint(small) {
+  @include spacing(5px, 5px);
+}

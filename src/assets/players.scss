@@ -30,7 +30,7 @@
   .highlight-container {
     display: flex;
     height: 22px;
-    margin: spacing.$margin-standard 0;
+    margin: var(--spacing-margin-standard) 0;
 
     .highlight {
       width: 20px;

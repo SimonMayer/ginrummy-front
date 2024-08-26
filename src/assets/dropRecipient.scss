@@ -42,7 +42,7 @@
     color: var(--guidanceTextColor);
     transition: --guidanceBackgroundColor animation.$transition-time-slower, --guidanceTextColor animation.$transition-time-slower;
     margin: decorative.$border-width-thick 0 calc(decorative.$border-width-thick * -1);
-    padding: spacing.$padding-standard;
+    padding: var(--spacing-padding-standard);
     text-align: center;
     user-select: none;
     z-index: -1;

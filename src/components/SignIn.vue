@@ -48,7 +48,7 @@ export default {
     width: 300px;
 
     button {
-      padding: spacing.$padding-standard;
+      padding: var(--spacing-padding-standard);
     }
   }
 }

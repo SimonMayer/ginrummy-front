@@ -121,12 +121,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: spacing.$margin-standard;
+  gap: var(--spacing-margin-standard);
 
   .game-section {
     &.full-width {
       flex-basis: 100%;
-      padding: spacing.$padding-standard;
+      padding: var(--spacing-padding-standard);
       text-align: center;
     }
 
@@ -136,7 +136,7 @@ export default {
 
       .column {
         flex: 1;
-        padding: spacing.$padding-standard;
+        padding: var(--spacing-padding-standard);
         text-align: center;
       }
     }
@@ -146,7 +146,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: spacing.$margin-standard;
+    gap: var(--spacing-margin-standard);
     height: 100%;
     position: relative;
     padding-right: calc(var(--card-height) * 0.25);
@@ -158,8 +158,8 @@ export default {
 
     .discard-pile {
       position: absolute;
-      top: calc((var(--card-width) * 1.2) + spacing.$margin-standard);
-      left: spacing.$margin-double;
+      top: calc((var(--card-width) * 1.2) + var(--spacing-margin-standard));
+      left: var(--spacing-margin-double);
     }
   }
 
@@ -168,14 +168,14 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: spacing.$margin-standard;
+    gap: var(--spacing-margin-standard);
   }
 
   .buttons-container,
   .melds-container,
   .search-container {
     display: flex;
-    gap: spacing.$margin-standard;
+    gap: var(--spacing-margin-standard);
     justify-content: center;
   }
 

@@ -54,7 +54,7 @@ export default {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 spacing.$padding-standard;
+  padding: 0 var(--spacing-padding-standard);
   box-sizing: border-box;
 }
 </style>

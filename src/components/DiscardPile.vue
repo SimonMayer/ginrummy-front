@@ -137,7 +137,7 @@ export default {
 
     div {
       transform: rotate(-90deg);
-      margin: spacing.$margin-standard;
+      margin: var(--spacing-margin-standard);
     }
   }
 
@@ -151,13 +151,13 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    transform: rotate(-90deg) translateX(calc(var(--card-height) / 3 * -0.8 - spacing.$margin-standard)) translateY(calc(var(--card-width) / 3 * -0.8));
+    transform: rotate(-90deg) translateX(calc(var(--card-height) / 3 * -0.8 - var(--spacing-margin-standard))) translateY(calc(var(--card-width) / 3 * -0.8));
     transition: z-index 0s animation.$transition-time-slower;
     user-select: none;
     z-index: -1;
 
     .guidance-text {
-      margin: spacing.$margin-standard;
+      margin: var(--spacing-margin-standard);
       width: var(--card-height);
     }
   }

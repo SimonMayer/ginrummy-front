@@ -47,7 +47,7 @@ export default {
 .wrapper {
   background-color: white;
   border-radius: decorative.$border-radius;
-  margin: spacing.$margin-standard 0;
+  margin: var(--spacing-margin-standard) 0;
   min-width: 400px;
   padding: 2px;
 
@@ -62,13 +62,13 @@ export default {
       background-color: color.$error;
       font-weight: bold;
       min-height: 30px;
-      padding: spacing.$padding-standard;
+      padding: var(--spacing-padding-standard);
     }
 
     .message {
       color: color.$error;
       min-height: 20px;
-      padding: spacing.$padding-standard;
+      padding: var(--spacing-padding-standard);
     }
 
     .close-button {
