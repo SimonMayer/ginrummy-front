@@ -1,6 +1,27 @@
 @use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/responsive/mixins' as responsive;
 
-$button-border-width: decorative.$border-width-medium;
-$button-height: 40px;
-$button-width: $button-height;
-$button-container-height: calc($button-height + (2 * $button-border-width));
+@mixin matchButtons($buttonHeight) {
+  $buttonBorderWidth: decorative.$border-width-medium;
+  $buttonWidth: $buttonHeight;
+  $buttonContainerHeight: calc($buttonHeight + (2 * $buttonBorderWidth));
+
+  * {
+    --match-button-height: #{$buttonHeight};
+    --match-button-width: #{$buttonWidth};
+    --match-button-border-width: #{$buttonBorderWidth};
+    --match-button-container-height: #{$buttonContainerHeight};
+  }
+}
+
+@include responsive.breakpoint(large) {
+  @include matchButtons(40px);
+}
+
+@include responsive.breakpoint(medium) {
+  @include matchButtons(32px);
+}
+
+@include responsive.breakpoint(small) {
+  @include matchButtons(24px);
+}

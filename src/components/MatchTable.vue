@@ -190,7 +190,7 @@ export default {
   }
 
   .buttons-container {
-    height: match.$button-container-height;
+    height: var(--match-button-container-height);
   }
 
   .non-self-players-container {

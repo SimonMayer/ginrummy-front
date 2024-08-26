@@ -86,13 +86,13 @@ export default {
 $arrowHeight: var(--spacing-margin-standard);
 
 button {
-  border-width: match.$button-border-width;
+  border-width: var(--match-button-border-width);
   position: relative;
   padding: 0;
 
   ::v-deep(.icon) {
-    height: match.$button-height;
-    width: match.$button-width;
+    height: var(--match-button-height);
+    width: var(--match-button-width);
   }
 
   .button-tooltip {
