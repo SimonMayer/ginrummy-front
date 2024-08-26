@@ -1,10 +1,27 @@
 @use '@/assets/core/color/variables' as color;
 @use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/responsive/mixins' as responsive;
 @use '@/assets/core/spacing/variables' as spacing;
 @use '@/assets/cards/variables' as card;
 
 @mixin card-transform($rotate-x, $rotate-y, $translate-y, $translate-z-multiplier) {
   transform: rotateX($rotate-x) translateX(calc(var(--card-width) / -5)) rotateY($rotate-y) translateY($translate-y) translateZ(calc(var(--card-height) * $translate-z-multiplier));
+}
+
+@mixin highlightDot($size) {
+  .highlight-container {
+    display: flex;
+    height: $size + (2 * decorative.$border-width-thin);
+    margin: var(--spacing-margin-standard) 0;
+
+    .highlight {
+      width: $size;
+      height: $size;
+      background-color: color.$tertiary;
+      border: solid decorative.$border-width-thin color.$primary;
+      border-radius: 50%;
+    }
+  }
 }
 
 .player-item {
@@ -27,18 +44,16 @@
     }
   }
 
-  .highlight-container {
-    display: flex;
-    height: 22px;
-    margin: var(--spacing-margin-standard) 0;
+  @include responsive.breakpoint(large) {
+    @include highlightDot(20px);
+  }
 
-    .highlight {
-      width: 20px;
-      height: 20px;
-      background-color: color.$tertiary;
-      border: solid decorative.$border-width-thin color.$primary;
-      border-radius: 50%;
-    }
+  @include responsive.breakpoint(medium) {
+    @include highlightDot(16px);
+  }
+
+  @include responsive.breakpoint(small) {
+    @include highlightDot(12px);
   }
 
   .hand {

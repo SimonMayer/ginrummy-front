@@ -55,11 +55,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/cards/variables' as card;
 @import '@/assets/dropRecipient';
 
 .play-area-container {
-  min-height: 150px;
-  width: 150px;
+  min-height: var(--card-height);
+  width: calc(var(--card-width) * 2);
 
   .play-area {
     position: relative;
