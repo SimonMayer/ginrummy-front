@@ -14,8 +14,8 @@
       >
         <template #icon="{}">
           <component
-              :active="!buttonConfig.isDisabled"
               :is="buttonConfig.icon"
+              :active="!buttonConfig.isDisabled"
               class="icon"
           />
         </template>

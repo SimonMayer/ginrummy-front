@@ -9,7 +9,7 @@
     <IconCard :active="active" :rotationAngle="90" :x="7" :y="0"/>
     <IconCard :active="active" :rotationAngle="90" :x="7" :y="3"/>
     <IconCard :active="active" :rotationAngle="90" :x="7" :y="6"/>
-    <IconCard :active="active" :x="16" :y="12" :highlight="true"/>
+    <IconCard :active="active" :highlight="true" :x="16" :y="12"/>
 
     <IconArrow :active="active" :rotationAngle="10" :tipCoordinateX="19" :tipCoordinateY="15"/>
   </svg>
@@ -26,6 +26,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  }
+  },
 };
 </script>

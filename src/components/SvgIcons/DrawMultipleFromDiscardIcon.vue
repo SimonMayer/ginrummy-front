@@ -9,8 +9,8 @@
     <IconCard :active="active" :rotationAngle="90" :x="10" :y="-1"/>
     <IconCard :active="active" :rotationAngle="90" :x="10" :y="2"/>
     <IconCard :active="active" :rotationAngle="90" :x="10" :y="5"/>
-    <IconCard :active="active" :rotationAngle="90" :x="13" :y="12" :highlight="true"/>
-    <IconCard :active="active" :rotationAngle="90" :x="13" :y="15" :highlight="true"/>
+    <IconCard :active="active" :highlight="true" :rotationAngle="90" :x="13" :y="12"/>
+    <IconCard :active="active" :highlight="true" :rotationAngle="90" :x="13" :y="15"/>
 
     <IconArrow :active="active" :rotationAngle="180" :tipCoordinateX="25" :tipCoordinateY="27"/>
   </svg>

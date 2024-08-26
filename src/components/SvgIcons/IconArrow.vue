@@ -76,7 +76,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/color/variables' as color;
 
 .active {

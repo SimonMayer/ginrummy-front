@@ -4,7 +4,7 @@
 @use '@/assets/cards/variables' as card;
 
 @mixin card-transform($rotate-x, $rotate-y, $translate-y, $translate-z-multiplier) {
-  transform: rotateX($rotate-x) translateX(calc(card.$width / -5)) rotateY($rotate-y) translateY($translate-y) translateZ(calc(card.$height * $translate-z-multiplier));
+  transform: rotateX($rotate-x) translateX(calc(var(--card-width) / -5)) rotateY($rotate-y) translateY($translate-y) translateZ(calc(var(--card-height) * $translate-z-multiplier));
 }
 
 .player-item {
@@ -45,7 +45,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    perspective: calc(card.$height * 5);
+    perspective: calc(var(--card-height) * 5);
 
     .card {
       &.selectable {
@@ -53,7 +53,7 @@
       }
 
       &:not(:first-child) {
-        margin-left: calc(card.$width * -0.8);
+        margin-left: calc(var(--card-maximum-overlap) * -1);
       }
     }
   }

@@ -79,7 +79,7 @@ export default {
 @import '@/assets/players';
 
 .non-self-player {
-  margin: calc(card.$height / 2) 0 0 0;
+  margin: calc(var(--card-height) / 2) 0 0 0;
 
   .highlight-container {
     justify-content: right;

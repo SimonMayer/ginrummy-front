@@ -1,22 +1,55 @@
-$base-size: 1px;
-$width: calc($base-size * 100);
-$height: calc($base-size * 150);
-$border-width: calc($base-size * 0.3);
-$content-border-width: calc($border-width * 2);
-$border-radius: calc($base-size * 10);
-$corner-font-size: calc($base-size * 12);
-$pattern-font-size: calc($base-size * 20);
-$corner-width: calc($base-size * 20);
-$corner-indentation-size: calc($base-size * 4);
-$pattern-indentation-size: calc($base-size * 20);
-$selected-filter: invert(80%) brightness(1.5) hue-rotate(180deg);
-$background-color: #fffef5;
-$edge-color: #eee;
-$suit-spades-color: #282828;
-$suit-clubs-color: #282828;
-$suit-hearts-color: #af0707;
-$suit-diamonds-color: #af0707;
-$back-1st-color: #001f3f;
-$back-2nd-color: #d7d748;
-$back-3rd-color: #5a0028;
-$back-4th-color: #00465a;
+@use '@/assets/core/responsive/mixins' as responsive;
+
+@mixin card-styles($baseSize, $cornerWidthFactor) {
+  $width: $baseSize * 100;
+  $height: $baseSize * 150;
+  $cornerWidth: $baseSize * $cornerWidthFactor;
+  $cornerFontFactor: $cornerWidthFactor * 0.6;
+  $cornerReadableSize: $cornerWidth * 0.8;
+  $patternWidthFactor: 100 - (2 * $cornerWidthFactor);
+  $patternFontFactor: calc($patternWidthFactor / 3);
+  $royalCardPatternFontFactor: 2.5 * $patternFontFactor;
+
+  * {
+    --card-width: #{$width};
+    --card-height: #{$height};
+
+    --card-border-radius: #{$baseSize * 10};
+    --card-border-width: #{$baseSize * 0.3};
+
+    --card-corner-width: #{$cornerWidth};
+    --card-corner-indentation-size: #{$baseSize * 4};
+    --card-corner-font-size: #{$baseSize * $cornerFontFactor};
+
+    --card-pattern-font-size: #{$baseSize * $patternFontFactor};
+    --card-pattern-indentation-size: #{$baseSize * $cornerWidthFactor};
+    --card-royal-pattern-font-size: #{$baseSize * $royalCardPatternFontFactor};
+
+    --card-placeholder-font-size: #{$baseSize * 18};
+    --card-maximum-overlap: #{$width - $cornerReadableSize};
+  }
+}
+
+@include responsive.breakpoint(large) {
+  @include card-styles(1px, 20);
+}
+
+@include responsive.breakpoint(medium) {
+  @include card-styles(0.8px, 25);
+}
+
+@include responsive.breakpoint(small) {
+  @include card-styles(0.6px, 30);
+}
+
+$selectedFilter: invert(80%) brightness(1.5) hue-rotate(180deg);
+$backgroundColor: #fffef5;
+$edgeColor: #eee;
+$suitSpadesColor: #282828;
+$suitClubsColor: #282828;
+$suitHeartsColor: #af0707;
+$suitDiamondsColor: #af0707;
+$backing1stColor: #001f3f;
+$backing2ndColor: #d7d748;
+$backing3rdColor: #5a0028;
+$backing4thColor: #00465a;

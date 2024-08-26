@@ -143,42 +143,41 @@ export default {
   transition: transform animation.$transition-time-standard, filter animation.$transition-time-standard;
 
   &.selected {
-    filter: card.$selected-filter;
+    filter: card.$selectedFilter;
   }
 
   .card-content {
     position: relative;
-    height: card.$height;
-    border: solid card.$content-border-width card.$edge-color;
-    border-radius: card.$border-radius;
-    background-color: card.$background-color;
+    height: var(--card-height);
+    border-radius: var(--card-border-radius);
+    background-color: card.$backgroundColor;
     text-align: center;
 
     .top-left {
-      top: card.$corner-indentation-size;
+      top: var(--card-corner-indentation-size);
       left: 0;
     }
 
     .bottom-right {
-      bottom: card.$corner-indentation-size;
+      bottom: var(--card-corner-indentation-size);
       right: 0;
       transform: rotate(180deg);
     }
 
     &.spades {
-      color: card.$suit-spades-color;
+      color: card.$suitSpadesColor;
     }
 
     &.hearts {
-      color: card.$suit-hearts-color;
+      color: card.$suitHeartsColor;
     }
 
     &.clubs {
-      color: card.$suit-clubs-color;
+      color: card.$suitClubsColor;
     }
 
     &.diamonds {
-      color: card.$suit-diamonds-color;
+      color: card.$suitDiamondsColor;
     }
   }
 

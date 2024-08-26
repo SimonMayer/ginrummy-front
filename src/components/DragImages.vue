@@ -59,16 +59,16 @@ export default {
 
   .card {
     &:not(:first-child) {
-      margin-left: calc(card.$width * -0.8);
+      margin-left: calc(var(--card-width) * -0.8);
     }
   }
 }
 
 .dragged-visible-cards-image {
-  top: calc(-1 * (card.$height + card.$width));
+  top: calc(-1 * (var(--card-height) + var(--card-width)));
 }
 
 .dragged-hidden-card-image {
-  top: calc(-2 * (card.$height + card.$width));
+  top: calc(-2 * (var(--card-height) + var(--card-width)));
 }
 </style>

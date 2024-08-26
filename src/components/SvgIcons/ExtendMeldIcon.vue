@@ -9,7 +9,7 @@
     <IconCard :active="active" :rotationAngle="-8" :x="3" :y="3"/>
     <IconCard :active="active" :rotationAngle="-2" :x="7" :y="3"/>
     <IconCard :active="active" :rotationAngle="4" :x="12" :y="4"/>
-    <IconCard :active="active" :rotationAngle="10" :x="17" :y="11" :highlight="true"/>
+    <IconCard :active="active" :highlight="true" :rotationAngle="10" :x="17" :y="11"/>
 
     <IconArrow :active="active" :rotationAngle="10" :tipCoordinateX="21" :tipCoordinateY="15"/>
   </svg>

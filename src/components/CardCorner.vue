@@ -26,7 +26,7 @@ export default {
 
 .corner {
   position: absolute;
-  width: card.$corner-width;
-  font-size: card.$corner-font-size;
+  width: var(--card-corner-width);
+  font-size: var(--card-corner-font-size);
 }
 </style>

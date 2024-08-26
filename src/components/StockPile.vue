@@ -104,8 +104,8 @@ export default {
   justify-content: left;
   position: relative;
   cursor: pointer;
-  height: card.$height;
-  width: calc(card.$width * 1.5);
+  height: var(--card-height);
+  width: calc(var(--card-width) * 1.5);
 
   @for $i from 1 through 52 {
     .stock-card-item:nth-child(#{$i}) {
@@ -128,9 +128,9 @@ export default {
       transform-origin: calc($xOffsetWeight * 1%) calc($yOffsetWeight * 1.1%);
 
       @if $i != 1 {
-        margin-left: calc(card.$width * -1.015);
+        margin-left: calc(var(--card-width) * -1.015);
       }
-      margin-top: calc(card.$height * 0.005 * $i);
+      margin-top: calc(var(--card-height) * 0.005 * $i);
     }
   }
 
@@ -144,12 +144,12 @@ export default {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    width: card.$width;
-    height: card.$height;
+    width: var(--card-width);
+    height: var(--card-height);
     background-color: rgba(color.$secondary, 0.8);
-    border: dashed calc(card.$border-width * 5) color.$muted-light;
-    border-radius: card.$border-radius;
-    font-size: calc(card.$base-size * 18);
+    border: dashed calc(var(--card-border-width) * 5) color.$muted-light;
+    border-radius: var(--card-border-radius);
+    font-size: var(--card-placeholder-font-size);
     color: color.$muted-light;
 
     div {

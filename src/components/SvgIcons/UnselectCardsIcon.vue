@@ -7,10 +7,10 @@
       xmlns="http://www.w3.org/2000/svg"
   >
     <IconCard :active="active" :rotationAngle="-8" :x="3" :y="6"/>
-    <IconCard :active="active" :rotationAngle="-4" :x="6" :y="2" :reverse="true"/>
-    <IconCard :active="active" :rotationAngle="0" :x="9" :y="2" :reverse="true"/>
+    <IconCard :active="active" :reverse="true" :rotationAngle="-4" :x="6" :y="2"/>
+    <IconCard :active="active" :reverse="true" :rotationAngle="0" :x="9" :y="2"/>
     <IconCard :active="active" :rotationAngle="4" :x="11" :y="6"/>
-    <IconCard :active="active" :rotationAngle="8" :x="14" :y="3" :reverse="true"/>
+    <IconCard :active="active" :reverse="true" :rotationAngle="8" :x="14" :y="3"/>
     <IconCard :active="active" :rotationAngle="12" :x="17" :y="8"/>
 
     <g>
@@ -35,7 +35,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/color/variables' as color;
 
 .cancel-circle {

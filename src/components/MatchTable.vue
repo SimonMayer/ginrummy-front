@@ -149,16 +149,16 @@ export default {
     gap: spacing.$margin-standard;
     height: 100%;
     position: relative;
-    padding-right: calc(card.$height * 0.25);
+    padding-right: calc(var(--card-height) * 0.25);
 
     .stock-pile-container, .discard-pile {
       transform-origin: top left;
-      transform: rotate(90deg) translateY(calc(card.$height * -1));
+      transform: rotate(90deg) translateY(calc(var(--card-height) * -1));
     }
 
     .discard-pile {
       position: absolute;
-      top: calc((card.$width * 1.2) + spacing.$margin-standard);
+      top: calc((var(--card-width) * 1.2) + spacing.$margin-standard);
       left: spacing.$margin-double;
     }
   }

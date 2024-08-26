@@ -26,10 +26,10 @@ export default {
 
 .pattern {
   position: absolute;
-  top: card.$pattern-indentation-size;
-  bottom: card.$pattern-indentation-size;
-  left: card.$pattern-indentation-size;
-  right: card.$pattern-indentation-size;
+  top: var(--card-pattern-indentation-size);
+  bottom: var(--card-pattern-indentation-size);
+  left: var(--card-pattern-indentation-size);
+  right: var(--card-pattern-indentation-size);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(16, 1fr);
@@ -38,7 +38,14 @@ export default {
   align-items: center;
 
   .suit-symbol {
-    font-size: card.$pattern-font-size;
+    font-size: var(--card-pattern-font-size);
+
+    .rank-A &,
+    .rank-K &,
+    .rank-Q &,
+    .rank-J & {
+      font-size: var(--card-royal-pattern-font-size);
+    }
   }
 }
 </style>

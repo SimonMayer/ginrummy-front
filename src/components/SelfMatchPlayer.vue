@@ -127,15 +127,15 @@ export default {
   }
 
   .hand {
-    height: card.$height;
+    height: var(--card-height);
     margin: spacing.$margin-double 0 0 0;
-    padding: 0 0 0 calc(0.4 * card.$width);
+    padding: 0 0 0 calc(0.4 * var(--card-width));
 
     .card {
-      @include card-transform(-40deg, 0deg, calc(card.$height * -0.1), 0.2);
+      @include card-transform(-40deg, 0deg, calc(var(--card-height) * -0.1), 0.2);
 
       &.selected {
-        @include card-transform(-40deg, 3deg, calc(card.$height * -0.3), 0.2);
+        @include card-transform(-40deg, 3deg, calc(var(--card-height) * -0.3), 0.2);
       }
     }
   }

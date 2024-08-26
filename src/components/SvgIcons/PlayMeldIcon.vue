@@ -6,7 +6,7 @@
       viewBox="0 0 32 32"
       xmlns="http://www.w3.org/2000/svg"
   >
-    <rect class="play-area" :height="18" :rx="2" :ry="2" :width="18" x="2" y="3"/>
+    <rect :height="18" :rx="2" :ry="2" :width="18" class="play-area" x="2" y="3"/>
 
     <IconArrow :active="active" :rotationAngle="20" :tipCoordinateX="4" :tipCoordinateY="8"/>
 
@@ -31,7 +31,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/color/variables' as color;
 
 .play-area {

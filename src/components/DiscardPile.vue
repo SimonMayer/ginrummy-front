@@ -90,8 +90,8 @@ export default {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
-  padding: calc(card.$height * 0.1) calc(card.$width * 0.1);
-  height: card.$height;
+  padding: calc(var(--card-height) * 0.1) calc(var(--card-width) * 0.1);
+  height: var(--card-height);
 
   .selectable {
     cursor: pointer;
@@ -114,11 +114,11 @@ export default {
       transform: $rotate;
 
       @if $i != 1 {
-        margin-left: calc(card.$width * -0.85);
+        margin-left: calc(var(--card-maximum-overlap) * -1);
       }
 
       &.selected {
-        transform: $rotate translateY(calc(card.$height * -0.2));
+        transform: $rotate translateY(calc(var(--card-height) * -0.2));
       }
     }
   }
@@ -127,12 +127,12 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: card.$width;
-    height: card.$height;
+    width: var(--card-width);
+    height: var(--card-height);
     background-color: rgba(color.$secondary, 0.8);
-    border: dashed calc(card.$border-width * 5) color.$muted-light;
-    border-radius: card.$border-radius;
-    font-size: calc(card.$base-size * 18);
+    border: dashed calc(var(--card-border-width) * 5) color.$muted-light;
+    border-radius: var(--card-border-radius);
+    font-size: var(--card-placeholder-font-size);
     color: color.$muted-light;
 
     div {
@@ -145,20 +145,20 @@ export default {
 
   .guidance-text-holder {
     position: absolute;
-    height: card.$width;
-    width: card.$height;
+    height: var(--card-width);
+    width: var(--card-height);
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    transform: rotate(-90deg) translateX(calc(card.$height / 3 * -0.8 - spacing.$margin-standard)) translateY(calc(card.$width / 3 * -0.8));
+    transform: rotate(-90deg) translateX(calc(var(--card-height) / 3 * -0.8 - spacing.$margin-standard)) translateY(calc(var(--card-width) / 3 * -0.8));
     transition: z-index 0s animation.$transition-time-slower;
     user-select: none;
     z-index: -1;
 
     .guidance-text {
       margin: spacing.$margin-standard;
-      width: card.$height;
+      width: var(--card-height);
     }
   }
 
