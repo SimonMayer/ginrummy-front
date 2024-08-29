@@ -184,6 +184,7 @@ const getters = {
         return getters.canDrawMultipleToExtendMeldAsNextMove &&
             draggedCards.length > 0 &&
             draggedCards.length < (handCardLength + drawnCardsLength) &&
+            !rootGetters['sessionState/derived/draggedItems/isOnlyTopDiscardPileCardDragged'] &&
             meldsService.doCardsMakeValidMeld(cards, runOrders, minimumMeldSize);
     },
     canDrawMultipleNowByButton(state, getters) {
