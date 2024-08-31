@@ -42,11 +42,14 @@ import DrawOneFromDiscardIcon from '@/components/SvgIcons/DrawOneFromDiscardIcon
 import DrawOneFromStockIcon from '@/components/SvgIcons/DrawOneFromStockIcon.vue';
 import ExtendMeldIcon from '@/components/SvgIcons/ExtendMeldIcon.vue';
 import PlayMeldIcon from '@/components/SvgIcons/PlayMeldIcon.vue';
+import ShowInfoIcon from '@/components/SvgIcons/ShowInfoIcon.vue';
 import UnselectCardsIcon from '@/components/SvgIcons/UnselectCardsIcon.vue';
 
 export default {
   name: 'GameButtonContainer',
-  components: {GameButton},
+  components: {
+    GameButton,
+  },
   computed: {
     ...mapGetters({
       currentRoundId: 'sessionState/derived/rounds/currentRoundId',
@@ -140,6 +143,18 @@ export default {
             },
           ],
         },
+        {
+          object: 'buttonGroup',
+          buttons: [
+            {
+              icon: ShowInfoIcon,
+              isDisabled: false,
+              labelDisabled: 'Game information',
+              labelEnabled: 'Game information',
+              pressHandler: this.emitShowGameInformation,
+            },
+          ],
+        },
       ];
     },
   },
@@ -153,6 +168,9 @@ export default {
       playMeld: 'interactions/turns/melds/playMeld',
       unselectAllCards: 'sessionState/uiOperations/selections/unselectAllCards',
     }),
+    emitShowGameInformation() {
+      this.$emit('show-game-information');
+    },
   },
 };
 </script>

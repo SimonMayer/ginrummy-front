@@ -1,18 +1,24 @@
 <template>
-  <div v-if="hasError" class="wrapper">
-    <div class="error-box">
-      <div class="title">{{ errorTitle }}</div>
-      <div v-if="errorMessage" class="message">{{ errorMessage }}</div>
-      <div class="close-button" @click="clearLogEntries"></div>
+  <div v-if="hasError" class="container-outer">
+    <div class="container-inner">
+      <div class="error-box">
+        <div class="title">{{ errorTitle }}</div>
+        <div v-if="errorMessage" class="message">{{ errorMessage }}</div>
+        <CloseCross class="error-close-cross" @click="clearLogEntries" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import {mapActions, mapGetters} from 'vuex';
+import CloseCross from '@/components/CloseCross.vue';
 
 export default {
   name: 'ErrorBox',
+  components: {
+    CloseCross
+  },
   computed: {
     ...mapGetters({
       logEntry: 'sessionState/indicators/errorLog/getLatestLogEntry',
@@ -42,74 +48,56 @@ export default {
 @use '@/assets/core/animation/variables' as animation;
 @use '@/assets/core/color/variables' as color;
 @use '@/assets/core/decorative/variables' as decorative;
+@use '@/assets/core/responsive/mixins' as responsive;
 @use '@/assets/core/spacing/variables' as spacing;
 
-.wrapper {
-  background-color: white;
-  border-radius: decorative.$border-radius;
+.container-outer {
+  display: flex;
+  justify-content: center;
   margin: var(--spacing-margin-standard) 0;
-  min-width: 400px;
-  padding: 2px;
 
-  .error-box {
-    border: solid decorative.$border-width-medium color.$error-accent;
+  .container-inner{
+    background-color: white;
+    max-width: 600px;
+    width: 90%;
     border-radius: decorative.$border-radius;
-    color: color.$text;
-    overflow: hidden;
-    position: relative;
+    padding: var(--spacing-padding-half);
 
-    .title {
-      background-color: color.$error;
-      font-weight: bold;
-      min-height: 30px;
-      padding: var(--spacing-padding-standard);
+    @include responsive.breakpoint(small) {
+      max-width: 95%;
+      width: 95%;
     }
 
-    .message {
-      color: color.$error;
-      min-height: 20px;
-      padding: var(--spacing-padding-standard);
-    }
+    .error-box {
+      border: solid decorative.$border-width-medium color.$error-accent;
+      border-radius: decorative.$border-radius;
+      color: color.$text;
+      overflow: hidden;
+      position: relative;
 
-    .close-button {
-      border-radius: 0.2rem;
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      width: 1rem;
-      height: 1rem;
-      cursor: pointer;
-      transition: background-color animation.$transition-time-standard, color animation.$transition-time-standard;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &::before,
-      &::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 16px;
-        height: 3px;
-        background: color.$text;
-        transform-origin: center;
+      .title {
+        background-color: color.$error;
+        font-weight: bold;
+        min-height: 30px;
+        padding: var(--spacing-padding-standard);
       }
 
-      &::before {
-        transform: translate(-50%, -50%) rotate(45deg);
+      .message {
+        color: color.$error;
+        min-height: 20px;
+        padding: var(--spacing-padding-standard);
       }
 
-      &::after {
-        transform: translate(-50%, -50%) rotate(-45deg);
-      }
+      .error-close-cross {
+        color: color.$text;
 
-      &:hover {
-        background-color: rgba(color.$error-accent, 0.8);
-      }
+        &:hover {
+          background-color: rgba(color.$error-accent, 0.8);
+        }
 
-      &:active {
-        background-color: rgba(color.$error-accent, 0.98);
+        &:active {
+          background-color: rgba(color.$error-accent, 0.98);
+        }
       }
     }
   }
