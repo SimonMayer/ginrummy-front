@@ -138,9 +138,6 @@ const actions = {
             return null;
         }
         const melds = state.containerElement.querySelectorAll('.meld');
-        if (!melds[0]) {
-            return;
-        }
 
         const meldCardCounts = Array.from(melds).map(
             meld => meld.querySelectorAll('.card').length,
