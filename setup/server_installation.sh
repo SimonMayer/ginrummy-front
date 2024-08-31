@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Ensure the script is run as root
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root"
    exit 1
 fi
 
-# Function to validate the URL
+CONFIG_FILE="/root/server_config_ginrummy-front.txt"
+
 function validate_url() {
     local url=$1
     local regex="^https?://([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]+)?(/.*)?$"
@@ -17,19 +17,45 @@ function validate_url() {
     fi
 }
 
-# Prompt for the domain name for the Vue app
-read -p "Enter the domain name for the Vue app (e.g., subdomain.domain.example): " DOMAIN_NAME
+function get_or_set_config() {
+    local var_name=$1
+    local prompt_message=$2
 
-# Prompt for the base URL of the engine
-while true; do
-    read -p "Enter the base URL of the engine: " BASE_URL
-    BASE_URL=${BASE_URL%/}  # Trim trailing slash if it exists
-    if validate_url "$BASE_URL"; then
-        break
-    else
-        echo "Invalid URL. Please ensure it starts with http:// or https:// and is followed by a valid domain."
+    local value=""
+    if [ -f "$CONFIG_FILE" ]; then
+        value=$(grep "^$var_name=" "$CONFIG_FILE" | cut -d'=' -f2)
     fi
-done
+
+    if [ -n "$value" ]; then
+        read -p "$var_name is currently set to '$value'. Do you want to reuse it? (y/n): " reuse
+        if [ "$reuse" != "y" ]; then
+            value=""
+        fi
+    fi
+
+    if [ -z "$value" ]; then
+        while true; do
+            read -p "$prompt_message" value
+            if [ "$var_name" == "BASE_URL" ]; then
+                value=${value%/}  # Trim trailing slash if it exists
+                if validate_url "$value"; then
+                    break
+                else
+                    echo "Invalid URL. Please ensure it starts with http:// or https:// and is followed by a valid domain." >&2
+                fi
+            else
+                break
+            fi
+        done
+        echo "$var_name=$value" >> "$CONFIG_FILE"
+    fi
+
+    echo $value
+}
+
+DOMAIN_NAME=$(get_or_set_config "DOMAIN_NAME" "Enter the domain name for the Vue app (e.g., subdomain.domain.example): ")
+
+BASE_URL=$(get_or_set_config "BASE_URL" "Enter the base URL of the engine: ")
 
 # Check if SSL certificate already exists
 if [ ! -f "/etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem" ]; then
