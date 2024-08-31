@@ -32,20 +32,79 @@
     position: relative;
   }
 
-  .guidance-text {
+  $arrowHeight: var(--spacing-margin-standard);
+
+  .guidance-tooltip {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: decorative.$border-radius;
-    background-color: var(--guidanceBackgroundColor);
-    color: var(--guidanceTextColor);
-    transition: --guidanceBackgroundColor animation.$transition-time-slower, --guidanceTextColor animation.$transition-time-slower;
-    margin: decorative.$border-width-thick 0 calc(decorative.$border-width-thick * -1);
-    padding: var(--spacing-padding-standard);
-    text-align: center;
+    pointer-events: none;
     user-select: none;
-    z-index: -1;
+    border-radius: decorative.$border-radius;
+    opacity: 0;
+    transform: translateX(-5px) translateY(5px);
+    transition: opacity animation.$transition-time-standard, transform animation.$transition-time-standard;
+    background-color: rgba(color.$white, 0.1);
+
+    &.below {
+      top: 100%;
+      margin-top: var(--spacing-margin-half);
+      padding-top: $arrowHeight;
+
+      &::before {
+        top: calc($arrowHeight * -1);
+        border-color: transparent transparent #{rgba(color.$text, 0.8)} transparent;
+      }
+
+      .content {
+        border-radius: 0 0 decorative.$border-radius decorative.$border-radius;
+      }
+    }
+
+    &.above {
+      bottom: 100%;
+      margin-bottom: var(--spacing-margin-half);
+      padding-bottom: $arrowHeight;
+
+      &::before {
+        bottom: calc($arrowHeight * -1);
+        border-top-color: #{rgba(color.$text, 0.8)};
+      }
+
+      .content {
+        border-radius: decorative.$border-radius decorative.$border-radius 0 0;
+      }
+    }
+
+    &.leftwards {
+      right: 0;
+
+      &::before {
+        right: var(--spacing-margin-standard);
+      }
+    }
+
+    &.rightwards {
+      left: 0;
+
+      &::before {
+        left: var(--spacing-margin-standard);
+      }
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      border-color: transparent;
+      border-style: solid;
+      border-width: var(--spacing-margin-standard);
+    }
+
+    .content {
+      background-color: #{rgba(color.$secondary, 0.8)};
+      color: #{color.$text};
+      padding: var(--spacing-padding-half) var(--spacing-padding-standard);
+      font-size: var(--typography-font-size-small);
+      white-space: nowrap;
+    }
   }
 
   &::before {
@@ -59,12 +118,12 @@
     border-radius: decorative.$border-radius;
     background: linear-gradient(
                     45deg,
-                    var(--gradientColor1) 20%,
-                    var(--gradientColor2) 20%,
+                    var(--gradientColor1) 15%,
+                    var(--gradientColor2) 15%,
                     var(--gradientColor2) 50%,
                     var(--gradientColor1) 50%,
-                    var(--gradientColor1) 70%,
-                    var(--gradientColor2) 70%,
+                    var(--gradientColor1) 65%,
+                    var(--gradientColor2) 65%,
                     var(--gradientColor2) 100%
     );
     background-size: 5px 5px;
@@ -75,25 +134,24 @@
 
   &.invites-drop,
   &.accepts-drop {
-    .guidance-text {
-      --guidanceTextColor: #{color.$text};
-      --guidanceBackgroundColor: #{rgba(color.$accent, 0.75)};
+    .guidance-tooltip {
+      opacity: 1;
       z-index: 2;
     }
   }
 
   &.invites-drop {
     &::before {
-      border-color: rgba(color.$accent, 0.25);
+      border-color: rgba(color.$secondary, 0.4);
       --gradientColor1: #{rgba(color.$accent, 0.25)};
-      --gradientColor2: transparent;
+      --gradientColor2: #{rgba(color.$secondary, 0.25)};
     }
   }
 
   &.accepts-drop {
     &::before {
       border-color: rgba(color.$accent, 0.4);
-      --gradientColor1: #{rgba(color.$accent, 0.25)};
+      --gradientColor1: #{rgba(color.$secondary, 0.25)};
       --gradientColor2: #{rgba(color.$accent, 0.25)};
     }
   }

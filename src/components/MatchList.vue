@@ -47,6 +47,7 @@ export default {
 @use '@/assets/core/spacing/variables' as spacing;
 
 .match-list {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;

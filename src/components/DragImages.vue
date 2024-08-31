@@ -4,7 +4,6 @@
         v-for="card in [...selectedDiscardPileCards, ...selectedHandCards]"
         :key="card.card_id"
         :cardProp="card"
-        :class="'card'"
     />
   </div>
   <div ref="draggedHiddenCardImage" class="dragged-hidden-card-image">
@@ -59,16 +58,16 @@ export default {
 
   .card {
     &:not(:first-child) {
-      margin-left: calc(var(--card-width) * -0.8);
+      margin-left: calc(var(--card-bridge-width) * -0.8);
     }
   }
 }
 
 .dragged-visible-cards-image {
-  top: calc(-1 * (var(--card-height) + var(--card-width)));
+  top: calc(-1 * (var(--card-bridge-height) + var(--card-bridge-width)));
 }
 
 .dragged-hidden-card-image {
-  top: calc(-2 * (var(--card-height) + var(--card-width)));
+  top: calc(-2 * (var(--card-bridge-height) + var(--card-bridge-width)));
 }
 </style>

@@ -86,6 +86,8 @@ export default {
 $arrowHeight: var(--spacing-margin-standard);
 
 button {
+  height: var(--match-button-height);
+  width: var(--match-button-width);
   border-width: var(--match-button-border-width);
   position: relative;
   padding: 0;
@@ -135,7 +137,7 @@ button {
       background-color: rgba(color.$secondary, 0.2);
 
       &::before {
-        border-color: transparent transparent rgba(color.$secondary, 0.8) transparent;
+        border-color: transparent transparent rgba(color.$text, 0.8) transparent;
       }
 
       .content {

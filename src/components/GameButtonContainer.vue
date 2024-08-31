@@ -4,22 +4,31 @@
       class="game-button-container"
   >
     <template v-for="(buttonConfig, index) in buttonConfigs" :key="index">
-      <div v-if="buttonConfig.addSeparatorBefore" v-show="!isDraggingItems" class="button-separator"></div>
-      <GameButton
-          v-show="!isDraggingItems"
-          :isDisabled="buttonConfig.isDisabled"
-          :labelDisabled="buttonConfig.labelDisabled"
-          :labelEnabled="buttonConfig.labelEnabled"
-          @button:press="buttonConfig.pressHandler"
+      <div
+          v-if="buttonConfig.object === 'separator'"
+          :class="['button-separator', { 'hidden': isDraggingItems }]"
+      ></div>
+      <div
+          v-if="buttonConfig.object === 'buttonGroup'"
+          :class="['button-group', { 'hidden': isDraggingItems }]"
       >
-        <template #icon="{}">
-          <component
-              :is="buttonConfig.icon"
-              :active="!buttonConfig.isDisabled"
-              class="icon"
-          />
+        <template v-for="(button, index) in buttonConfig.buttons" :key="index">
+          <GameButton
+              :isDisabled="button.isDisabled"
+              :labelDisabled="button.labelDisabled"
+              :labelEnabled="button.labelEnabled"
+              @button:press="button.pressHandler"
+          >
+            <template #icon="{}">
+              <component
+                  :is="button.icon"
+                  :active="!button.isDisabled"
+                  class="icon"
+              />
+            </template>
+          </GameButton>
         </template>
-      </GameButton>
+      </div>
     </template>
   </div>
 </template>
@@ -54,56 +63,82 @@ export default {
     buttonConfigs() {
       return [
         {
-          icon: DrawOneFromStockIcon,
-          isDisabled: !this.canDrawOneFromStockPileNowByButton,
-          labelDisabled: 'Draw from stock',
-          labelEnabled: 'Draw from stock',
-          pressHandler: this.drawOneFromStockPile,
+          object: 'buttonGroup',
+          buttons: [
+            {
+              icon: DrawOneFromStockIcon,
+              isDisabled: !this.canDrawOneFromStockPileNowByButton,
+              labelDisabled: 'Draw from stock',
+              labelEnabled: 'Draw from stock',
+              pressHandler: this.drawOneFromStockPile,
+            },
+            {
+              icon: DrawOneFromDiscardIcon,
+              isDisabled: !this.canDrawOneFromDiscardPileNowByButton,
+              labelDisabled: 'Draw from discards',
+              labelEnabled: 'Draw from discards',
+              pressHandler: this.drawOneFromDiscardPile,
+            },
+            {
+              icon: DrawMultipleFromDiscardIcon,
+              isDisabled: !this.canDrawMultipleNowByButton,
+              labelDisabled: 'Draw multiple',
+              labelEnabled: 'Draw multiple',
+              pressHandler: this.drawMultipleFromDiscardPile,
+            },
+          ],
         },
         {
-          icon: DrawOneFromDiscardIcon,
-          isDisabled: !this.canDrawOneFromDiscardPileNowByButton,
-          labelDisabled: 'Draw from discards',
-          labelEnabled: 'Draw from discards',
-          pressHandler: this.drawOneFromDiscardPile,
+          object: 'separator',
         },
         {
-          icon: DrawMultipleFromDiscardIcon,
-          isDisabled: !this.canDrawMultipleNowByButton,
-          labelDisabled: 'Draw multiple',
-          labelEnabled: 'Draw multiple',
-          pressHandler: this.drawMultipleFromDiscardPile,
+          object: 'buttonGroup',
+          buttons: [
+            {
+              icon: PlayMeldIcon,
+              isDisabled: !this.canPlayMeldFromHandNowByButton,
+              labelDisabled: 'Play a meld',
+              labelEnabled: 'Play a meld',
+              pressHandler: this.playMeld,
+            },
+            {
+              icon: ExtendMeldIcon,
+              isDisabled: !this.canExtendMeldFromHandNowByButton,
+              labelDisabled: 'Extend a meld',
+              labelEnabled: 'Extend selected meld',
+              pressHandler: this.extendMeld,
+            },
+          ],
         },
         {
-          addSeparatorBefore: true,
-          icon: PlayMeldIcon,
-          isDisabled: !this.canPlayMeldFromHandNowByButton,
-          labelDisabled: 'Play a meld',
-          labelEnabled: 'Play a meld',
-          pressHandler: this.playMeld,
+          object: 'separator',
         },
         {
-          icon: ExtendMeldIcon,
-          isDisabled: !this.canExtendMeldFromHandNowByButton,
-          labelDisabled: 'Extend a meld',
-          labelEnabled: 'Extend selected meld',
-          pressHandler: this.extendMeld,
+          object: 'buttonGroup',
+          buttons: [
+            {
+              icon: DiscardIcon,
+              isDisabled: !this.canDiscardNowByButton,
+              labelDisabled: 'Discard card',
+              labelEnabled: 'Discard card',
+              pressHandler: this.discardCard,
+            },
+          ],
         },
         {
-          addSeparatorBefore: true,
-          icon: DiscardIcon,
-          isDisabled: !this.canDiscardNowByButton,
-          labelDisabled: 'Discard card',
-          labelEnabled: 'Discard card',
-          pressHandler: this.discardCard,
+          object: 'separator',
         },
         {
-          addSeparatorBefore: true,
-          icon: UnselectCardsIcon,
-          isDisabled: !this.hasSelectedMeldOrCards,
-          labelDisabled: 'Nothing selected',
-          labelEnabled: 'Unselect all',
-          pressHandler: this.unselectAllCards,
+          object: 'buttonGroup',
+          buttons: [
+            {
+              icon: UnselectCardsIcon,
+              isDisabled: !this.hasSelectedMeldOrCards,
+              labelDisabled: 'Nothing selected',
+              labelEnabled: 'Unselect all',
+              pressHandler: this.unselectAllCards,
+            },
+          ],
         },
       ];
     },
@@ -124,19 +159,34 @@ export default {
 
 <style lang="scss" scoped>
 @use '@/assets/core/color/variables' as color;
+@use '@/assets/core/responsive/mixins' as responsive;
 @use '@/assets/core/spacing/variables' as spacing;
 
 .game-button-container {
   display: flex;
-  gap: var(--spacing-margin-standard);
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: start;
   width: 100%;
+
+  .hidden {
+    visibility: hidden;
+  }
+
+  .button-group {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--spacing-margin-standard);
+  }
 
   .button-separator {
     width: 1px;
-    height: 100%;
+    height: var(--match-button-height);
     background-color: color.$muted-light;
     margin: 0 var(--spacing-margin-half);
+
+    @include responsive.breakpoint(small) {
+      display: none;
+    }
   }
 }
 </style>

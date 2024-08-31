@@ -1,5 +1,5 @@
 <template>
-  <div class="play-area-container">
+  <div :class="['play-area-container', { 'tile': tileMode, 'bridge': !tileMode }]">
     <div
         v-show="isDraggingItems && componentSpecificDropCriteria"
         :ref="componentSpecificDropAreaRef"
@@ -11,7 +11,9 @@
         @drop="handleDrop"
         @dragover.prevent
     >
-      <span class="guidance-text">Drop cards here to play a meld</span>
+      <div class="guidance-tooltip below leftwards">
+        <div class="content">Drop cards here to play a meld</div>
+      </div>
     </div>
   </div>
 </template>
@@ -23,6 +25,12 @@ import {dropRecipientMixin} from '@/mixins/dropRecipientMixin';
 export default {
   name: 'PlayArea',
   mixins: [dropRecipientMixin],
+  props: {
+    tileMode: {
+      type: Boolean,
+      required: true,
+    },
+  },
   computed: {
     ...mapGetters({
       canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards: 'sessionState/permissions/draw/canDrawMultipleAndPlayMeldUsingCurrentlyDraggedCards',
@@ -59,8 +67,15 @@ export default {
 @import '@/assets/dropRecipient';
 
 .play-area-container {
-  min-height: var(--card-height);
-  width: calc(var(--card-width) * 2);
+  &.bridge {
+    min-height: var(--card-bridge-height);
+    width: calc(var(--card-bridge-width) * 2);
+  }
+
+  &.tile {
+    min-height: var(--card-tile-height);
+    width: calc(var(--card-tile-width) * 3);
+  }
 
   .play-area {
     position: relative;

@@ -1,7 +1,7 @@
 <template>
   <div
       v-if="cardData"
-      :class="{ selected: isSelected, draggable: draggable }"
+      :class="{ tile: tileMode, bridge: !tileMode, selected: isSelected, draggable: draggable }"
       :draggable="draggable"
       class="card visible-card"
       @click="handleClick"
@@ -12,9 +12,10 @@
       @touchstart="handleTouchstart"
   >
     <div :class="['card-content', rankClass, suitClass]">
-      <CardCorner :rank="displayRank" :suit="suitEmoji" class="top-left"/>
-      <CardPattern :suitEmoji="suitEmoji" :suitRepeat="suitRepeat"/>
-      <CardCorner :rank="displayRank" :suit="suitEmoji" class="bottom-right"/>
+      <CardCorner v-if="!tileMode" :rank="displayRank" :suit="suitEmoji" class="top-left"/>
+      <CardPattern v-if="!tileMode" :suitEmoji="suitEmoji" :suitRepeat="suitRepeat"/>
+      <CardCorner v-if="!tileMode" :rank="displayRank" :suit="suitEmoji" class="bottom-right"/>
+      <CardTile v-if="tileMode" :rank="displayRank" :suitEmoji="suitEmoji"/>
     </div>
   </div>
 </template>
@@ -23,6 +24,7 @@
 import {mapActions, mapGetters} from 'vuex';
 import CardCorner from '@/components/CardCorner.vue';
 import CardPattern from '@/components/CardPattern.vue';
+import CardTile from '@/components/CardTile.vue';
 import {touchHandlingMixin} from '@/mixins/touchHandlingMixin';
 import cardsService from '@/services/cardsService';
 import {getDisplayRank, getSuitEmoji, getSuitRepeat} from '@/utils/cardUtils';
@@ -33,6 +35,7 @@ export default {
   components: {
     CardCorner,
     CardPattern,
+    CardTile,
   },
   props: {
     cardProp: {
@@ -56,6 +59,10 @@ export default {
       default: false,
     },
     draggable: {
+      type: Boolean,
+      default: false,
+    },
+    tileMode: {
       type: Boolean,
       default: false,
     },
@@ -148,7 +155,8 @@ export default {
 
   .card-content {
     position: relative;
-    height: var(--card-height);
+    height: 100%;
+    width: 100%;
     border-radius: var(--card-border-radius);
     background-color: card.$backgroundColor;
     text-align: center;

@@ -1,9 +1,25 @@
 @use '@/assets/cards/variables' as card;
 
 .card {
-  width: var(--card-width);
-  height: var(--card-height);
   border: solid var(--card-border-width) card.$edgeColor;
   border-radius: var(--card-border-radius);
+  box-sizing: border-box;
   text-align: center;
+
+  &.tile {
+    height: var(--card-tile-height);
+    width: var(--card-tile-width);
+  }
+
+  &.bridge {
+    height: var(--card-bridge-height);
+    width: var(--card-bridge-width);
+  }
+
+  &.icon {
+    height: var(--card-icon-height);
+    width: var(--card-icon-width);
+    border-radius: var(--card-icon-border-radius);
+    border-width: var(--card-icon-border-width);
+  }
 }

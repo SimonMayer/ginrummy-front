@@ -25,6 +25,9 @@ const getters = {
         const hand = getters.visibleHand;
         return hand?.hand_id || null;
     },
+    visibleHandCardCount(state, getters) {
+        return getters.visibleHandCardIds.length;
+    },
     visibleHandCardIds(state, getters, rootState, rootGetters) {
         const handId = getters.visibleHandId;
         return handId ? rootGetters['storage/hands/getCardIdsByHandId'](handId) : [];

@@ -5,14 +5,14 @@
 @use '@/assets/cards/variables' as card;
 
 @mixin card-transform($rotate-x, $rotate-y, $translate-y, $translate-z-multiplier) {
-  transform: rotateX($rotate-x) translateX(calc(var(--card-width) / -5)) rotateY($rotate-y) translateY($translate-y) translateZ(calc(var(--card-height) * $translate-z-multiplier));
+  transform: rotateX($rotate-x) translateX(calc(var(--card-bridge-width) / -5)) rotateY($rotate-y) translateY($translate-y) translateZ(calc(var(--card-bridge-height) * $translate-z-multiplier));
 }
 
 @mixin highlightDot($size) {
   .highlight-container {
     display: flex;
     height: $size + (2 * decorative.$border-width-thin);
-    margin: var(--spacing-margin-standard) 0;
+    margin: var(--spacing-margin-standard);
 
     .highlight {
       width: $size;
@@ -30,17 +30,29 @@
 
   .player-details {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: left;
+    align-items: start;
 
-    .username {
-      flex: 2;
-      text-align: left;
-      width: 160px;
+    .left-column {
+      display: flex;
+      flex-direction: column;
     }
 
-    .score {
-      flex: 1;
+    .top-row {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .card-count {
+      align-items: center;
+
+      .icon {
+        margin-right: var(--spacing-margin-half);
+      }
+    }
+
+    .highlight-container {
+      margin-left: auto;
     }
   }
 
@@ -59,16 +71,26 @@
   .hand {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    perspective: calc(var(--card-height) * 5);
+    justify-content: start;
+
+    &.bridge {
+      flex-wrap: nowrap;
+      perspective: calc(var(--card-bridge-height) * 5);
+    }
+
+    &.tile {
+      flex-wrap: wrap;
+    }
 
     .card {
       &.selectable {
         cursor: pointer;
       }
 
-      &:not(:first-child) {
-        margin-left: calc(var(--card-maximum-overlap) * -1);
+      &.bridge {
+        &:not(:first-child) {
+          margin-left: calc(var(--card-bridge-maximum-overlap) * -1);
+        }
       }
     }
   }

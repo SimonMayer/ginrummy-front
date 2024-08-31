@@ -1,8 +1,11 @@
 @use '@/assets/core/responsive/mixins' as responsive;
 
 @mixin card-styles($baseSize, $cornerWidthFactor) {
-  $width: $baseSize * 100;
-  $height: $baseSize * 150;
+  $bridgeRatio: calc(3.5 / 2.25);
+  $bridgeHeight: $baseSize * 150;
+  $bridgeWidth: calc($bridgeHeight / $bridgeRatio);
+  $borderRadius: $baseSize * 10;
+  $borderWidth: $baseSize * 0.3;
   $cornerWidth: $baseSize * $cornerWidthFactor;
   $cornerFontFactor: $cornerWidthFactor * 0.6;
   $cornerReadableSize: $cornerWidth * 0.8;
@@ -10,12 +13,24 @@
   $patternFontFactor: calc($patternWidthFactor / 3);
   $royalCardPatternFontFactor: 2.5 * $patternFontFactor;
 
-  * {
-    --card-width: #{$width};
-    --card-height: #{$height};
+  $tileHeight: $baseSize * 50;
+  $tileWidth: $baseSize * 50;
+  $tileSuitFontSize: $baseSize * 40;
+  $tileRankFontSize: $baseSize * 18;
 
-    --card-border-radius: #{$baseSize * 10};
-    --card-border-width: #{$baseSize * 0.3};
+  $iconFactor: 0.16;
+  $iconHeight: $bridgeHeight * $iconFactor;
+  $iconWidth: $bridgeWidth * $iconFactor;
+  $iconBorderRadius: $borderRadius * $iconFactor;
+  $iconBorderWidth: $borderWidth * $iconFactor;
+
+  * {
+    --card-bridge-width: #{$bridgeWidth};
+    --card-bridge-height: #{$bridgeHeight};
+    --card-bridge-maximum-overlap: #{$bridgeWidth - $cornerReadableSize};
+
+    --card-border-radius: #{$borderRadius};
+    --card-border-width: #{$borderWidth};
 
     --card-corner-width: #{$cornerWidth};
     --card-corner-indentation-size: #{$baseSize * 4};
@@ -26,7 +41,18 @@
     --card-royal-pattern-font-size: #{$baseSize * $royalCardPatternFontFactor};
 
     --card-placeholder-font-size: #{$baseSize * 18};
-    --card-maximum-overlap: #{$width - $cornerReadableSize};
+
+    --card-tile-height: #{$tileHeight};
+    --card-tile-width: #{$tileWidth};
+    --card-tile-small-overlap: #{$tileWidth * 0.4};
+    --card-tile-large-overlap: #{$tileWidth * 0.8};
+    --card-tile-suit-font-size: #{$tileSuitFontSize};
+    --card-tile-rank-font-size: #{$tileRankFontSize};
+
+    --card-icon-width: #{$iconWidth};
+    --card-icon-height: #{$iconHeight};
+    --card-icon-border-radius: #{$iconBorderRadius};
+    --card-icon-border-width: #{$iconBorderWidth};
   }
 }
 

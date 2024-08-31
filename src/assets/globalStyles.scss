@@ -24,7 +24,7 @@ body {
   background-size: $backgroundTileSize $backgroundTileSize;
   background-attachment: scroll;
   margin: 0;
-  padding: var(--spacing-padding-standard);
+  padding: 0;
 
   &.dragging {
     overflow: hidden;

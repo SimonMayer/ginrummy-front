@@ -1,10 +1,16 @@
 <template>
-  <div class="card hidden-card backing"></div>
+  <div :class="['card', 'hidden-card', 'backing', { tile: tileMode, bridge: !tileMode}]"></div>
 </template>
 
 <script>
 export default {
   name: 'HiddenCard',
+  props: {
+    tileMode: {
+      type: Boolean,
+      default: false,
+    },
+  },
 };
 </script>
 

@@ -1,18 +1,23 @@
 <template>
   <div v-if="playerMatchData" class="player-item non-self-player">
-    <div class="hand">
-      <HiddenCard v-for="n in handSize" :key="n" class="card"/>
-    </div>
     <div class="player-details">
-      <div class="username">
-        <NamePlate :name="username"/>
+      <div class="left-column">
+        <div class="top-row">
+          <div class="card-count">
+            <HiddenCard class="icon"/>
+            <div class="number">×{{ handSize }}</div>
+          </div>
+          <div class="highlight-container">
+            <div :class="{ 'highlight': hasCurrentTurn }"></div>
+          </div>
+        </div>
+        <div class="username">
+          <NamePlate :name="username"/>
+        </div>
       </div>
       <div class="score">
         <ScoreBoard :roundScore="roundScore" :totalScore="totalScore"/>
       </div>
-    </div>
-    <div class="highlight-container">
-      <div :class="{ 'highlight': hasCurrentTurn }"></div>
     </div>
   </div>
 </template>
@@ -75,22 +80,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/core/responsive/mixins' as responsive;
+@use '@/assets/core/spacing/variables' as spacing;
 @use '@/assets/cards/variables' as card;
 @import '@/assets/players';
 
 .non-self-player {
-  margin: calc(var(--card-height) / 2) 0 0 0;
-
-  .highlight-container {
-    justify-content: right;
-  }
-
-  .hand {
-    height: 0;
-
-    .card {
-      @include card-transform(-60deg, 0deg, 0, -1);
-    }
+  .card-count {
+    display: flex;
   }
 }
 </style>

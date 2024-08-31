@@ -40,6 +40,9 @@ const getters = {
                 ? [getters.currentTopDiscardPileCard]
                 : [];
     },
+    visibleDiscardPileCardCount(state, getters) {
+        return getters.visibleDiscardPileCardIds.length;
+    },
     visibleDiscardPileCardIds(state, getters, rootState, rootGetters) {
         const visibleRoundId = rootGetters['sessionState/derived/rounds/visibleRoundId'];
         return rootGetters['storage/rounds/discardPiles/getDiscardPileCardIdsByRoundId'](visibleRoundId) || [];

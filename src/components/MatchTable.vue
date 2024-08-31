@@ -11,21 +11,12 @@
       </div>
     </div>
     <div class="game-section row">
-      <div class="game-column pile-container">
+      <div v-if="matchHasStarted" class="game-column pile-container">
         <StockPile/>
         <DiscardPile/>
       </div>
       <div class="game-column">
-        <div class="melds-container">
-          <PlayArea/>
-          <PlayedMeld
-              v-for="meld in visibleMelds"
-              :id="meld.meld_id"
-              :key="meld.meld_id"
-              :cards="meld.cards"
-              :type="meld.meld_type"
-          />
-        </div>
+        <MeldsContainer/>
         <GameButtonContainer class="buttons-container"/>
         <div v-if="matchHasStarted && !currentRoundId" class="buttons-container">
           <button @click="startRound">Start new round</button>
@@ -60,21 +51,19 @@ import DragImages from '@/components/DragImages.vue';
 import GameButtonContainer from '@/components/GameButtonContainer.vue';
 import ItemSearch from '@/components/ItemSearch.vue';
 import NonSelfMatchPlayer from '@/components/NonSelfMatchPlayer.vue';
-import PlayArea from '@/components/PlayArea.vue';
-import PlayedMeld from '@/components/PlayedMeld.vue';
 import SelfMatchPlayer from '@/components/SelfMatchPlayer.vue';
 import StockPile from '@/components/StockPile.vue';
+import MeldsContainer from '@/components/MeldsContainer.vue';
 
 export default {
   name: 'MatchTable',
   components: {
+    MeldsContainer,
     DiscardPile,
     DragImages,
     GameButtonContainer,
     ItemSearch,
     NonSelfMatchPlayer,
-    PlayArea,
-    PlayedMeld,
     SelfMatchPlayer,
     StockPile,
   },
@@ -88,7 +77,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      visibleMelds: 'sessionState/derived/melds/visibleMelds',
       matchHasStarted: 'sessionState/derived/match/hasStarted',
       match: 'sessionState/derived/match/match',
       players: 'sessionState/derived/players/playersMatchData',
@@ -120,6 +108,8 @@ export default {
 .match-table {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
   align-items: stretch;
   gap: var(--spacing-margin-standard);
 
@@ -132,43 +122,31 @@ export default {
 
     &.row {
       display: flex;
+      flex-grow: 1;
       width: 100%;
-
-      .column {
-        flex: 1;
-        padding: var(--spacing-padding-standard);
-        text-align: center;
-      }
+      align-items: stretch;
     }
   }
 
   .pile-container {
     display: flex;
+    flex-basis: 25%;
     flex-direction: column;
+    flex-grow: 3;
+    min-width: calc(var(--card-tile-width) * 3);
     align-items: center;
     gap: var(--spacing-margin-standard);
-    height: 100%;
     position: relative;
-    padding-right: calc(var(--card-height) * 0.25);
-
-    .stock-pile-container, .discard-pile {
-      transform-origin: top left;
-      transform: rotate(90deg) translateY(calc(var(--card-height) * -1));
-    }
-
-    .discard-pile {
-      position: absolute;
-      top: calc((var(--card-width) * 1.2) + var(--spacing-margin-standard));
-      left: var(--spacing-margin-double);
-    }
+    padding-right: calc(var(--card-bridge-height) * 0.25);
   }
 
   .game-column:not(.pile-container) {
-    flex: 1; // Take up remaining space
     display: flex;
+    flex-basis: 75%;
     flex-direction: column;
-    justify-content: space-between;
-    gap: var(--spacing-margin-standard);
+    flex-shrink: 3;
+    justify-content: start;
+    gap: var(--spacing-margin-double);
   }
 
   .buttons-container,
@@ -176,21 +154,14 @@ export default {
   .search-container {
     display: flex;
     gap: var(--spacing-margin-standard);
-    justify-content: center;
   }
 
   .melds-container {
-    flex-flow: row wrap;
-  }
-
-  .buttons-container,
-  .search-container {
-    margin: 0 auto;
-    width: 520px;
+    justify-content: left;
   }
 
   .buttons-container {
-    height: var(--match-button-container-height);
+    margin: 0 auto;
   }
 
   .non-self-players-container {
@@ -201,7 +172,7 @@ export default {
 
   .self-player-container {
     display: flex;
-    justify-content: center;
+    flex-grow: 1;
     width: 100%;
   }
 }

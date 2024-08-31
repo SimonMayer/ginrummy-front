@@ -7,6 +7,12 @@ const getters = {
         const roundId = rootGetters['sessionState/derived/rounds/visibleRoundId'];
         return rootGetters['storage/rounds/melds/getMeldsByRoundId'](roundId) || [];
     },
+    visibleMeldsCardCount(state, getters) {
+        return getters.visibleMelds.reduce(
+            (sum, meld) => sum + (meld.cardIds?.length || 0),
+            0,
+        );
+    },
 };
 
 export default {

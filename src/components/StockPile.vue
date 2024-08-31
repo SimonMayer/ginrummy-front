@@ -1,10 +1,23 @@
 <template>
-  <div v-if="visibleRoundId" class="stock-pile-container">
-    <div :class="{ disabled: disabled, empty: isEmpty }" class="stock-pile" @click="handleClick">
+  <div
+      v-if="visibleRoundId"
+      :class="[
+          'stock-pile-container',
+          { 'tile': tileMode,'bridge': !tileMode }
+      ]"
+  >
+    <div
+        :class="[
+            'stock-pile',
+            { disabled: disabled, empty: isEmpty, 'tile': tileMode, 'bridge': !tileMode }
+        ]"
+        @click="handleClick"
+    >
       <HiddenCard
           v-for="n in size"
           :key="n"
           :draggable="isCardDraggable(n)"
+          :tileMode="tileMode"
           class="stock-card-item"
           @dragend="handleDragend"
           @dragstart="(event) => handleDragstart(event, n)"
@@ -30,6 +43,12 @@ export default {
   mixins: [touchHandlingMixin],
   components: {
     HiddenCard,
+  },
+  props: {
+    tileMode: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -95,66 +114,104 @@ export default {
   justify-content: center;
   align-items: center;
   margin: var(--spacing-margin-standard);
-}
 
-.stock-pile {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: left;
-  position: relative;
-  cursor: pointer;
-  height: var(--card-height);
-  width: calc(var(--card-width) * 1.5);
-
-  @for $i from 1 through 52 {
-    .stock-card-item:nth-child(#{$i}) {
-      @if $i % 24 == 0 {
-        transform: rotate(-1deg);
-      } @else if $i % 11 == 0 {
-        transform: rotate(1.1deg);
-      } @else if $i % 7 == 0 {
-        transform: rotate(-0.5deg);
-      } @else if $i % 5 == 0 {
-        transform: rotate(0.4deg);
-      } @else if $i % 2 == 0 {
-        transform: rotate(0.2deg);
-      } @else if $i % 2 != 0 {
-        transform: rotate(-0.3deg);
-      }
-
-      $xOffsetWeight: ($i * $i) % 97;
-      $yOffsetWeight: ($i * $i) % 89;
-      transform-origin: calc($xOffsetWeight * 1%) calc($yOffsetWeight * 1.1%);
-
-      @if $i != 1 {
-        margin-left: calc(var(--card-width) * -1.015);
-      }
-      margin-top: calc(var(--card-height) * 0.005 * $i);
-    }
+  &.bridge {
+    height: var(--card-bridge-width);
+    width: var(--card-bridge-height);
   }
 
-  &.disabled {
-    pointer-events: none;
-    cursor: not-allowed;
+  &.tile {
+    width: 100%;
   }
 
-  .empty-placeholder {
+  .stock-pile {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    width: var(--card-width);
-    height: var(--card-height);
-    background-color: rgba(color.$secondary, 0.8);
-    border: dashed calc(var(--card-border-width) * 5) color.$muted-light;
-    border-radius: var(--card-border-radius);
-    font-size: var(--card-placeholder-font-size);
-    color: color.$muted-light;
+    position: relative;
+    cursor: pointer;
 
-    div {
-      transform: rotate(-90deg);
-      margin: var(--spacing-margin-standard);
+    .empty-placeholder {
+      display: flex;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background-color: rgba(color.$secondary, 0.8);
+      border: dashed calc(var(--card-border-width) * 5) color.$muted-light;
+      border-radius: var(--card-border-radius);
+      font-size: var(--card-placeholder-font-size);
+      color: color.$muted-light;
+      padding: var(--spacing-padding-standard);
+    }
+
+    &.bridge {
+      height: var(--card-bridge-width);
+      width: var(--card-bridge-height);
+      transform-origin: top left;
+      transform: rotate(90deg) translateX(calc(var(--card-bridge-width) * 0.2)) translateY(calc(var(--card-bridge-height) * -0.87));
+      justify-content: left;
+
+      .empty-placeholder {
+        height: var(--card-bridge-width);
+        width: var(--card-bridge-height);
+        transform: rotate(-90deg) translateY(calc(var(--card-bridge-width) * -0.3));
+      }
+    }
+
+    &.tile {
+      height: var(--card-tile-height);
+      width: 100%;
+      justify-content: center;
+
+      .empty-placeholder {
+        height: var(--card-tile-height);
+        width: 100%;
+      }
+    }
+
+    @for $i from 1 through 52 {
+      .stock-card-item:nth-child(#{$i}) {
+        @if $i % 24 == 0 {
+          transform: rotate(-1deg);
+        } @else if $i % 11 == 0 {
+          transform: rotate(1.1deg);
+        } @else if $i % 7 == 0 {
+          transform: rotate(-0.5deg);
+        } @else if $i % 5 == 0 {
+          transform: rotate(0.4deg);
+        } @else if $i % 2 == 0 {
+          transform: rotate(0.2deg);
+        } @else if $i % 2 != 0 {
+          transform: rotate(-0.3deg);
+        }
+
+        $xOffsetWeight: ($i * $i) % 97;
+        $yOffsetWeight: ($i * $i) % 89;
+        transform-origin: calc($xOffsetWeight * 1%) calc($yOffsetWeight * 1.1%);
+
+        @if $i != 1 {
+          &.bridge {
+            margin-left: calc(var(--card-bridge-width) * -1.015);
+          }
+          &.tile {
+            margin-left: calc(var(--card-tile-width) * -1.015);
+          }
+        }
+
+        &.bridge {
+          margin-top: calc(var(--card-bridge-height) * 0.005 * $i);
+        }
+
+        &.tile {
+          margin-top: calc(var(--card-tile-height) * 0.005 * $i);
+        }
+      }
+    }
+
+    &.disabled {
+      pointer-events: none;
+      cursor: not-allowed;
     }
   }
 }

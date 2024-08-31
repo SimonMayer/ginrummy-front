@@ -61,7 +61,6 @@ nav {
   display: flex;
   justify-content: space-between;
   gap: var(--spacing-margin-standard);
-  margin-bottom: var(--spacing-margin-standard);
   background-color: color.$secondary;
   padding: var(--spacing-padding-standard);
   border-radius: decorative.$border-radius;

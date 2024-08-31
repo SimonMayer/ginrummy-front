@@ -10,6 +10,8 @@
           'accepts-drop': acceptsDrop,
           'selected': displayAsSelected,
           'selectable': isSelectable,
+          'tile': tileMode,
+          'bridge': !tileMode,
         },
       ]"
       @click="handleClick"
@@ -25,10 +27,14 @@
         :key="card.card_id"
         :cardProp="card"
         :selectable="false"
-        class="card"
+        :tileMode="tileMode"
     />
-    <span v-show="allDraggedCardCount === 1" class="guidance-text">Drop card here to extend the meld</span>
-    <span v-show="allDraggedCardCount > 1" class="guidance-text">Drop cards here to extend the meld</span>
+    <div v-show="allDraggedCardCount === 1" class="guidance-tooltip above leftwards">
+      <div class="content">Drop card here to extend the meld</div>
+    </div>
+    <div v-show="allDraggedCardCount > 1" class="guidance-tooltip above leftwards">
+      <div class="content">Drop cards here to extend the meld</div>
+    </div>
   </div>
 </template>
 
@@ -59,6 +65,10 @@ export default {
     },
     type: {
       type: String,
+      required: true,
+    },
+    tileMode: {
+      type: Boolean,
       required: true,
     },
   },
@@ -162,54 +172,6 @@ export default {
   display: flex;
   justify-content: right;
   align-items: flex-start;
-  width: calc(var(--card-width) * 0.8);
-  height: var(--card-height);
-  padding-top: calc(var(--card-width) * 0.12);
-  padding-bottom: calc(var(--card-width) * 0.1);
-  padding-left: calc((var(--card-width) * 0.35) + (var(--card-height) * 0.3));
-
-  &.size-4 {
-    padding-right: calc(var(--card-width) * 0.02);
-  }
-
-  &.size-5 {
-    padding-right: calc(var(--card-width) * 0.18);
-  }
-
-  &.size-6 {
-    padding-right: calc(var(--card-width) * 0.06);
-  }
-
-  &.size-7 {
-    padding-right: calc(var(--card-width) * 0.12);
-  }
-
-  &.size-8 {
-    padding-right: calc(var(--card-width) * 0.18);
-  }
-
-  &.size-9 {
-    padding-right: calc(var(--card-width) * 0.24);
-  }
-
-  &.size-10 {
-    padding-right: calc(var(--card-width) * 0.30);
-  }
-
-  &.size-11 {
-    padding-right: calc(var(--card-width) * 0.36);
-    padding-bottom: calc(var(--card-width) * 0.15);
-  }
-
-  &.size-12 {
-    padding-right: calc(var(--card-width) * 0.42);
-    padding-bottom: calc(var(--card-width) * 0.18);
-  }
-
-  &.size-13 {
-    padding-right: calc(var(--card-width) * 0.48);
-    padding-bottom: calc(var(--card-width) * 0.22);
-  }
 
   &.selected {
     .card {
@@ -221,17 +183,100 @@ export default {
     cursor: pointer;
   }
 
-  .card {
-    position: absolute;
-    transform-origin: 20% 150%;
+  &.bridge {
+    width: calc(var(--card-bridge-width) * 0.8);
+    height: var(--card-bridge-height);
+    padding-top: calc(var(--card-bridge-width) * 0.12);
+    padding-bottom: calc(var(--card-bridge-width) * 0.1);
+    padding-left: calc((var(--card-bridge-width) * 0.35) + (var(--card-bridge-height) * 0.3));
+
+    &.size-4 {
+      padding-right: calc(var(--card-bridge-width) * 0.02);
+    }
+
+    &.size-5 {
+      padding-right: calc(var(--card-bridge-width) * 0.08);
+    }
+
+    &.size-6 {
+      padding-right: calc(var(--card-bridge-width) * 0.06);
+    }
+
+    &.size-7 {
+      padding-right: calc(var(--card-bridge-width) * 0.12);
+    }
+
+    &.size-8 {
+      padding-right: calc(var(--card-bridge-width) * 0.18);
+    }
+
+    &.size-9 {
+      padding-right: calc(var(--card-bridge-width) * 0.24);
+    }
+
+    &.size-10 {
+      padding-right: calc(var(--card-bridge-width) * 0.30);
+    }
+
+    &.size-11 {
+      padding-right: calc(var(--card-bridge-width) * 0.36);
+      padding-bottom: calc(var(--card-bridge-width) * 0.15);
+    }
+
+    &.size-12 {
+      padding-right: calc(var(--card-bridge-width) * 0.42);
+      padding-bottom: calc(var(--card-bridge-width) * 0.18);
+    }
+
+    &.size-13 {
+      padding-right: calc(var(--card-bridge-width) * 0.48);
+      padding-bottom: calc(var(--card-bridge-width) * 0.22);
+    }
+
+    .card {
+      position: absolute;
+      transform-origin: 20% 150%;
+    }
+
+    &.run {
+      @include fan-shape(13, 56.5deg, -20, 2, 1, 0.4);
+    }
+
+    &.set {
+      @include fan-shape(4, 20deg, -20, 2, 1, 1);
+    }
   }
 
-  &.run {
-    @include fan-shape(13, 56.5deg, -20, 2, 1, 0.4);
-  }
+  &.tile {
+    flex-wrap: nowrap;
 
-  &.set {
-    @include fan-shape(4, 20deg, -20, 2, 1, 1);
+    .card {
+      position: relative;
+    }
+
+    &.size-3 {
+      .card {
+        &:not(:first-child) {
+          margin-left: calc(var(--card-tile-small-overlap) * -1);
+        }
+      }
+    }
+
+    @for $size from 4 through 13 {
+      &.size-#{$size} {
+        .card {
+          &:nth-child(2) {
+            margin-left: calc(var(--card-tile-small-overlap) * -1);
+          }
+
+          @for $i from 3 through $size {
+            &:nth-child(#{$i}) {
+              margin-left: calc(var(--card-tile-large-overlap) * -1);
+            }
+          }
+        }
+      }
+    }
   }
 
   @include drop-recipient;
